@@ -105,6 +105,14 @@ typedef enum { SEDI_WATCHDOG_0 = 0, SEDI_WATCHDOG_NUM } sedi_watchdog_t;
 #define SEDI_RTC_COUNTER0 (SEDI_MISC_BASE + 0x70)
 #define SEDI_RTC_COUNTER1 (SEDI_MISC_BASE + 0x74)
 
+/****** PM *****/
+#define SEDI_PMU_BASE (0x04200000)
+#define SEDI_CCU_BASE 0x04300000
+
+#define SEDI_IRQ_RESET_PREP (6)
+#define SEDI_IRQ_PCIEDEV (9)
+#define SEDI_IRQ_PMU2IOAPIC (10)
+
 /****** APIC *****/
 #define SEDI_IOAPIC_BASE 0xFEC00000
 #define SEDI_LAPIC_BASE 0xFEE00000
