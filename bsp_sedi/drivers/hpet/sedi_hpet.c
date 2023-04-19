@@ -15,8 +15,8 @@
 #define PICOSECS_PER_USEC 1000000
 
 #define CURRENT_HPET_CYCLE sedi_hpet_get_main_counter()
-#define US_TO_HPET_CYCLE(us) ((uint64_t)us * PICOSECS_PER_USEC / hpet_clock_period_pico)
-#define HPET_CYCLE_TO_US(cycle) ((uint64_t)cycle * hpet_clock_period_pico / PICOSECS_PER_USEC)
+#define US_TO_HPET_CYCLE(us) ((uint64_t)(us) * PICOSECS_PER_USEC / hpet_clock_period_pico)
+#define HPET_CYCLE_TO_US(cycle) ((uint64_t)(cycle) * hpet_clock_period_pico / PICOSECS_PER_USEC)
 
 /* general capabilities register macros */
 
@@ -80,7 +80,7 @@ typedef struct {
 static hpet_timer_ctx_t bsp_timers[SEDI_HPET_SOC_TIMER_NUM];
 
 static hpet_regs_t *hpet_reg = (hpet_regs_t *)SEDI_HPET_BASE;
-static uint32_t hpet_clock_period_pico = 30517578;
+static uint32_t hpet_clock_period_pico = 30517578; /* picoseconds */
 static uint32_t hpet_min_delay = 5; /* HPET cycles */
 /* driver version */
 static const sedi_driver_version_t driver_version = { SEDI_HPET_API_VERSION,
@@ -92,6 +92,11 @@ static inline void wait_for_idle(uint32_t bits)
 {
 	while (hpet_reg->hpet_ctrl_sts & bits)
 		;
+}
+
+uint32_t sedi_hpet_get_min_delay(void)
+{
+	return hpet_min_delay;
 }
 
 void sedi_hpet_set_min_delay(uint32_t min_delay)
@@ -120,38 +125,39 @@ int32_t sedi_hpet_set_power(IN sedi_power_state_t state)
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_hpet_set_comparator(IN sedi_hpet_t timer_id, IN uint64_t value)
+static int sedi_hpet_update_comparator(IN sedi_hpet_t timer_id,
+		IN uint64_t value)
 {
-	uint32_t tncv_addr;
-	uint32_t sts_wait;
-	uint64_t _value = value;
-
-	if ((timer_id != HPET_0) && (value >> 32)) {
-		/* it's wrong to set into a 32-bits timer */
-		return SEDI_DRIVER_ERROR_PARAMETER;
-	}
-
 	switch (timer_id) {
 	case HPET_0:
-		sts_wait = TIMER0_COMPARATOR;
-		tncv_addr = (uint32_t)(&(hpet_reg->t0cv_low));
+		write64((uint32_t)(&(hpet_reg->t0cv_low)), value);
 		break;
 	case HPET_1:
-		sts_wait = TIMER1_COMPARATOR;
-		tncv_addr = (uint32_t)(&(hpet_reg->t1cv_low));
+		write32((uint32_t)(&(hpet_reg->t1cv_low)), (uint32_t)value);
 		break;
 	case HPET_2:
-		sts_wait = TIMER2_COMPARATOR;
-		tncv_addr = (uint32_t)(&(hpet_reg->t2cv_low));
+		write32((uint32_t)(&(hpet_reg->t2cv_low)), (uint32_t)value);
 		break;
 	default:
 		return SEDI_DRIVER_ERROR_NO_DEV;
 	}
 
+	return SEDI_DRIVER_OK;
+}
+
+int sedi_hpet_set_comparator(IN sedi_hpet_t timer_id, IN uint64_t value)
+{
+	uint64_t _value = value;
 	/* need to wait until INT clearing is finished, or HPET
 	 * goes out of work
 	 * */
-	sts_wait |= GENERAL_INT_STATUS;
+	uint32_t sts_wait = GENERAL_INT_STATUS | TIMER0_COMPARATOR
+			| TIMER1_COMPARATOR | TIMER2_COMPARATOR;
+
+	if ((timer_id != HPET_0) && (value >> 32)) {
+		/* it's wrong to set into a 32-bits timer */
+		return SEDI_DRIVER_ERROR_PARAMETER;
+	}
 
 	if (hpet_reg->hpet_ctrl_sts & sts_wait) {
 		uint64_t now;
@@ -170,13 +176,7 @@ int sedi_hpet_set_comparator(IN sedi_hpet_t timer_id, IN uint64_t value)
 		}
 	}
 
-	if (timer_id == HPET_0) {
-		write64(tncv_addr, _value);
-	} else {
-		write32(tncv_addr, (uint32_t)_value);
-	}
-
-	return SEDI_DRIVER_OK;
+	return sedi_hpet_update_comparator(timer_id, _value);
 }
 
 void sedi_hpet_set_main_counter(uint64_t value)
@@ -238,21 +238,8 @@ void sedi_hpet_disable_interrupt(IN sedi_hpet_t timer_id)
 	}
 }
 
-uint32_t sedi_hpet_get_int_status(IN sedi_hpet_t timer_id)
+int32_t sedi_hpet_init(uint32_t clk_divisor, uint32_t min_delay)
 {
-	wait_for_idle(GENERAL_INT_STATUS);
-	return (hpet_reg->gis_low & BIT(timer_id)) ? 1 : 0;
-}
-
-int32_t sedi_hpet_init(void)
-{
-	static int sedi_hpet_inited;
-
-	if (sedi_hpet_inited)
-		return 0;
-
-	sedi_hpet_inited = 1;
-
 	wait_for_idle(GENERAL_CONFIG | MAIN_COUNTER_VALUE | TIMER0_CONFIG_CAPS | TIMER0_COMPARATOR |
 		      TIMER1_CONFIG_CAPS | TIMER1_COMPARATOR | TIMER2_CONFIG_CAPS |
 		      TIMER2_COMPARATOR);
@@ -277,7 +264,8 @@ int32_t sedi_hpet_init(void)
 			    (TIMER2_INT_ROUTE << HPET_Tn_INT_ROUTE_CNF_SHIFT);
 
 	/* Get source clock for this paltform */
-	hpet_clock_period_pico = hpet_reg->gcid_high;
+	hpet_clock_period_pico = hpet_reg->gcid_high * clk_divisor;
+	hpet_min_delay = min_delay;
 
 	wait_for_idle(GENERAL_CONFIG);
 	/* Enable global settings */
@@ -285,22 +273,25 @@ int32_t sedi_hpet_init(void)
 	return 0;
 }
 
-void sedi_hpet_clear_int_status(IN sedi_hpet_t timer_id)
+uint32_t sedi_hpet_get_int_status(void)
 {
 	wait_for_idle(GENERAL_INT_STATUS);
-	hpet_reg->gis_low = BIT(timer_id);
+	return hpet_reg->gis_low;
 }
 
-void hpet_timer_isr(IN sedi_hpet_t timer_id)
+void sedi_hpet_set_int_status(IN uint32_t val)
 {
-	uint64_t curtick = CURRENT_HPET_CYCLE;
+	hpet_reg->gis_low = val;
+	wait_for_idle(GENERAL_INT_STATUS);
+}
 
+void sedi_hpet_timer_int_handler(IN sedi_hpet_t timer_id)
+{
 	if (!(hpet_reg->gis_low & BIT(timer_id)))
 		return;
 
 	/* Clear the GIS flags */
-	wait_for_idle(GENERAL_INT_STATUS);
-	hpet_reg->gis_low = BIT(timer_id);
+	sedi_hpet_set_int_status(BIT(timer_id));
 
 	if (bsp_timers[timer_id].callback) {
 		bsp_timers[timer_id].callback(bsp_timers[timer_id].param);
@@ -309,25 +300,10 @@ void hpet_timer_isr(IN sedi_hpet_t timer_id)
 	if (bsp_timers[timer_id].one_shot) {
 		sedi_hpet_kill_timer(timer_id);
 	} else {
-		bsp_timers[timer_id].expires = curtick + bsp_timers[timer_id].timeout;
+		bsp_timers[timer_id].expires = CURRENT_HPET_CYCLE + bsp_timers[timer_id].timeout;
 		/* Set new comparator */
 		sedi_hpet_set_comparator(timer_id, bsp_timers[timer_id].expires);
 	}
-}
-
-SEDI_ISR_DECLARE(sedi_hpet_timer_0_isr)
-{
-	hpet_timer_isr(0);
-}
-
-SEDI_ISR_DECLARE(sedi_hpet_timer_1_isr)
-{
-	hpet_timer_isr(1);
-}
-
-SEDI_ISR_DECLARE(sedi_hpet_timer_2_isr)
-{
-	hpet_timer_isr(2);
 }
 
 int32_t sedi_hpet_config_timer(IN sedi_hpet_t timer_id, IN uint64_t microseconds,
@@ -341,12 +317,16 @@ int32_t sedi_hpet_config_timer(IN sedi_hpet_t timer_id, IN uint64_t microseconds
 	/* Just save here, will use when starting the timer */
 	bsp_timers[timer_id].valid = 1;
 	bsp_timers[timer_id].start = 0;
-	bsp_timers[timer_id].one_shot = one_shot;
+	bsp_timers[timer_id].one_shot = one_shot ? 1 : 0;
 	bsp_timers[timer_id].microsec = microseconds;
-	bsp_timers[timer_id].timeout = US_TO_HPET_CYCLE(microseconds);
+	bsp_timers[timer_id].timeout =
+			US_TO_HPET_CYCLE(microseconds + HPET_CYCLE_TO_US(1));
 	bsp_timers[timer_id].expires = 0;
 	bsp_timers[timer_id].callback = callback;
 	bsp_timers[timer_id].param = (void *)param;
+	if (bsp_timers[timer_id].timeout < hpet_min_delay) {
+		bsp_timers[timer_id].timeout = hpet_min_delay;
+	}
 
 	return SEDI_DRIVER_OK;
 }
@@ -355,12 +335,13 @@ int32_t sedi_hpet_kill_timer(IN sedi_hpet_t timer_id)
 {
 	SEDI_ASSERT(timer_id < SEDI_HPET_SOC_TIMER_NUM);
 
-	memset(&bsp_timers[timer_id], 0, sizeof(hpet_timer_ctx_t));
-
-	/* Set comparator to 0 */
-	sedi_hpet_set_comparator(timer_id, 0xFFFFFFFF);
 	/* Disable interrupt */
 	sedi_hpet_disable_interrupt(timer_id);
+
+	/* Set comparator all bits as 1 */
+	sedi_hpet_update_comparator(timer_id, (uint64_t)-1);
+
+	memset(&bsp_timers[timer_id], 0, sizeof(hpet_timer_ctx_t));
 
 	return SEDI_DRIVER_OK;
 }
@@ -369,18 +350,19 @@ int32_t sedi_hpet_start_timer(IN sedi_hpet_t timer_id)
 {
 	SEDI_ASSERT(timer_id < SEDI_HPET_SOC_TIMER_NUM);
 
+	/* Enable interrupt */
+	sedi_hpet_enable_interrupt(timer_id);
+
 	bsp_timers[timer_id].start = 1;
 	bsp_timers[timer_id].expires = CURRENT_HPET_CYCLE + bsp_timers[timer_id].timeout;
 
 	/* Set comparator to correct value */
 	sedi_hpet_set_comparator(timer_id, bsp_timers[timer_id].expires);
-	/* Enable interrupt */
-	sedi_hpet_enable_interrupt(timer_id);
 
 	return SEDI_DRIVER_OK;
 }
 
 uint32_t sedi_hpet_get_period(void)
 {
-	return (uint32_t)(hpet_reg->gcid_high);
+	return (uint32_t)(hpet_clock_period_pico);
 }
