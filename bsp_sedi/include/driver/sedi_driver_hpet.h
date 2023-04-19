@@ -65,6 +65,12 @@ sedi_driver_version_t sedi_hpet_get_version(void);
 sedi_hpet_capabilities_t sedi_hpet_get_capabilities(void);
 
 /*!
+ * \brief Get HPET's current setting of minimal delay time.
+ * \return HPET's current setting of minimal delay time.
+ */
+uint32_t sedi_hpet_get_min_delay(void);
+
+/*!
  * \brief Set HPET's minimal delay time. The comparator value must be set
  *	farther than this value, ahead of the current main counter value.
  *	Or interrupt might be missed due to the hardware latency
@@ -74,9 +80,11 @@ void sedi_hpet_set_min_delay(uint32_t min_delay);
 
 /*!
  * \brief Initialize the device
+ * \param[in] clk_divisor: the clock divisor to set.
+ * \param[in] min_delay: SoC-specific HPET minimal delay time to set.
  * \return  \ref return_status
  */
-int32_t sedi_hpet_init(void);
+int32_t sedi_hpet_init(uint32_t clk_divisor, uint32_t min_delay);
 
 /*!
  * \brief Uninitialize the device
@@ -124,17 +132,22 @@ void sedi_hpet_enable_interrupt(IN sedi_hpet_t timer_id);
 void sedi_hpet_disable_interrupt(IN sedi_hpet_t timer_id);
 
 /*!
- * \brief Get the interrupt status of the timer.
- * \param[in] timer_id: Timer ID to get the interrupt status.
- * \return 0: no interrupt, 1: have interrupt.
+ * \brief Get the interrupt status.
+ * \return the current value of the interrupt status.
  */
-uint32_t sedi_hpet_get_int_status(IN sedi_hpet_t timer_id);
+uint32_t sedi_hpet_get_int_status(void);
 
 /*!
- * \brief Clear the interrupt status of the timer.
- * \param[in] timer_id: Timer ID to clear the interrupt status.
+ * \brief Set value to the interrupt status to clear.
+ * \param[in] val: val to set to the interrupt status.
  */
-void sedi_hpet_clear_int_status(IN sedi_hpet_t timer_id);
+void sedi_hpet_set_int_status(IN uint32_t val);
+
+/*!
+ * \brief Handle the interrupt of HPET Timer N
+ * \param[in] timer_id: Timer ID to handle.
+ */
+void sedi_hpet_timer_int_handler(IN sedi_hpet_t timer_id);
 
 /*!
  * \brief Get the timer's period, specified in picoseconds.
