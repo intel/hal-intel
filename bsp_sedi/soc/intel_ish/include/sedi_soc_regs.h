@@ -1,0 +1,136 @@
+/*
+ * Copyright (c) 2023 Intel Corporation
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+#ifndef _SEDI_SOC_REGS_H_
+#define _SEDI_SOC_REGS_H_
+
+/****** uart *****/
+
+/** Number of UART controllers. */
+typedef enum {
+	SEDI_UART_0 = 0,
+	SEDI_UART_1,
+	SEDI_UART_2,
+	SEDI_UART_NUM
+} sedi_uart_t;
+
+/* UART register base addresses. */
+#define SEDI_UART_0_BASE (0x08100000)
+#define SEDI_UART_1_BASE (0x08102000)
+#define SEDI_UART_2_BASE (0x08104000)
+
+#define SEDI_UART_SFT_RST_REG (0x0430004C)
+#define SEDI_UART_SFT_RST_MASK (0x7)
+
+
+/****** dma *****/
+/*!
+ * \struct sedi_dma
+ * \brief  DMA device bus ID
+ */
+typedef enum {
+	SEDI_DMA_0 = 0,
+	SEDI_DMA_NUM
+} sedi_dma_t;
+
+#define SEDI_DMA_0_REG_BASE (0x10100000)
+
+/****** i2c *****/
+/*!
+ * \struct sedi_i2c
+ * \brief  I2C device bus ID
+ */
+typedef enum {
+	SEDI_I2C_0 = 0,
+	SEDI_I2C_1,
+	SEDI_I2C_2,
+	SEDI_I2C_NUM
+} sedi_i2c_t;
+
+#define SEDI_I2C_0_REG_BASE (0x0000)
+#define SEDI_I2C_1_REG_BASE (0x2000)
+#define SEDI_I2C_2_REG_BASE (0x4000)
+
+#define I2C_FIFO_DEPTH (64)
+
+/****** GPIO *****/
+
+/*!
+ * \struct sedi_gpio
+ * \brief  GPIO controller device ID
+ */
+typedef enum { SEDI_GPIO_0 = 0, SEDI_GPIO_NUM } sedi_gpio_t;
+
+#define ISH_PIN_NUM 36
+#define SEDI_GPIO_SOC_PORT_NUM (2U)
+
+#define SEDI_GPIO_0_REG_BASE (0x00100000)
+
+
+typedef enum {
+	SEDI_HW_REV_INVALID = 0,
+} sedi_hw_rev_t;
+
+/****** WDT *****/
+
+/*!
+ * \struct sedi_watchdog
+ * \brief  WATCHDOG device bus ID
+ */
+
+typedef enum { SEDI_WATCHDOG_0 = 0, SEDI_WATCHDOG_NUM } sedi_watchdog_t;
+
+#define SEDI_WATCHDOG_0_REG_BASE 0x4900000
+
+/****** HPET *****/
+#define SEDI_HPET_BASE 0x04700000
+
+#define SEDI_HPET_SOC_TIMER_NUM (3)
+
+#define SEDI_IRQ_HPET_TIMER_0 (14)
+#define SEDI_IRQ_HPET_TIMER_1 (0) /* fake IRQ number, same as timer 0's */
+
+/****** IPC *****/
+#define IPC_HOST_BASE (0x4100000)
+#define IPC_CSME_BASE (0x4110000)
+#define IPC_PMC_BASE (0x4111000)
+
+/****** MISC *****/
+#define SEDI_MISC_BASE (0x04400000)
+
+#define SEDI_RTC_COUNTER (SEDI_MISC_BASE + 0x70)
+#define SEDI_RTC_COUNTER0 (SEDI_MISC_BASE + 0x70)
+#define SEDI_RTC_COUNTER1 (SEDI_MISC_BASE + 0x74)
+
+/****** APIC *****/
+#define SEDI_IOAPIC_BASE 0xFEC00000
+#define SEDI_LAPIC_BASE 0xFEE00000
+
+#define SEDI_IOAPIC_IDX (SEDI_IOAPIC_BASE + 0x0000)
+#define SEDI_IOAPIC_WDW (SEDI_IOAPIC_BASE + 0x0010)
+#define SEDI_IOAPIC_EOI (SEDI_IOAPIC_BASE + 0x0040)
+
+#define SEDI_IOAPIC_IOREDTBL 0x10
+#define SEDI_IOAPIC_REDTBL_MASK 0x00010000
+
+/****** SPI *****/
+/*!
+ * \struct sedi_spi
+ * \brief  SPI device bus ID
+ */
+typedef enum {
+	SEDI_SPI_0 = 0,
+	SEDI_SPI_1,
+	SEDI_SPI_NUM
+} sedi_spi_t;
+
+#define SEDI_SPI_0_REG_BASE (0x8000000)
+#define SEDI_SPI_1_REG_BASE (0x8002000)
+
+#define SPI_FIFO_DEPTH (64)
+
+
+#endif /* _SEDI_SOC_REGS_H_ */

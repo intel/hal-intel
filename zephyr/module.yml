@@ -1,0 +1,3 @@
+name: hal_intel
+build:
+  cmake: zephyr
