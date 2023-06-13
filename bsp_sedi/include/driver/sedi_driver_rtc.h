@@ -102,11 +102,10 @@ int sedi_rtc_set_power(IN sedi_power_state_t state);
 uint64_t sedi_rtc_get(void);
 
 /*!
- * \brief Get rtc timer in us
- * \param[INOUT] us: Time in us units.
- * \return Time of rtc in us.
+ * \brief Get rtc time in microsecond
+ * \return RTC time in microsecond
  */
-void sedi_rtc_get_us(INOUT uint64_t *us);
+uint64_t sedi_rtc_get_us(void);
 
 #ifdef __cplusplus
 }
