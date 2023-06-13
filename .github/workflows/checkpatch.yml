@@ -1,0 +1,33 @@
+name: checkpatch
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  checkpatch:
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Download Checkpatch Files from Zephyr RTOS
+      shell: bash
+      run: |
+        wget https://github.com/zephyrproject-rtos/zephyr/raw/main/scripts/checkpatch.pl -O ./checkpatch.pl
+        chmod +x ./checkpatch.pl
+        wget https://github.com/zephyrproject-rtos/zephyr/raw/main/.checkpatch.conf -O ./.checkpatch.conf
+        wget https://github.com/zephyrproject-rtos/zephyr/raw/main/scripts/spelling.txt -O ./spelling.txt
+        echo "--ignore PREFER_ALIGNED" >> ./.checkpatch.conf
+        echo "--ignore NEW_TYPEDEFS" >> ./.checkpatch.conf
+
+    - name: Set Git Base
+      shell: bash
+      run: |
+        git fetch origin ${{ github.event.pull_request.base.ref }}
+        echo "checkpatch base is: $(git show FETCH_HEAD --oneline --raw)"
+
+    - name: Run Checkpath
+      shell: bash
+      run:
+        git diff --patch FETCH_HEAD | ./checkpatch.pl --no-tree --codespellfile ./spelling.txt -
