@@ -48,7 +48,6 @@ int sedi_rtc_get_capabilities(sedi_rtc_capabilities_t *cap)
 
 int sedi_rtc_init(void)
 {
-	/* SEDI RTC have no alarm and interrupt feature, callback not used */
 	return SEDI_DRIVER_OK;
 }
 
@@ -77,12 +76,9 @@ uint64_t sedi_rtc_get(void)
 	return ((uint64_t)upper << 32U) | lower;
 }
 
-void sedi_rtc_get_us(INOUT uint64_t *us)
+uint64_t sedi_rtc_get_us(void)
 {
-	/* returns the current time in micro seconds. */
-	uint64_t result;
 	uint64_t rtc = sedi_rtc_get();
 
-	result = sedi_rtc_to_us(rtc);
-	*us = result;
+	return sedi_rtc_to_us(rtc);
 }
