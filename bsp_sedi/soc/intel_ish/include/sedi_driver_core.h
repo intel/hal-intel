@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include "sedi_driver_common.h"
 
-#define SEDI_DCACHE_LINE_SIZE ((uint32_t)64)
+#define SEDI_DCACHE_LINE_SIZE ((uint32_t)16)
 
 /*!
  * \brief   Clean & Invalidate D-Cache
