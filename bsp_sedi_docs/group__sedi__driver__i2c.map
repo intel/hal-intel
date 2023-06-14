@@ -1,0 +1,10 @@
+<map id="I2C" name="I2C">
+<area shape="rect" id="node1" href="$group__i2c__address__flags.html" title=" " alt="" coords="126,5,265,31"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,169,48,195"/>
+<area shape="rect" id="node3" href="$group__i2c__event__handler.html" title=" " alt="" coords="96,55,295,80"/>
+<area shape="rect" id="node4" href="$group__i2c__function__calls.html" title=" " alt="" coords="122,105,269,145"/>
+<area shape="rect" id="node5" href="$group__i2c__usage__limits.html" title=" " alt="" coords="129,169,261,195"/>
+<area shape="rect" id="node6" href="$group__i2c__event.html" title=" " alt="" coords="133,219,258,244"/>
+<area shape="rect" id="node7" href="$group__i2c__bus__speed.html" title=" " alt="" coords="138,268,253,293"/>
+<area shape="rect" id="node8" href="$group__i2c__control__codes.html" title=" " alt="" coords="126,317,265,343"/>
+</map>
