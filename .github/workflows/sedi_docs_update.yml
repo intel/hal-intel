@@ -1,0 +1,46 @@
+name: SEDI Doxygen Document Update
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  update_sedi_docs:
+    runs-on: ubuntu-22.04
+    env:
+      DOCS_BRANCH: main_docs
+      DOCS_DIR_NAME: bsp_sedi_docs
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Git Prepare
+      shell: bash
+      run: |
+        git config --global user.email "intel_hal@intel.github.com"
+        git config --global user.name "Intel HAL Docs Robot"
+        git fetch
+
+    - name: Install Doxygen Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y graphviz doxygen
+
+    - name: Run Doxygen
+      run: doxygen ./docs/bsp_sedi_doxyfile
+
+    - name: Deploy New Doc
+      run: |
+        git checkout -b ${DOCS_BRANCH} origin/${DOCS_BRANCH}
+        rm -rf ./${DOCS_DIR_NAME}/
+        mv ./docs/${DOCS_DIR_NAME}/ ./${DOCS_DIR_NAME}/
+        if [[ -n $(git status -s ./${DOCS_DIR_NAME}) ]]; then
+          git add ./${DOCS_DIR_NAME}/
+          git_hash=$(git rev-parse --short "${GITHUB_SHA}")
+          git commit -s -m "Update SEDI docs, triggered by ${git_hash}"
+          git push origin HEAD:${DOCS_BRANCH}
+        else
+          echo "No update to SEDI docs"
+        fi
