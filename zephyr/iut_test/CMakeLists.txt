@@ -14,4 +14,5 @@ target_include_directories(app PRIVATE ./include)
 
 target_sources(app PRIVATE src/main.c src/shell_iut.c)
 
-target_sources(app PRIVATE src/test_example.c)
+#target_sources(app PRIVATE src/test_example.c)
+add_subdirectory(test_sedi)
