@@ -424,8 +424,6 @@ int32_t sedi_i2c_set_power(IN sedi_i2c_t i2c_device, IN sedi_power_state_t state
 		sedi_pm_set_device_power(id, state);
 		break;
 	case SEDI_POWER_OFF:
-		ret = SEDI_DRIVER_ERROR_UNSUPPORTED;
-		break;
 	default:
 		ret = SEDI_DRIVER_ERROR_UNSUPPORTED;
 		break;

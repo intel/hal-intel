@@ -248,13 +248,11 @@ int32_t sedi_dma_set_power(IN sedi_dma_t dma_device, IN int channel_id,
 	switch (state) {
 	case SEDI_POWER_FULL:
 		if (dma_context[dma_device].power_status == 0) {
-			sedi_pm_set_device_power(devid, state);
+			sedi_pm_set_device_power(devid, SEDI_POWER_FULL);
 		}
 		dma_context[dma_device].power_status |= BIT(channel_id);
 		config_snoop(dma_device, channel_id);
 		break;
-	case SEDI_POWER_OFF:
-		return SEDI_DRIVER_ERROR_UNSUPPORTED;
 	case SEDI_POWER_LOW:
 	case SEDI_POWER_SUSPEND:
 	case SEDI_POWER_FORCE_SUSPEND:
@@ -264,9 +262,10 @@ int32_t sedi_dma_set_power(IN sedi_dma_t dma_device, IN int channel_id,
 		}
 		dma_context[dma_device].power_status &= (~BIT(channel_id));
 		if (dma_context[dma_device].power_status == 0) {
-			sedi_pm_set_device_power(devid, state);
+			sedi_pm_set_device_power(devid, SEDI_POWER_SUSPEND);
 		}
 		break;
+	case SEDI_POWER_OFF:
 	default:
 		return SEDI_DRIVER_ERROR_PARAMETER;
 	}

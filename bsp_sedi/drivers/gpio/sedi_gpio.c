@@ -50,37 +50,26 @@ static gpio_context_t gpio_context[SEDI_GPIO_NUM] = { 0 };
 
 static int32_t gpio_set_power(IN sedi_gpio_t gpio_device, IN sedi_power_state_t state)
 {
-	sedi_devid_t id;
+	sedi_devid_t devid = SEDI_DEVID_GPIO0 + gpio_device;
 	int32_t ret = SEDI_DRIVER_OK;
 
 	SEDI_ASSERT(gpio_device < SEDI_GPIO_NUM);
 
-	switch (gpio_device) {
-	case SEDI_GPIO_0:
-		id = SEDI_DEVID_GPIO0;
-		break;
-	default:
-		return SEDI_DRIVER_ERROR_PARAMETER;
-	}
-
 	switch (state) {
 	case SEDI_POWER_FULL:
-		sedi_pm_set_device_power(id, state);
+		sedi_pm_set_device_power(devid, SEDI_POWER_FULL);
 		break;
 	case SEDI_POWER_LOW:
-		break;
 	case SEDI_POWER_SUSPEND:
-		break;
 	case SEDI_POWER_FORCE_SUSPEND:
 		/* Do nothing now, need to use gpio as wake up */
 		break;
 	case SEDI_POWER_OFF:
-		sedi_pm_set_device_power(id, state);
-		break;
 	default:
 		ret = SEDI_DRIVER_ERROR_UNSUPPORTED;
 		break;
 	}
+
 	return ret;
 }
 
