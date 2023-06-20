@@ -27,7 +27,8 @@ static const sedi_uart_transfer_t *uart_write_transfer[SEDI_UART_NUM];
 static uint32_t iir_cache[SEDI_UART_NUM];
 static uint32_t baud_rate_cache[SEDI_UART_NUM];
 static uint32_t clk_speed_cache[SEDI_UART_NUM];
-static uint32_t status_report_mask[SEDI_UART_NUM];
+static uint32_t status_report_mask[SEDI_UART_NUM] = { SEDI_UART_LSR_ERROR_BITS,
+		SEDI_UART_LSR_ERROR_BITS, SEDI_UART_LSR_ERROR_BITS };
 
 typedef struct {
 	uint32_t enable_unsol_rx;
@@ -59,9 +60,17 @@ typedef struct {
 
 static uint32_t uart_dma_hs_id[SEDI_UART_NUM];
 
-static uart_dma_ctxt_t dma_write_ctxt[SEDI_UART_NUM];
+static uart_dma_ctxt_t dma_write_ctxt[SEDI_UART_NUM] = {
+	{ .dma_xfer = NULL, .uart = SEDI_UART_0, .operation = WRITE },
+	{ .dma_xfer = NULL, .uart = SEDI_UART_1, .operation = WRITE },
+	{ .dma_xfer = NULL, .uart = SEDI_UART_2, .operation = WRITE }
+};
 
-static uart_dma_ctxt_t dma_read_ctxt[SEDI_UART_NUM];
+static uart_dma_ctxt_t dma_read_ctxt[SEDI_UART_NUM] = {
+	{ .dma_xfer = NULL, .uart = SEDI_UART_0, .operation = READ },
+	{ .dma_xfer = NULL, .uart = SEDI_UART_1, .operation = READ },
+	{ .dma_xfer = NULL, .uart = SEDI_UART_2, .operation = READ }
+};
 
 /* DMA driver requires to have a callback to be provided during init even
  * when in polled mode. Adding a dummy callback for this.
