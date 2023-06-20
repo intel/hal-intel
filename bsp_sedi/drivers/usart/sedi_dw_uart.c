@@ -2163,6 +2163,7 @@ int32_t sedi_uart_set_power(IN sedi_uart_t uart, IN sedi_power_state_t state)
 		break;
 
 	case SEDI_POWER_OFF:
+	default:
 		ret = SEDI_DRIVER_ERROR_UNSUPPORTED;
 		break;
 	}
