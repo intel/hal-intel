@@ -15,11 +15,6 @@
 #define HAS_UART_9BIT_SUPPORT (0)
 #define HAS_UART_SOFT_RST (0)
 
-/**
- * @name UART
- * @{
- **/
-
 /* Data length select mask. */
 #define SEDI_UART_LCR_DLS_MASK (BIT(1) | BIT(0))
 /* 5 data bits. */
@@ -323,13 +318,8 @@ typedef struct {
 
 #define SEDI_UART sedi_uart
 
-/** @} */
-
 /**
  * UART peripheral driver.
- *
- * @defgroup groupUART UART
- * @{
  */
 
 #if HAS_ADVANCED_UART_CONFIGURATION

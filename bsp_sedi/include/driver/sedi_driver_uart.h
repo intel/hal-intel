@@ -11,7 +11,21 @@
 #include "sedi_driver_dma.h"
 
 /**
- * UART Status type.
+ * @defgroup sedi_driver_uart UART
+ * @ingroup sedi_driver
+ * @{
+ */
+
+/**
+ * @defgroup uart_structure_type UART Structure Type
+ * @ingroup sedi_driver_uart
+ * @{
+ */
+
+/**
+ * @struct sedi_uart_status_t
+ * @brief UART Status type
+ * @ingroup uart_structure_type
  */
 typedef enum {
 	SEDI_UART_IDLE = 0,		 /**< IDLE. */
@@ -27,7 +41,9 @@ typedef enum {
 } sedi_uart_status_t;
 
 /**
- * UART Line control.
+ * @struct sedi_uart_lc_t
+ * @brief UART Line control
+ * @ingroup uart_structure_type
  */
 typedef enum {
 	/**< 5 data bits, no parity, 1 stop bit. */
@@ -81,7 +97,9 @@ typedef enum {
 } sedi_uart_lc_t;
 
 /**
- * UART RS-485 transfer mode.
+ * @struct sedi_uart_rs485_transfer_mode_t
+ * @brief UART RS-485 transfer mode
+ * @ingroup uart_structure_type
  */
 typedef enum {
 	/** Full Duplex mode. */
@@ -93,7 +111,9 @@ typedef enum {
 } sedi_uart_rs485_transfer_mode_t;
 
 /**
- * UART RS-485 polarity for de and re signals.
+ * @struct sedi_uart_rs485_polarity
+ * @brief UART RS-485 polarity for de and re signals
+ * @ingroup uart_structure_type
  */
 typedef enum {
 	SEDI_UART_RS485_POL_ACTIVE_LOW = 0,
@@ -101,6 +121,11 @@ typedef enum {
 
 } sedi_uart_rs485_polarity;
 
+/**
+ * @struct sedi_uart_rs485_config_t
+ * @brief UART RS-485 configuration structure type
+ * @ingroup uart_structure_type
+ */
 typedef struct {
 	/** de to re turnaround time in nanoseconds. */
 	uint32_t de_re_tat;
@@ -130,16 +155,23 @@ typedef struct {
 	uint32_t re_en : 1;
 } sedi_uart_rs485_config_t;
 
-/* Hardware / Software based address transmit
+/**
+ * @struct sedi_uart_9bit_addr_mode_t
+ * @brief Hardware / Software based address transmit
  * and address match control.
+ * @ingroup uart_structure_type
  */
-
 typedef enum {
 	SEDI_UART_9BIT_HW_ADDR_CTRL = 0,
 	SEDI_UART_9BIT_SW_ADDR_CTRL
 
 } sedi_uart_9bit_addr_mode_t;
 
+/**
+ * @struct sedi_uart_9bit_config_t
+ * @brief UART 9bit configuration structure type
+ * @ingroup uart_structure_type
+ */
 typedef struct {
 
 	/** Address of this node when hardware address match enabled. */
@@ -151,7 +183,9 @@ typedef struct {
 } sedi_uart_9bit_config_t;
 
 /**
- * UART configuration structure type
+ * @struct sedi_uart_config_t
+ * @brief UART configuration structure type
+ * @ingroup uart_structure_type
  */
 typedef struct {
 	sedi_uart_lc_t line_control; /**< Line control (enum). */
@@ -161,7 +195,9 @@ typedef struct {
 } sedi_uart_config_t;
 
 /**
- * UART asynchronous transfer structure.
+ * @struct sedi_uart_transfer_t
+ * @brief UART asynchronous transfer structure
+ * @ingroup uart_structure_type
  */
 typedef struct {
 	uint8_t *data;     /**< Pre-allocated write or read buffer. */
@@ -181,11 +217,21 @@ typedef struct {
 	void *callback_data; /**< Callback identifier. */
 } sedi_uart_transfer_t;
 
+/**
+ * @struct sedi_uart_io_vec_t
+ * @brief UART IO vector
+ * @ingroup uart_structure_type
+ */
 typedef struct {
 	uint8_t *base; /* Start address. */
 	uint32_t len;  /* Length of transfer */
 } sedi_uart_io_vec_t;
 
+/**
+ * @struct sedi_uart_io_vec_xfer_t
+ * @brief UART IO vector transfers
+ * @ingroup uart_structure_type
+ */
 typedef struct {
 	sedi_uart_io_vec_t *vec; /* Pointer to vector of transfers */
 	uint32_t count;		 /* Number of transfers requested. */
@@ -195,7 +241,9 @@ typedef struct {
 } sedi_uart_io_vec_xfer_t;
 
 /**
- * UART unsolicited receive structure
+ * @struct sedi_uart_unsol_rx_t
+ * @brief UART unsolicited receive structure
+ * @ingroup uart_structure_type
  */
 typedef struct {
 	uint8_t *buffer; /* Buffer for unsolicited receive */
@@ -206,9 +254,10 @@ typedef struct {
 } sedi_uart_unsol_rx_t;
 
 /**
- * UART DMA transfer structure
+ * @struct sedi_uart_dma_xfer_t
+ * @brief UART DMA transfer structure
+ * @ingroup uart_structure_type
  */
-
 typedef struct {
 	sedi_dma_t dma_dev; /**< Dma device to be used. */
 	int32_t channel;    /**< Dma channel number to be used. */
@@ -219,8 +268,17 @@ typedef struct {
 	uint32_t len;   /**< Length of transfer. */
 } sedi_uart_dma_xfer_t;
 
+/** @} */
+
 /**
- * Set UART configuration.
+ * @brief UART Driver Function Calls
+ * @defgroup uart_function_calls UART Driver Function Calls
+ * @ingroup sedi_driver_uart
+ * @{
+ */
+
+/**
+ * @brief Set UART configuration.
  *
  * Change the configuration of a UART module. This includes line control,
  * baud rate and hardware flow control.
@@ -234,7 +292,7 @@ typedef struct {
 int sedi_uart_set_config(IN sedi_uart_t uart, IN sedi_uart_config_t *const cfg);
 
 /**
- * Get UART status.
+ * @brief Get UART status.
  *
  * Retrieve UART interface status. Return SEDI_UART_BUSY if transmitting
  * data; SEDI_UART_IDLE if available for transfer; SEDI_UART_TX_ERROR if an
@@ -254,7 +312,7 @@ int sedi_uart_set_config(IN sedi_uart_t uart, IN sedi_uart_config_t *const cfg);
 int sedi_uart_get_status(IN sedi_uart_t uart, OUT uint32_t *const status);
 
 /**
- * UART character data write.
+ * @brief UART character data write.
  *
  * Perform a single character write on the UART interface.
  * This is a blocking synchronous call.
@@ -269,7 +327,7 @@ int sedi_uart_get_status(IN sedi_uart_t uart, OUT uint32_t *const status);
 int sedi_uart_write(IN sedi_uart_t uart, IN uint8_t data);
 
 /**
- * UART character data read.
+ * @brief UART character data read.
  *
  * Perform a single character read from the UART interface.
  * This is a blocking synchronous call.
@@ -286,7 +344,7 @@ int sedi_uart_read(IN sedi_uart_t uart, OUT uint8_t *const data,
 		   OUT uint32_t *const status);
 
 /**
- *  Uart read multi bytes.
+ * @brief Uart read multi bytes.
  *
  * Perform a read on the UART interface. This is a blocking
  * synchronous call. The function will block until all data has
@@ -301,13 +359,12 @@ int sedi_uart_read(IN sedi_uart_t uart, OUT uint8_t *const data,
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_read_buffer(IN sedi_uart_t uart, OUT uint8_t *const data,
 			  IN uint32_t req_len, OUT uint32_t *comp_len,
 			  OUT uint32_t *status);
 
 /**
- * UART character data write.
+ * @brief UART character data write.
  *
  * Perform a single character write on the UART interface.
  * This is a non-blocking synchronous call.
@@ -321,7 +378,7 @@ int sedi_uart_read_buffer(IN sedi_uart_t uart, OUT uint8_t *const data,
 int sedi_uart_write_non_block(IN sedi_uart_t uart, IN uint8_t data);
 
 /**
- * UART character data read.
+ * @brief UART character data read.
  *
  * Perform a single character read from the UART interface.
  * This is a non-blocking synchronous call.
@@ -335,7 +392,7 @@ int sedi_uart_write_non_block(IN sedi_uart_t uart, IN uint8_t data);
 int sedi_uart_read_non_block(IN sedi_uart_t uart, OUT uint8_t *const data);
 
 /**
- * UART multi-byte data write.
+ * @brief UART multi-byte data write.
  *
  * Perform a write on the UART interface. This is a blocking
  * synchronous call. The function will block until all data has
@@ -352,7 +409,7 @@ int sedi_uart_write_buffer(IN sedi_uart_t uart, IN uint8_t *const data,
 			   IN uint32_t len);
 
 /**
- * Interrupt based TX on UART.
+ * @brief Interrupt based TX on UART.
  *
  * Perform an asynchronous interrupt based TX transfer on the UART bus.
  * The function will replenish the TX FIFOs on UART empty interrupts.
@@ -373,7 +430,7 @@ int sedi_uart_write_async(IN sedi_uart_t uart,
 			  IN sedi_uart_transfer_t *const xfer);
 
 /**
- * Interrupt based RX on UART.
+ * @brief Interrupt based RX on UART.
  *
  * Perform an asynchronous interrupt based RX transfer on the UART bus.
  * The function will read back the RX FIFOs on UART empty interrupts.
@@ -394,7 +451,7 @@ int sedi_uart_read_async(IN sedi_uart_t uart,
 			 IN sedi_uart_transfer_t *const xfer);
 
 /**
- * Terminate UART asynchronous(IRQ)TX transfer.
+ * @brief Terminate UART asynchronous(IRQ)TX transfer.
  *
  * Terminate the current IRQ TX transfer on the UART bus.
  * This will cause the relevant callbacks to be called.
@@ -407,7 +464,7 @@ int sedi_uart_read_async(IN sedi_uart_t uart,
 int sedi_uart_async_write_terminate(IN sedi_uart_t uart);
 
 /**
- * Terminate UART asynchronous(IRQ) RX transfer.
+ * @brief Terminate UART asynchronous(IRQ) RX transfer.
  *
  * Terminate the current IRQ RX transfer on the UART bus.
  * This will cause the relevant callbacks to be called.
@@ -422,7 +479,7 @@ int sedi_uart_async_read_terminate(IN sedi_uart_t uart);
 /* Additional functions defined for UART Zephyr only. */
 
 /**
- * Is there a pending IRQ for uart.
+ * @brief Is there a pending IRQ for uart.
  *
  * This function returns a boolean value indicating
  * whether an IRQ is pending for the given UART instance.
@@ -436,7 +493,7 @@ int sedi_uart_async_read_terminate(IN sedi_uart_t uart);
 bool sedi_uart_is_irq_pending(IN sedi_uart_t uart);
 
 /**
- * Is transmit operation complete.
+ * @brief Is transmit operation complete.
  *
  * This function returns a boolean value indicating
  * whether a transmit operation is complete or not.
@@ -449,11 +506,10 @@ bool sedi_uart_is_irq_pending(IN sedi_uart_t uart);
  * @retval true if both transmit holding register and transmitter are empty.
  *         false otherwise.
  */
-
 bool sedi_uart_is_tx_complete(IN sedi_uart_t uart);
 
 /**
- * Is receive data available in the interrupt context.
+ * @brief Is receive data available in the interupt context.
  *
  * This function returns a boolean value indicating
  * whether the interrupt is asserted due to data availability
@@ -467,11 +523,10 @@ bool sedi_uart_is_tx_complete(IN sedi_uart_t uart);
  * @retval false if IRQ is not due to rx data.
  *         true if IRQ is due to rx data..
  */
-
 bool sedi_uart_is_irq_rx_ready(IN sedi_uart_t uart);
 
 /**
- * Is transmit ready.
+ * @brief Is transmit ready.
  *
  * This function returns a boolean value indicating
  * whether transmit path is ready to accept data for transmit operation.
@@ -482,11 +537,10 @@ bool sedi_uart_is_irq_rx_ready(IN sedi_uart_t uart);
  * @retval false if transmit holding register is not empty.
  *         true if transmit holding register is empty
  */
-
 bool sedi_uart_irq_tx_ready(IN sedi_uart_t uart);
 
 /**
- * Fill uart fifo.
+ * @brief Fill uart fifo.
  *
  * This function fills the uart fifo with data provided in the
  * data pointer based on specified length , based on the space available
@@ -498,12 +552,11 @@ bool sedi_uart_irq_tx_ready(IN sedi_uart_t uart);
  *
  * @return length of data written to the transmit fifo.
  */
-
 int sedi_uart_fifo_fill(IN sedi_uart_t uart, IN uint8_t *data,
 			IN uint32_t size);
 
 /**
- * Read uart fifo.
+ * @brief Read uart fifo.
  *
  * Reads the uart fifo into provided data buffer for specified length. If
  * data for specified read length is not available in the rx fifo,the
@@ -515,12 +568,11 @@ int sedi_uart_fifo_fill(IN sedi_uart_t uart, IN uint8_t *data,
  *
  * @return length of data read from the rx fifo.
  */
-
 int sedi_uart_fifo_read(IN sedi_uart_t uart, OUT uint8_t *data,
 			IN uint32_t size);
 
 /**
- * Enable interrupt generation for transmit event.
+ * @brief Enable interrupt generation for transmit event.
  *
  * Enable interrupt generation when transmit fifo/transmit holding
  * register is empty.
@@ -530,11 +582,10 @@ int sedi_uart_fifo_read(IN sedi_uart_t uart, OUT uint8_t *data,
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_irq_tx_enable(IN sedi_uart_t uart);
 
 /**
- * Disable interrupt generation for transmit event.
+ * @brief Disable interrupt generation for transmit event.
  *
  * Disable interrupt generation when transmit fifo/transmit holding
  * register is empty.
@@ -544,11 +595,10 @@ int sedi_uart_irq_tx_enable(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_irq_tx_disable(IN sedi_uart_t uart);
 
 /**
- * Enable interrupt generation for receive event.
+ * @brief Enable interrupt generation for receive event.
  *
  * Enable interrupt generation when data available is receive buffer.
  *
@@ -557,11 +607,10 @@ int sedi_uart_irq_tx_disable(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_irq_rx_enable(IN sedi_uart_t uart);
 
 /**
- * Disable interrupt generation for receive event.
+ * @brief Disable interrupt generation for receive event.
  *
  * Disable interrupt generation when data available is receive buffer.
  *
@@ -573,7 +622,7 @@ int sedi_uart_irq_rx_enable(IN sedi_uart_t uart);
 int sedi_uart_irq_rx_disable(IN sedi_uart_t uart);
 
 /**
- * Enable interrupt generation for error conditions.
+ * @brief Enable interrupt generation for error conditions.
  *
  * Enable interrupt for error conditions - fifo overrun,
  * parity,framing error,break condition.
@@ -583,10 +632,10 @@ int sedi_uart_irq_rx_disable(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_irq_err_enable(IN sedi_uart_t uart);
+
 /**
- * Disable interrupt generation for error conditions.
+ * @brief Disable interrupt generation for error conditions.
  *
  * Disable interrupt for error conditions - fifo overrun,
  * parity,framing error,break condition.
@@ -596,11 +645,10 @@ int sedi_uart_irq_err_enable(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_irq_err_disable(IN sedi_uart_t uart);
 
 /**
- * Update the cached values of the IRQ status.
+ * @brief Update the cached values of the IRQ status.
  *
  * Updates the cached values of uart iid status register.
  * Caching is required as many interrupt status bits get cleared on
@@ -614,7 +662,7 @@ int sedi_uart_irq_err_disable(IN sedi_uart_t uart);
 int sedi_uart_update_irq_cache(IN sedi_uart_t uart);
 
 /**
- * Sets the baud rate for uart specified uart port.
+ * @brief Sets the baud rate for uart specifed uart port.
  *
  * @param[in] uart UART port index.
  * @param[in] baud_rate to set.
@@ -623,12 +671,11 @@ int sedi_uart_update_irq_cache(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_set_baud_rate(IN sedi_uart_t uart, IN uint32_t baud_rate,
 			    IN uint32_t clock_speed_hz);
 
 /**
- * Gets the current configuration for the specified UART port.
+ * @brief Gets the current configuration for the specified UART port.
  *
  * @param[in] uart UART port index.
  * @param[out] cfg pointer to configuration structure populated by this
@@ -637,77 +684,70 @@ int sedi_uart_set_baud_rate(IN sedi_uart_t uart, IN uint32_t baud_rate,
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_get_config(IN sedi_uart_t uart, OUT sedi_uart_config_t *cfg);
 
 /**
- *  Set uart loopback mode.
+ * @brief Set uart loopback mode.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_set_loopback_mode(IN sedi_uart_t uart);
 
 /**
- *  Clear uart loopback mode.
+ * @brief Clear uart loopback mode.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_clr_loopback_mode(IN sedi_uart_t uart);
 
 /**
- *  Set uart break condition.
+ * @brief Set uart break condition.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_set_break_con(IN sedi_uart_t uart);
 
 /**
- *  Clear uart break condition.
+ * @brief Clear uart break condition.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_clr_break_con(IN sedi_uart_t uart);
 
 /**
- *  Enable uart auto flow control.
+ * @brief Enable uart auto flow control.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_auto_fc_enable(IN sedi_uart_t uart);
 
 /**
- *  Disable uart auto flow control.
+ * @brief Disable uart auto flow control.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_auto_fc_disable(IN sedi_uart_t uart);
 
 /**
- *  Set line status report mask.
+ * @brief Set line status report mask.
  *
  * This function sets the line status errors that can be reported during
  * receive operations. The errors include break condition , framing
@@ -720,11 +760,10 @@ int sedi_uart_auto_fc_disable(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_set_ln_status_report_mask(IN sedi_uart_t uart, IN uint32_t mask);
 
 /**
- *  UART interrupt handler function.
+ * @brief UART interrupt handler function.
  *
  * @param[in] uart UART port index.
  *
@@ -732,8 +771,9 @@ int sedi_set_ln_status_report_mask(IN sedi_uart_t uart, IN uint32_t mask);
  */
 
 void sedi_uart_isr_handler(IN sedi_uart_t uart);
+
 /**
- *  Enable unsolicited receive.
+ * @brief Enable unsolicited receive.
  *
  * This function enables unsolicited receive using the buffer provided.
  * The buffered data is maintained as a circular buffer and oldest unread data
@@ -751,24 +791,23 @@ void sedi_uart_isr_handler(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_enable_unsol_rx(IN sedi_uart_t uart,
 			      IN sedi_uart_unsol_rx_t *const unsol_rx);
 
 /**
- * Disable unsolicited read.
+ * @brief Disable unsolicited read.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_disable_unsol_rx(IN sedi_uart_t uart);
 
 /**
- *  Get unsolicited data received. This may be called for the unsolicited
- *  receive callback to read the data accumulated.
+ * @brief UART Get unsolicited data
+ * Get unsolicited data received. This may be called for the unsolicited
+ * receive callback to read the data accumulated.
  *
  * @param[in] uart UART port index.
  * @param[in] buffer where data is to be transferred.
@@ -777,12 +816,11 @@ int sedi_uart_disable_unsol_rx(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_get_unsol_data(IN sedi_uart_t uart, OUT uint8_t *buffer,
 			     IN int len);
 
 /**
- *  Get length of unsolicited data received.
+ * @brief Get length of unsolicited data received.
  *
  * @param[in] uart UART port index.
  * @param[OUT] p_len  pointer to int which would be populated by length.
@@ -790,35 +828,34 @@ int sedi_uart_get_unsol_data(IN sedi_uart_t uart, OUT uint8_t *buffer,
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_get_unsol_data_len(IN sedi_uart_t uart, OUT int *p_len);
+
 /**
- *  Set RTS line to logical high when Auto Flow Control is disabled.
- *  If auto flow control is enabled, error is returned.
+ * @brief UART assert RTS line to logical high
+ * Set RTS line to logical high when Auto Flow Control is disabled.
+ * If auto flow contorl is enabled, error is returned.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_assert_rts(IN sedi_uart_t uart);
 
 /**
- *  Set RTS line to logical low  when Auto Flow Control is disabled.
- *
- *  If auto flow control is enabled, error is returned.
+ * @brief UART assert RTS line to logical low
+ * Set RTS line to logical low when Auto Flow Control is disabled.
+ * If auto flow contorl is enabled, error is returned.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_de_assert_rts(IN sedi_uart_t uart);
 
 /**
- *  Read the current state of CTS line.
+ * @brief Read the current state of CTS line.
  * @param[out] p_rts pointer to uint32_t to hold current CTS value.
  *
  * @param[in] uart UART port index.
@@ -826,11 +863,10 @@ int sedi_uart_de_assert_rts(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_read_cts(IN sedi_uart_t uart, OUT uint32_t *p_cts);
 
 /**
- *  Read the current state of RTS line.
+ * @brief Read the current state of RTS line.
  *
  * @param[in] uart UART port index.
  * @param[out] p_rts pointer to uint32_t to hold current RTS value.
@@ -838,11 +874,10 @@ int sedi_uart_read_cts(IN sedi_uart_t uart, OUT uint32_t *p_cts);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_read_rts(IN sedi_uart_t uart, OUT uint32_t *p_rts);
 
 /**
- *  Read the current state of loopback mode.
+ * @brief Read the current state of loopback mode.
  *
  * @param[in] uart UART port index.
  * @param[out] p_mode pointer to uint32_t to hold current state of loopback
@@ -851,11 +886,10 @@ int sedi_uart_read_rts(IN sedi_uart_t uart, OUT uint32_t *p_rts);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_get_loopback_mode(IN sedi_uart_t uart, OUT uint32_t *p_mode);
 
 /**
- *  Get the current line status report mask.
+ * @brief Get the current line stauts report mask.
  *
  * @param[in] uart UART port index.
  * @param[out] p_mask pointer to uint32_t to hold current line status mask
@@ -864,11 +898,10 @@ int sedi_uart_get_loopback_mode(IN sedi_uart_t uart, OUT uint32_t *p_mode);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_get_ln_status_report_mask(IN sedi_uart_t uart, OUT uint32_t *p_mask);
 
 /**
- *  Perform non-contiguous buffer asynchronous writes.
+ * @brief Perform non-contiguous buffer asynchronous writes.
  *
  * @param[in] uart UART port index.
  * @param[in] vec_xfer pointer to vector transfer of type
@@ -880,12 +913,11 @@ int sedi_get_ln_status_report_mask(IN sedi_uart_t uart, OUT uint32_t *p_mask);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_write_vec_async(IN sedi_uart_t uart,
 			      IN sedi_uart_io_vec_xfer_t *const vec_xfer);
 
 /**
- *  Perform non-contiguous buffer asynchronous reads.
+ * @brief Perform non-contiguous buffer asynchronous reads.
  *
  * @param[in] uart UART port index.
  * @param[in] vec_xfer pointer to vector transfer of type
@@ -901,7 +933,7 @@ int sedi_uart_read_vec_async(IN sedi_uart_t uart,
 			     IN sedi_uart_io_vec_xfer_t *const vec_xfer);
 
 /**
- * Asynchronous DMA write on the specified UART port.
+ * @brief Asynchronous DMA write on the specified UART port.
  *
  * @param[in] uart UART port index.
  * * @param[out] dma transfer structure.
@@ -910,12 +942,11 @@ int sedi_uart_read_vec_async(IN sedi_uart_t uart,
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_dma_write_async(IN sedi_uart_t uart,
 			      IN sedi_uart_dma_xfer_t *const xfer);
 
 /**
- * Terminate UART asynchronous DMA write operation.
+ * @brief Terminate UART asynchronous DMA write operation.
  *
  * Terminate an ongoing DMA write transfer.
  * This will cause the relevant callbacks to be called.
@@ -928,7 +959,7 @@ int sedi_uart_dma_write_async(IN sedi_uart_t uart,
 int sedi_uart_dma_write_terminate(IN sedi_uart_t uart);
 
 /**
- * Asynchronous DMA read on the specified UART port.
+ * @brief Asynchronous DMA read on the specified UART port.
  *
  * @param[in] uart UART port index.
  * @param[out] dma transfer structure.
@@ -937,12 +968,11 @@ int sedi_uart_dma_write_terminate(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_dma_read_async(IN sedi_uart_t uart,
 			     IN sedi_uart_dma_xfer_t *const xfer);
 
 /**
- * Terminate UART asynchronous DMA read operation.
+ * @brief Terminate UART asynchronous DMA read operation.
  *
  * Terminate an ongoing DMA read transfer.
  * This will cause the relevant callbacks to be called.
@@ -952,11 +982,10 @@ int sedi_uart_dma_read_async(IN sedi_uart_t uart,
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors.
  */
-
 int sedi_uart_dma_read_terminate(IN sedi_uart_t uart);
 
 /**
- * Polled DMA write on the specified UART port.
+ * @brief Polled DMA write on the specified UART port.
  *
  * @param[in] uart UART port index.
  * @param[in] dma_dev  Dma controller to use for transaction.
@@ -967,13 +996,12 @@ int sedi_uart_dma_read_terminate(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_dma_write_polled(IN sedi_uart_t uart, IN sedi_dma_t dma_dev,
 			       IN uint32_t channel, IN uint8_t *buff,
 			       IN uint32_t length);
 
 /**
- *  Polled DMA read on the specified UART port.
+ * @brief Polled DMA read on the specified UART port.
  *
  * @param[in] uart UART port index.
  * @param[in] dma_dev  Dma controller to use for transaction.
@@ -985,13 +1013,12 @@ int sedi_uart_dma_write_polled(IN sedi_uart_t uart, IN sedi_dma_t dma_dev,
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_dma_read_polled(IN sedi_uart_t uart, IN sedi_dma_t dma_dev,
 			      IN uint32_t channel, OUT uint8_t *buff,
 			      IN uint32_t length, OUT uint32_t *status);
 
 /**
- *  Set RS-485 config.
+ * @brief Set RS-485 config.
  *
  * @param[in] uart UART port index.
  * @param[in] cfg  Pointer to sedi_uart_rs485_config_t.
@@ -999,12 +1026,11 @@ int sedi_uart_dma_read_polled(IN sedi_uart_t uart, IN sedi_dma_t dma_dev,
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_rs485_set_config(IN sedi_uart_t uart,
 			       IN sedi_uart_rs485_config_t *cfg);
 
 /**
- *  Set or clear uart rx-only mode.
+ * @brief Set or clear uart rx-only mode.
  *
  *  This APIs sets uart port to rx-only mode when rx_only parameter is true.
  *  When rx_only parameter is false, it clears rx-only mode and enables both
@@ -1021,11 +1047,10 @@ int sedi_uart_rs485_set_config(IN sedi_uart_t uart,
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_set_rx_only_mode(IN sedi_uart_t uart, bool rx_only);
 
 /**
- *  Set or clear uart tx-only mode.
+ * @brief Set or clear uart tx-only mode.
  *
  *  This APIs sets uart port to tx-only mode when tx_only parameter is true.
  *  When tx_only parameter is false, it clears tx-only mode and enables both tx
@@ -1042,11 +1067,10 @@ int sedi_uart_set_rx_only_mode(IN sedi_uart_t uart, bool rx_only);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_set_tx_only_mode(IN sedi_uart_t uart, bool tx_only);
 
 /**
- *  Enable rs-485 signals for selected uart.
+ * @brief Enable rs-485 signals for selected uart.
  *  Should be enabled after configuring using sedi_uart_set_config.
  *
  * @param[in] uart UART port index.
@@ -1054,22 +1078,20 @@ int sedi_uart_set_tx_only_mode(IN sedi_uart_t uart, bool tx_only);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_rs485_enable(IN sedi_uart_t uart);
 
 /**
- *  Disable rs-485 signals for selected uart.
+ * @brief Disble rs-485 signals for selected uart.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_rs485_disable(IN sedi_uart_t uart);
 
 /**
- *  Get rs485 configuration for selected uart.
+ * @brief Get rs485 configuration for selected uart.
  *
  * @param[in] uart UART port index.
  * @param[out] cfg pointer to iseis_uart_rs485_config_t populated by the call.
@@ -1077,12 +1099,11 @@ int sedi_uart_rs485_disable(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_rs485_get_config(IN sedi_uart_t uart,
 			       OUT sedi_uart_rs485_config_t *cfg);
 
 /**
- *  Set the configuration for 9-bit operation.
+ * @brief Set the configuration for 9-bit operation.
  *
  * @param[in] uart UART port index.
  * @param[in] cfg pointer to configuration for 9-bit operation
@@ -1090,34 +1111,31 @@ int sedi_uart_rs485_get_config(IN sedi_uart_t uart,
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_9bit_set_config(IN sedi_uart_t uart,
 			      IN sedi_uart_9bit_config_t *cfg);
 
 /**
- *  Disable 9-bit operation.
+ * @brief Disable 9-bit operation.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_9bit_disable(IN sedi_uart_t uart);
 
 /**
- *  Enable 9-bit operation.
+ * @brief Enable 9-bit operation.
  *
  * @param[in] uart UART port index.
  *
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_9bit_enable(IN sedi_uart_t uart);
 
 /**
- *  Transmit 9-bit destination address.
+ * @brief Transmit 9-bit destination address.
  *
  * @param[in] uart UART port index.
  * @param[in] address address to send.
@@ -1125,11 +1143,10 @@ int sedi_uart_9bit_enable(IN sedi_uart_t uart);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_9bit_send_address(IN sedi_uart_t uart, uint8_t address);
 
 /**
- *  Get current configuration for 9-bit mode.
+ * @brief Get current configuration for 9-bit mode.
  *
  * @param[in] uart UART port index.
  * @param[out] cfg pointer to sedi_uart_9bit_config_t populated by this call.
@@ -1137,12 +1154,11 @@ int sedi_uart_9bit_send_address(IN sedi_uart_t uart, uint8_t address);
  * @return Standard return code for SEDI.
  * @retval SEDI_DRIVER_OK on success, negative value for possible errors
  */
-
 int sedi_uart_9bit_get_config(IN sedi_uart_t uart,
 			      sedi_uart_9bit_config_t *cfg);
 
 /**
- * @brief  UART set power state.
+ * @brief UART set power state.
  *
  * Set UART instance to specified power state
  *
@@ -1151,7 +1167,6 @@ int sedi_uart_9bit_get_config(IN sedi_uart_t uart,
  * @retval SEDI_DRIVER_OK if operation was successful.
  * @retval non zero error code otherwise.
  */
-
 int32_t sedi_uart_set_power(IN sedi_uart_t uart, IN sedi_power_state_t state);
 
 /**
