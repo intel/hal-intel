@@ -617,77 +617,7 @@ int32_t sedi_spi_control(IN sedi_spi_t spi_device, IN uint32_t control,
 
 #ifdef SEDI_SPI_USE_DMA
 static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
-				  const int event, void *param)
-{
-	sedi_spi_t spi_device = (sedi_spi_t)param;
-
-	struct spi_context *context = &spi_contexts[spi_device];
-
-	/* release the dma resource */
-	sedi_dma_set_power(dma, chan, SEDI_POWER_OFF);
-	sedi_dma_uninit(dma, chan);
-
-	if (event != SEDI_DMA_EVENT_TRANSFER_DONE) {
-		if (context->cb_event) {
-			context->cb_event(SEDI_SPI_EVENT_DATA_LOST,
-						  context->cb_param);
-		}
-
-		goto f_out;
-	}
-
-	/* See tx or rx finished */
-	if (chan == context->tx_channel) {
-		context->dma_tx_finished = true;
-		context->data_tx_idx = context->tx_data_len;
-		/* Recover LSB reverse, DMA mode tx buff pointer not changed */
-		if (context->is_lsb == true) {
-			spi_bit_reverse(context->data_tx, context->tx_data_len,
-					context->frame_size);
-			sedi_core_clean_dcache_by_addr(
-				(uint32_t *)(context->data_tx),
-				context->tx_data_len);
-		}
-		/* Waiting for TX FIFO empty */
-		while (lld_spi_is_busy(context->base)) {
-			;
-		}
-	} else if (chan == context->rx_channel) {
-		context->dma_rx_finished = true;
-		context->data_rx_idx = context->rx_data_len;
-		/* If finished Rx, and need to do bit convert */
-		if (context->is_lsb == true) {
-#ifndef SEDI_CONFIG_ARCH_X86
-			/* Invalidate cache */
-			sedi_core_inv_dcache_by_addr(
-				(uint32_t *)(context->data_rx),
-				context->rx_data_len);
-#endif
-			spi_bit_reverse(context->data_rx, context->rx_data_len,
-					context->frame_size);
-			sedi_core_clean_dcache_by_addr(
-				(uint32_t *)(context->data_rx),
-				context->rx_data_len);
-		}
-	}
-
-	if ((context->dma_tx_finished == false) ||
-		(context->dma_rx_finished == false)) {
-		return;
-	}
-
-	/* All tx and rx finished */
-	if (context->cb_event) {
-		context->cb_event(SEDI_SPI_EVENT_COMPLETE, context->cb_param);
-	}
-
-f_out:
-	/* clear spi busy status and disable spi dma*/
-	context->status.busy = 0;
-	lld_spi_config_interrupt(context->base, REG_INT_NONE);
-	lld_spi_enable(context->base, false);
-	lld_spi_dma_enable(context->base, false);
-}
+				  const int event, void *param);
 
 static int config_and_enable_dma_channel(sedi_spi_t spi_dev, int dma,
 					 int handshake, int chan, int width,
@@ -758,6 +688,136 @@ static int config_and_enable_dma_channel(sedi_spi_t spi_dev, int dma,
 
 	return 0;
 }
+
+static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
+				  const int event, void *param)
+{
+	sedi_spi_t spi_device = (sedi_spi_t)param;
+
+	struct spi_context *context = &spi_contexts[spi_device];
+	uint32_t len = SPI_DMA_MAX_SIZE;
+
+	/* release the dma resource */
+	sedi_dma_set_power(dma, chan, SEDI_POWER_OFF);
+	sedi_dma_uninit(dma, chan);
+
+	if (event != SEDI_DMA_EVENT_TRANSFER_DONE) {
+		if (context->cb_event) {
+			context->cb_event(SEDI_SPI_EVENT_DATA_LOST,
+						  context->cb_param);
+		}
+
+		goto f_out;
+	}
+
+	/* See tx or rx finished */
+	if (chan == context->tx_channel) {
+		context->dma_tx_finished = true;
+		context->data_tx_idx = context->tx_data_len;
+		/* Recover LSB reverse, DMA mode tx buff pointer not changed */
+		if (context->is_lsb == true) {
+			spi_bit_reverse(context->data_tx, context->tx_data_len,
+					context->frame_size);
+			sedi_core_clean_dcache_by_addr(
+				(uint32_t *)(context->data_tx),
+				context->tx_data_len);
+		}
+		/* Waiting for TX FIFO empty */
+		while (lld_spi_is_busy(context->base)) {
+			;
+		}
+	} else if (chan == context->rx_channel) {
+		context->dma_rx_finished = true;
+		context->data_rx_idx = context->rx_data_len;
+		/* If finished Rx, and need to do bit convert */
+		if (context->is_lsb == true) {
+#ifndef SEDI_CONFIG_ARCH_X86
+			/* Invalidate cache */
+			sedi_core_inv_dcache_by_addr(
+				(uint32_t *)(context->data_rx),
+				context->rx_data_len);
+#endif
+			spi_bit_reverse(context->data_rx, context->rx_data_len,
+					context->frame_size);
+			sedi_core_clean_dcache_by_addr(
+				(uint32_t *)(context->data_rx),
+				context->rx_data_len);
+		}
+	}
+
+	if ((context->dma_tx_finished == false) ||
+		(context->dma_rx_finished == false)) {
+		return;
+	}
+
+	/* If need to start another DMA transfer */
+	context->dma_idx -= 1;
+	if (context->dma_idx > 0) {
+		if (context->dma_idx == 1) {
+			len = context->last_dma_counts;
+		}
+		/* According to different transfer mode, do different fill or receive */
+		if (context->transfer_mode == SPI_TRANSFER_MODE_SEND) {
+			context->data_tx += SPI_DMA_MAX_SIZE;
+			context->dma_tx_finished = false;
+			/* start dma first */
+			config_and_enable_dma_channel(
+			spi_device, context->tx_dma, context->dma_handshake, context->tx_channel, 0, 1,
+			(uint32_t)(context->data_tx), lld_spi_dr_address(context->base), len,
+			true);
+			sedi_dma_start_transfer(context->tx_dma, context->tx_channel, (uint32_t)(context->data_tx),
+						lld_spi_dr_address(context->base), len);
+
+		} else if (context->transfer_mode == SPI_TRANSFER_MODE_RECEIVE) {
+			context->data_rx += SPI_DMA_MAX_SIZE;
+			context->dma_rx_finished = false;
+			/* Configure rx channel */
+			context->base->ctrl1 = len / context->frame_size - 1;
+			sedi_dma_start_transfer(context->rx_dma, context->rx_channel, lld_spi_dr_address(context->base),
+						(uint32_t)(context->data_rx), len);
+			config_and_enable_dma_channel(spi_device, context->rx_dma, context->rx_handshake,
+						context->rx_channel, 0, 1,
+						lld_spi_dr_address(context->base),
+						(uint32_t)(context->data_rx), len, false);
+
+		} else {
+			context->data_tx += SPI_DMA_MAX_SIZE;
+			context->data_rx += SPI_DMA_MAX_SIZE;
+			context->dma_tx_finished = false;
+			context->dma_rx_finished = false;
+			/* Enable both channel to do transfer */
+			config_and_enable_dma_channel(
+			spi_device, context->tx_dma, context->dma_handshake, context->tx_channel, 0, 1,
+			(uint32_t)(context->data_tx), lld_spi_dr_address(context->base), len,
+			true);
+			config_and_enable_dma_channel(spi_device, context->rx_dma, context->rx_handshake,
+						context->rx_channel, 0, 1,
+						lld_spi_dr_address(context->base),
+						(uint32_t)(context->data_rx), len, false);
+			/* Enable both channel to do transfer */
+			sedi_dma_start_transfer(context->tx_dma, context->tx_channel, (uint32_t)(context->data_tx),
+				lld_spi_dr_address(context->base), len);
+			sedi_dma_start_transfer(context->rx_dma, context->rx_channel, lld_spi_dr_address(context->base),
+						(uint32_t)(context->data_rx), len);
+		}
+
+		/* Return to start another transfer */
+		return;
+
+	}
+
+	/* All tx and rx finished */
+	if (context->cb_event) {
+		context->cb_event(SEDI_SPI_EVENT_COMPLETE, context->cb_param);
+	}
+
+f_out:
+	/* clear spi busy status and disable spi dma*/
+	context->status.busy = 0;
+	lld_spi_config_interrupt(context->base, REG_INT_NONE);
+	lld_spi_enable(context->base, false);
+	lld_spi_dma_enable(context->base, false);
+}
 #endif
 
 int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
@@ -773,6 +833,7 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 	int rx_handshake = context->rx_handshake;
 	int width = context->frame_size;
 	int burst = 1;
+	uint32_t len = num;
 
 	DBG_CHECK(((num % context->frame_size) == 0),
 		  SEDI_DRIVER_ERROR_PARAMETER);
@@ -785,6 +846,8 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 
 	context->base->dmatdlr = SPI_FIFO_DEPTH - 1;
 	context->base->dmardlr = 0;
+	context->tx_dma = tx_dma;
+	context->rx_dma = rx_dma;
 	context->tx_channel = tx_dma_chan;
 	context->rx_channel = rx_dma_chan;
 	context->dma_tx_finished = false;
@@ -793,6 +856,19 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 	context->rx_data_len = num;
 	context->data_tx = (uint8_t *)data_out;
 	context->data_rx = data_in;
+	/* DMA BLOCK TS only 4096, for large data more than 4K, use multiple transfer  */
+	context->last_dma_counts = (num & (SPI_DMA_MAX_SIZE - 1));
+	if (context->last_dma_counts == 0) {
+		context->dma_cycles = num >> SPI_DMA_MAX_SIZE_SHIFT;
+		context->last_dma_counts = SPI_DMA_MAX_SIZE;
+	} else {
+		context->dma_cycles = (num >> SPI_DMA_MAX_SIZE_SHIFT) + 1;
+	}
+	context->dma_idx = context->dma_cycles;
+
+	if (context->dma_cycles > 1) {
+		len = SPI_DMA_MAX_SIZE;
+	}
 #ifdef SPI_DW_2_0
 	/* Clear the bit field */
 	context->base->txftlr &= ~SPI_TXFTLR_TXFTHR_MASK;
@@ -825,12 +901,12 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 		/* start dma first */
 		config_and_enable_dma_channel(
 		    spi_device, tx_dma, tx_handshake, tx_dma_chan, width, burst,
-		    (uint32_t)data_out, lld_spi_dr_address(context->base), num,
+		    (uint32_t)data_out, lld_spi_dr_address(context->base), len,
 		    true);
 		context->dma_rx_finished = true;
 		context->rx_channel = 0xFF;
 #ifdef SPI_DW_2_0
-		dw_spi_set_start_condition(context, num);
+		dw_spi_set_start_condition(context, len);
 #endif
 	} else if (context->transfer_mode == SPI_TRANSFER_MODE_RECEIVE) {
 		/* Send dummy data first */
@@ -843,25 +919,25 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 		config_and_enable_dma_channel(spi_device, rx_dma, rx_handshake,
 					      rx_dma_chan, width, burst,
 					      lld_spi_dr_address(context->base),
-					      (uint32_t)data_in, num, false);
+					      (uint32_t)data_in, len, false);
 		/* Set NDF bits for receive only mode */
-		DBG_CHECK((num <= SPI_RECEIVE_MODE_MAX_SIZE),
+		DBG_CHECK((len <= SPI_RECEIVE_MODE_MAX_SIZE),
 			  SEDI_DRIVER_ERROR_PARAMETER);
-		context->base->ctrl1 = num / context->frame_size - 1;
+		context->base->ctrl1 = len / context->frame_size - 1;
 		context->dma_tx_finished = true;
 		context->tx_channel = 0xFF;
 	} else {
 		/* Enable both channel to do transfer */
 		config_and_enable_dma_channel(
 		    spi_device, tx_dma, tx_handshake, tx_dma_chan, width, burst,
-		    (uint32_t)data_out, lld_spi_dr_address(context->base), num,
+		    (uint32_t)data_out, lld_spi_dr_address(context->base), len,
 		    true);
 		config_and_enable_dma_channel(spi_device, rx_dma, rx_handshake,
 					      rx_dma_chan, width, burst,
 					      lld_spi_dr_address(context->base),
-					      (uint32_t)data_in, num, false);
+					      (uint32_t)data_in, len, false);
 #ifdef SPI_DW_2_0
-		dw_spi_set_start_condition(context, num);
+		dw_spi_set_start_condition(context, len);
 #endif
 	}
 
@@ -885,15 +961,15 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 
 	if (context->transfer_mode == SPI_TRANSFER_MODE_SEND) {
 		sedi_dma_start_transfer(tx_dma, tx_dma_chan, (uint32_t)data_out,
-					lld_spi_dr_address(context->base), num);
+					lld_spi_dr_address(context->base), len);
 	} else if (context->transfer_mode == SPI_TRANSFER_MODE_RECEIVE) {
 		sedi_dma_start_transfer(rx_dma, rx_dma_chan, lld_spi_dr_address(context->base),
-					(uint32_t)data_in, num);
+					(uint32_t)data_in, len);
 	} else {
 		sedi_dma_start_transfer(tx_dma, tx_dma_chan, (uint32_t)data_out,
-			lld_spi_dr_address(context->base), num);
+			lld_spi_dr_address(context->base), len);
 		sedi_dma_start_transfer(rx_dma, rx_dma_chan, lld_spi_dr_address(context->base),
-					(uint32_t)data_in, num);
+					(uint32_t)data_in, len);
 	}
 
 #endif
