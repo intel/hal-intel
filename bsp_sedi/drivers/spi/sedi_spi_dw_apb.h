@@ -113,6 +113,9 @@
 #define SPI_CTRLR0_WAIT_CYCLE_MASK (0xF800)
 #define SPI_CTRLR0_WAIT_CYCLE_SHIFT (11)
 
+#define SPI_DMA_MAX_SIZE (4096)
+#define SPI_DMA_MAX_SIZE_SHIFT (12)
+
 /* SPI transfer mode */
 typedef enum {
 	SPI_TRANSFER_MODE_BOTH = 0,
@@ -187,8 +190,13 @@ struct spi_context {
 	/* For dma transfer */
 	bool dma_tx_finished;
 	bool dma_rx_finished;
+	uint32_t tx_dma;
+	uint32_t rx_dma;
 	uint8_t tx_channel;
 	uint8_t rx_channel;
+	uint32_t dma_cycles; /* For large data DMA transfer */
+	uint32_t dma_idx; /* For large data DMA transfer */
+	uint32_t last_dma_counts; /* For large data DMA transfer */
 
 	/* For qspi */
 	bool is_quad;
