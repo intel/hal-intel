@@ -7,6 +7,8 @@
 #ifndef _SEDI_SOC_REGS_H_
 #define _SEDI_SOC_REGS_H_
 
+#include "sedi_reg_defs.h"
+
 /****** uart *****/
 
 /** Number of UART controllers. */
@@ -86,7 +88,7 @@ typedef enum { SEDI_WATCHDOG_0 = 0, SEDI_WATCHDOG_NUM } sedi_watchdog_t;
 #define SEDI_WATCHDOG_0_REG_BASE 0x4900000
 
 /****** HPET *****/
-#define SEDI_HPET_BASE 0x04700000
+SEDI_REG_BASE_DEFINE(HPET, 0x04700000);
 
 #define SEDI_HPET_SOC_TIMER_NUM (3)
 
