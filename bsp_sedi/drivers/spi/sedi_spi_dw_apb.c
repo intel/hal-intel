@@ -600,6 +600,10 @@ int32_t sedi_spi_control(IN sedi_spi_t spi_device, IN uint32_t control,
 		break;
 	case SEDI_SPI_IOCTL_ABORT:
 		lld_spi_enable(context->base, false);
+		lld_spi_config_interrupt(context->base, REG_INT_NONE);
+#ifdef SEDI_SPI_USE_DMA
+		lld_spi_dma_enable(context->base, false);
+#endif
 		context->status.busy = 0;
 		break;
 	case SEDI_SPI_IOCTL_BUFFER_SETS:
