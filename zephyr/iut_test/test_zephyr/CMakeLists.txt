@@ -3,6 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-if(CONFIG_DMA)
+if(CONFIG_DMA_SEDI)
   target_sources(app PRIVATE dma/test_dma_m2m.c)
 endif()
