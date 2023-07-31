@@ -1140,7 +1140,7 @@ static void i2c_isr_complete(sedi_i2c_t i2c_device, bool is_error)
 	PARAM_UNUSED(val);
 }
 
-void dw_i2c_isr(IN sedi_i2c_t i2c_device)
+void sedi_i2c_isr_handler(IN sedi_i2c_t i2c_device)
 {
 	struct i2c_context *context = &contexts[i2c_device];
 	i2c_dw_apb200a_regs_t *regs = (void *)context->base;

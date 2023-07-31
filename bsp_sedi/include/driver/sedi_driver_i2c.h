@@ -439,6 +439,13 @@ int32_t sedi_i2c_control(IN sedi_i2c_t i2c_device, IN uint32_t control,
 int sedi_i2c_get_status(IN sedi_i2c_t i2c_device, sedi_i2c_status_t *status);
 
 /*!
+ * \brief Handle devices's interrupt
+ * \param[in] i2c_device: i2c device id
+ * \return  void
+ */
+void sedi_i2c_isr_handler(IN sedi_i2c_t i2c_device);
+
+/*!
  * \}
  */
 
