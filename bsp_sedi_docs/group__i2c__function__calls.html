@@ -121,6 +121,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga35b73d9a1209d190b55a558144f305c8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2c__function__calls.html#ga35b73d9a1209d190b55a558144f305c8">sedi_i2c_get_status</a> (<a class="el" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> sedi_i2c_t i2c_device, <a class="el" href="structsedi__i2c__status__t.html">sedi_i2c_status_t</a> *status)</td></tr>
 <tr class="memdesc:ga35b73d9a1209d190b55a558144f305c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get device's status.  <a href="group__i2c__function__calls.html#ga35b73d9a1209d190b55a558144f305c8">More...</a><br /></td></tr>
 <tr class="separator:ga35b73d9a1209d190b55a558144f305c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga09bcf2231fb702df585df235e8cda820"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__i2c__function__calls.html#ga09bcf2231fb702df585df235e8cda820">sedi_i2c_isr_handler</a> (<a class="el" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> sedi_i2c_t i2c_device)</td></tr>
+<tr class="memdesc:ga09bcf2231fb702df585df235e8cda820"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle devices's interrupt.  <a href="group__i2c__function__calls.html#ga09bcf2231fb702df585df235e8cda820">More...</a><br /></td></tr>
+<tr class="separator:ga09bcf2231fb702df585df235e8cda820"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
@@ -335,6 +338,33 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="group__return__status.html">Return Status Codes</a> </dd></dl>
+
+</div>
+</div>
+<a id="ga09bcf2231fb702df585df235e8cda820"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga09bcf2231fb702df585df235e8cda820">&#9670;&nbsp;</a></span>sedi_i2c_isr_handler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sedi_i2c_isr_handler </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> sedi_i2c_t&#160;</td>
+          <td class="paramname"><em>i2c_device</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Handle devices's interrupt. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">i2c_device</td><td>i2c device id </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
 
 </div>
 </div>
