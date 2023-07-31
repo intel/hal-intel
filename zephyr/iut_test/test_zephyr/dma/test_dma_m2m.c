@@ -16,24 +16,20 @@
 #endif
 #include "sedi_driver_rtc.h"
 
- #define DT_DRV_COMPAT intel_sedi_dma
+#define DT_DRV_COMPAT intel_sedi_dma
 
-__pinned_noinit
-static char __aligned(64) tx_data[4096];
-__pinned_noinit
-static char __aligned(64) rx_data[4096];
+__pinned_noinit static char __aligned(64) tx_data[4096];
+__pinned_noinit static char __aligned(64) rx_data[4096];
 static K_SEM_DEFINE(dma_sem, 0, 1);
 static int dma_status;
 
-static void test_done(const struct device *dev, void *user_data,
-			       uint32_t channel, int status)
+static void test_done(const struct device *dev, void *user_data, uint32_t channel, int status)
 {
 	ARG_UNUSED(dev);
 	ARG_UNUSED(user_data);
 
 	if (status != 0) {
-		iut_case_print("DMA ch[%d] transfer error, status = %d\n",
-				channel, status);
+		iut_case_print("DMA ch[%d] transfer error, status = %d\n", channel, status);
 	}
 	dma_status = status;
 	k_sem_give(&dma_sem);
@@ -65,8 +61,7 @@ static int test_dma_m2m(int argc, char **argv)
 #if defined(CONFIG_CACHE_MANAGEMENT)
 	sys_cache_data_flush_range(tx_data, sizeof(tx_data));
 #else
-	sedi_core_inv_clean_dcache_by_addr((uint32_t *)tx_data,
-			sizeof(tx_data));
+	sedi_core_inv_clean_dcache_by_addr((uint32_t *)tx_data, sizeof(tx_data));
 #endif
 
 	dma_cfg.channel_direction = MEMORY_TO_MEMORY;
@@ -83,15 +78,13 @@ static int test_dma_m2m(int argc, char **argv)
 	for (test_len = 1; test_len <= sizeof(tx_data); test_len++) {
 		dma_block_cfg.block_size = test_len;
 
-		for (uint32_t chan_id = 0; chan_id < DT_INST_PROP(0, dma_channels);
-				chan_id++) {
+		for (uint32_t chan_id = 0; chan_id < DT_INST_PROP(0, dma_channels); chan_id++) {
 			memset(rx_data, 0, sizeof(rx_data));
 
 #if defined(CONFIG_CACHE_MANAGEMENT)
 			sys_cache_data_flush_range(rx_data, sizeof(rx_data));
 #else
-			sedi_core_inv_clean_dcache_by_addr((uint32_t *)rx_data,
-					sizeof(rx_data));
+			sedi_core_inv_clean_dcache_by_addr((uint32_t *)rx_data, sizeof(rx_data));
 #endif
 
 			TEST_ASSERT_TRUE(!dma_config(dma, chan_id, &dma_cfg));
@@ -104,8 +97,7 @@ static int test_dma_m2m(int argc, char **argv)
 		}
 	}
 	us = sedi_rtc_get_us() - us;
-	iut_case_print("Test Done after %u | %u us\n", (uint32_t)(us >> 32),
-			(uint32_t)us);
+	iut_case_print("Test Done after %u | %u us\n", (uint32_t)(us >> 32), (uint32_t)us);
 
 	return IUT_ERR_OK;
 }
