@@ -5,9 +5,9 @@
  */
 
 /*
- * This file has been automatically generated
+ * This file has been automatically generated and modified
  * Tool Version: 1.0.0
- * Generation Date: 2023-07-14
+ * Generation Date: 2023-08-01
  */
 
 #ifndef _SEDI_GPIO_REGS_H_
@@ -55,10 +55,10 @@ SEDI_RBF_DEFINE(GPIO, GCCR, RESERVED0, 1, 31, RO, (uint32_t)0x0);
  *   GPLR0: GPIO Pin Level
  *     AddressOffset  : 0x4
  *     AccessType     : RO
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, GPLR0, 0x4, RO, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, GPLR0, 0x4, RO, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register GPLR0
@@ -76,10 +76,10 @@ SEDI_RBF_DEFINE(GPIO, GPLR0, GPLR0, 0, 32, RO_V, (uint32_t)0x0);
  *   GPDR0: GPIO Pin Direction
  *     AddressOffset  : 0x1c
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, GPDR0, 0x1c, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, GPDR0, 0x1c, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register GPDR0
@@ -97,10 +97,10 @@ SEDI_RBF_DEFINE(GPIO, GPDR0, GPDR0, 0, 32, RW_L, (uint32_t)0x0);
  *   GPSR0: GPIO Pin Output Set
  *     AddressOffset  : 0x34
  *     AccessType     : RO
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, GPSR0, 0x34, RO, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, GPSR0, 0x34, RO, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register GPSR0
@@ -118,10 +118,10 @@ SEDI_RBF_DEFINE(GPIO, GPSR0, GPSR0, 0, 32, WO, (uint32_t)0x0);
  *   GPCR0: GPIO Pin Output Clear
  *     AddressOffset  : 0x4c
  *     AccessType     : RO
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, GPCR0, 0x4c, RO, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, GPCR0, 0x4c, RO, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register GPCR0
@@ -139,10 +139,10 @@ SEDI_RBF_DEFINE(GPIO, GPCR0, GPCR0, 0, 32, WO, (uint32_t)0x0);
  *   GRER0: GPIO Rising Edge Detect Enable
  *     AddressOffset  : 0x64
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, GRER0, 0x64, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, GRER0, 0x64, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register GRER0
@@ -160,10 +160,10 @@ SEDI_RBF_DEFINE(GPIO, GRER0, GRER0, 0, 32, RW, (uint32_t)0x0);
  *   GFER0: GPIO Falling Edge Detect Enable
  *     AddressOffset  : 0x7c
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, GFER0, 0x7c, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, GFER0, 0x7c, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register GFER0
@@ -181,10 +181,10 @@ SEDI_RBF_DEFINE(GPIO, GFER0, GFER0, 0, 32, RW, (uint32_t)0x0);
  *   GFBR0: GPIO Glitch Filter Bypass
  *     AddressOffset  : 0x94
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)-1
  */
-SEDI_REG_DEFINE(GPIO, GFBR0, 0x94, RW, (uint32_t)0x80000000, (uint32_t)-1);
+SEDI_REG_DEFINE(GPIO, GFBR0, 0x94, RW, (uint32_t)0xffffffff, (uint32_t)-1);
 
 /*
  * Bit Field of Register GFBR0
@@ -202,10 +202,10 @@ SEDI_RBF_DEFINE(GPIO, GFBR0, GFBR0, 0, 32, RW, (uint32_t)-1);
  *   GIMR0: GPIO Interrupt Mask
  *     AddressOffset  : 0xac
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, GIMR0, 0xac, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, GIMR0, 0xac, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register GIMR0
@@ -223,10 +223,10 @@ SEDI_RBF_DEFINE(GPIO, GIMR0, GIMR0, 0, 32, RW, (uint32_t)0x0);
  *   GISR0: GPIO Interrupt Source
  *     AddressOffset  : 0xc4
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, GISR0, 0xc4, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, GISR0, 0xc4, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register GISR0
@@ -244,10 +244,10 @@ SEDI_RBF_DEFINE(GPIO, GISR0, GISR0, 0, 32, RW_1C_V, (uint32_t)0x0);
  *   GWMR0: GPIO Wake Mask
  *     AddressOffset  : 0x100
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, GWMR0, 0x100, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, GWMR0, 0x100, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register GWMR0
@@ -265,10 +265,10 @@ SEDI_RBF_DEFINE(GPIO, GWMR0, GWMR0, 0, 32, RW, (uint32_t)0x0);
  *   GWSR0: GPIO Wake Source
  *     AddressOffset  : 0x118
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, GWSR0, 0x118, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, GWSR0, 0x118, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register GWSR0
@@ -286,10 +286,10 @@ SEDI_RBF_DEFINE(GPIO, GWSR0, GWSR0, 0, 32, RW_1C_V, (uint32_t)0x0);
  *   GSEC: GPIO Secure Input
  *     AddressOffset  : 0x130
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, GSEC, 0x130, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, GSEC, 0x130, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register GSEC
@@ -307,10 +307,10 @@ SEDI_RBF_DEFINE(GPIO, GSEC, GSEC, 0, 32, RW, (uint32_t)0x0);
  *   SPARE: Spare Register
  *     AddressOffset  : 0x200
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(GPIO, SPARE, 0x200, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(GPIO, SPARE, 0x200, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register SPARE
@@ -331,76 +331,46 @@ typedef struct {
 	__IO_RW uint32_t gccr;
 
 	/* GPIO Pin Level */
-	__IO_R uint32_t gplr0;
-
-	/* Reserved */
-	__IO_RW uint32_t reserved0[5];
+	__IO_RW uint32_t gplr[6];
 
 	/* GPIO Pin Direction */
-	__IO_RW uint32_t gpdr0;
-
-	/* Reserved */
-	__IO_RW uint32_t reserved1[5];
+	__IO_RW uint32_t gpdr[6];
 
 	/* GPIO Pin Output Set */
-	__IO_R uint32_t gpsr0;
-
-	/* Reserved */
-	__IO_RW uint32_t reserved2[5];
+	__IO_RW uint32_t gpsr[6];
 
 	/* GPIO Pin Output Clear */
-	__IO_R uint32_t gpcr0;
-
-	/* Reserved */
-	__IO_RW uint32_t reserved3[5];
+	__IO_RW uint32_t gpcr[6];
 
 	/* GPIO Rising Edge Detect Enable */
-	__IO_RW uint32_t grer0;
-
-	/* Reserved */
-	__IO_RW uint32_t reserved4[5];
+	__IO_RW uint32_t grer[6];
 
 	/* GPIO Falling Edge Detect Enable */
-	__IO_RW uint32_t gfer0;
-
-	/* Reserved */
-	__IO_RW uint32_t reserved5[5];
+	__IO_RW uint32_t gfer[6];
 
 	/* GPIO Glitch Filter Bypass */
-	__IO_RW uint32_t gfbr0;
-
-	/* Reserved */
-	__IO_RW uint32_t reserved6[5];
+	__IO_RW uint32_t gfbr[6];
 
 	/* GPIO Interrupt Mask */
-	__IO_RW uint32_t gimr0;
-
-	/* Reserved */
-	__IO_RW uint32_t reserved7[5];
+	__IO_RW uint32_t gimr[6];
 
 	/* GPIO Interrupt Source */
-	__IO_RW uint32_t gisr0;
+	__IO_RW uint32_t gisr[6];
 
 	/* Reserved */
-	__IO_RW uint32_t reserved8[14];
+	__IO_RW uint32_t reserved0[9];
 
 	/* GPIO Wake Mask */
-	__IO_RW uint32_t gwmr0;
-
-	/* Reserved */
-	__IO_RW uint32_t reserved9[5];
+	__IO_RW uint32_t gwmr[6];
 
 	/* GPIO Wake Source */
-	__IO_RW uint32_t gwsr0;
-
-	/* Reserved */
-	__IO_RW uint32_t reserved10[5];
+	__IO_RW uint32_t gwsr[6];
 
 	/* GPIO Secure Input */
 	__IO_RW uint32_t gsec;
 
 	/* Reserved */
-	__IO_RW uint32_t reserved11[51];
+	__IO_RW uint32_t reserved1[51];
 
 	/* Spare Register */
 	__IO_RW uint32_t spare;
