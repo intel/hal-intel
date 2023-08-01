@@ -12,6 +12,8 @@
 #define __SEDI_CONST_RW
 #define __SEDI_CONST_RO_V const
 #define __SEDI_CONST_RW_V
+#define __SEDI_CONST_RW_L
+#define __SEDI_CONST_RW_1C_V
 
 #define __SEDI_UNUSED __attribute__((unused))
 
