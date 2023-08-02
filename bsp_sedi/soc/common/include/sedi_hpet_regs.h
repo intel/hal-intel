@@ -7,7 +7,7 @@
 /*
  * This file has been automatically generated
  * Tool Version: 1.0.0
- * Generation Date: 2023-07-14
+ * Generation Date: 2023-08-01
  */
 
 #ifndef _SEDI_HPET_REGS_H_
@@ -264,10 +264,10 @@ SEDI_RBF_DEFINE(HPET, GIS_HIGH, RESERVED0, 0, 32, RO, (uint32_t)0x0);
  *   MCV_LOW: Main Counter Value
  *     AddressOffset  : 0x0f0
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(HPET, MCV_LOW, 0x0f0, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(HPET, MCV_LOW, 0x0f0, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register MCV_LOW
@@ -285,10 +285,10 @@ SEDI_RBF_DEFINE(HPET, MCV_LOW, MCV_LOW, 0, 32, RW_V, (uint32_t)0x0);
  *   MCV_HIGH: Main Counter Value
  *     AddressOffset  : 0x0f4
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(HPET, MCV_HIGH, 0x0f4, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(HPET, MCV_HIGH, 0x0f4, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register MCV_HIGH
@@ -306,10 +306,10 @@ SEDI_RBF_DEFINE(HPET, MCV_HIGH, MCV_HIGH, 0, 32, RW_V, (uint32_t)0x0);
  *   T0C_LOW: Timer N Config And Capabilities
  *     AddressOffset  : 0x100
  *     AccessType     : RW
- *     WritableBitMask: 0x214e
+ *     WritableBitMask: 0x3f4e
  *     ResetValue     : (uint32_t)0x30
  */
-SEDI_REG_DEFINE(HPET, T0C_LOW, 0x100, RW, (uint32_t)0x214e, (uint32_t)0x30);
+SEDI_REG_DEFINE(HPET, T0C_LOW, 0x100, RW, (uint32_t)0x3f4e, (uint32_t)0x30);
 
 /*
  * Bit Field of Register T0C_LOW
@@ -490,10 +490,10 @@ SEDI_RBF_DEFINE(HPET, T0C_HIGH, IRC, 0, 32, RO, (uint32_t)0x0f00000);
  *   T0CV_LOW: Timer N Comparator Value
  *     AddressOffset  : 0x108
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)-1
  */
-SEDI_REG_DEFINE(HPET, T0CV_LOW, 0x108, RW, (uint32_t)0x80000000, (uint32_t)-1);
+SEDI_REG_DEFINE(HPET, T0CV_LOW, 0x108, RW, (uint32_t)0xffffffff, (uint32_t)-1);
 
 /*
  * Bit Field of Register T0CV_LOW
@@ -511,10 +511,10 @@ SEDI_RBF_DEFINE(HPET, T0CV_LOW, T0CV_LOW, 0, 32, RW_V, (uint32_t)0x0ffffffff);
  *   T0CV_HIGH: Timer N Comparator Value
  *     AddressOffset  : 0x10c
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)-1
  */
-SEDI_REG_DEFINE(HPET, T0CV_HIGH, 0x10c, RW, (uint32_t)0x80000000, (uint32_t)-1);
+SEDI_REG_DEFINE(HPET, T0CV_HIGH, 0x10c, RW, (uint32_t)0xffffffff, (uint32_t)-1);
 
 /*
  * Bit Field of Register T0CV_HIGH
@@ -532,10 +532,10 @@ SEDI_RBF_DEFINE(HPET, T0CV_HIGH, T0CV_HIGH, 0, 32, RW_V, (uint32_t)0x0ffffffff);
  *   T1C_LOW: Timer N Config And Capabilities
  *     AddressOffset  : 0x120
  *     AccessType     : RW
- *     WritableBitMask: 0x2006
+ *     WritableBitMask: 0x3e06
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(HPET, T1C_LOW, 0x120, RW, (uint32_t)0x2006, (uint32_t)0x0);
+SEDI_REG_DEFINE(HPET, T1C_LOW, 0x120, RW, (uint32_t)0x3e06, (uint32_t)0x0);
 
 /*
  * Bit Field of Register T1C_LOW
@@ -716,10 +716,10 @@ SEDI_RBF_DEFINE(HPET, T1C_HIGH, IRC, 0, 32, RO, (uint32_t)0x0f00000);
  *   T1CV_LOW: Timer N Comparator Value
  *     AddressOffset  : 0x128
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)-1
  */
-SEDI_REG_DEFINE(HPET, T1CV_LOW, 0x128, RW, (uint32_t)0x80000000, (uint32_t)-1);
+SEDI_REG_DEFINE(HPET, T1CV_LOW, 0x128, RW, (uint32_t)0xffffffff, (uint32_t)-1);
 
 /*
  * Bit Field of Register T1CV_LOW
@@ -737,10 +737,10 @@ SEDI_RBF_DEFINE(HPET, T1CV_LOW, T1CV, 0, 32, RW_V, (uint32_t)0x0ffffffff);
  *   T2C_LOW: Timer N Config And Capabilities
  *     AddressOffset  : 0x140
  *     AccessType     : RW
- *     WritableBitMask: 0x2006
+ *     WritableBitMask: 0x3e06
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(HPET, T2C_LOW, 0x140, RW, (uint32_t)0x2006, (uint32_t)0x0);
+SEDI_REG_DEFINE(HPET, T2C_LOW, 0x140, RW, (uint32_t)0x3e06, (uint32_t)0x0);
 
 /*
  * Bit Field of Register T2C_LOW
@@ -921,10 +921,10 @@ SEDI_RBF_DEFINE(HPET, T2C_HIGH, IRC, 0, 32, RO, (uint32_t)0x0f00800);
  *   T2CV_LOW: Timer N Comparator Value
  *     AddressOffset  : 0x148
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)-1
  */
-SEDI_REG_DEFINE(HPET, T2CV_LOW, 0x148, RW, (uint32_t)0x80000000, (uint32_t)-1);
+SEDI_REG_DEFINE(HPET, T2CV_LOW, 0x148, RW, (uint32_t)0xffffffff, (uint32_t)-1);
 
 /*
  * Bit Field of Register T2CV_LOW
