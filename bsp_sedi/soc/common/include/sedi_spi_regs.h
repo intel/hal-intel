@@ -7,7 +7,7 @@
 /*
  * This file has been automatically generated
  * Tool Version: 1.0.0
- * Generation Date: 2023-07-27
+ * Generation Date: 2023-08-01
  */
 
 #ifndef _SEDI_SPI_REGS_H_
@@ -22,10 +22,10 @@
  *   CTRLR0: Control Register 0
  *     AddressOffset  : 0x0
  *     AccessType     : RW
- *     WritableBitMask: 0x1108ae0
+ *     WritableBitMask: 0x11ffbf0
  *     ResetValue     : (uint32_t)0x1070000
  */
-SEDI_REG_DEFINE(SPI, CTRLR0, 0x0, RW, (uint32_t)0x1108ae0, (uint32_t)0x1070000);
+SEDI_REG_DEFINE(SPI, CTRLR0, 0x0, RW, (uint32_t)0x11ffbf0, (uint32_t)0x1070000);
 
 /*
  * Bit Field of Register CTRLR0
@@ -245,10 +245,10 @@ SEDI_RBF_DEFINE(SPI, CTRLR0, RSVD_CTRLR0, 26, 6, RO, (uint32_t)0x0);
  *   CTRLR1: Control Register 1
  *     AddressOffset  : 0x4
  *     AccessType     : RW
- *     WritableBitMask: 0x8000
+ *     WritableBitMask: 0xffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, CTRLR1, 0x4, RW, (uint32_t)0x8000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, CTRLR1, 0x4, RW, (uint32_t)0xffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register CTRLR1
@@ -366,10 +366,10 @@ SEDI_RBF_DEFINE(SPI, MWCR, RSVD_MWCR, 3, 29, RO, (uint32_t)0x0);
  *   SER: Slave Enable Register
  *     AddressOffset  : 0x10
  *     AccessType     : RW
- *     WritableBitMask: 0x2
+ *     WritableBitMask: 0x3
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, SER, 0x10, RW, (uint32_t)0x2, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, SER, 0x10, RW, (uint32_t)0x3, (uint32_t)0x0);
 
 /*
  * Bit Field of Register SER
@@ -399,10 +399,10 @@ SEDI_RBF_DEFINE(SPI, SER, RSVD_SER, 2, 30, RO, (uint32_t)0x0);
  *   BAUDR: Baud Rate Select
  *     AddressOffset  : 0x14
  *     AccessType     : RW
- *     WritableBitMask: 0x8000
+ *     WritableBitMask: 0xffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, BAUDR, 0x14, RW, (uint32_t)0x8000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, BAUDR, 0x14, RW, (uint32_t)0xffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register BAUDR
@@ -430,10 +430,10 @@ SEDI_RBF_DEFINE(SPI, BAUDR, RSVD_BAUDR, 16, 16, RO, (uint32_t)0x0);
  *   TXFTLR: Transmit FIFO Threshold Level
  *     AddressOffset  : 0x18
  *     AccessType     : RW
- *     WritableBitMask: 0x20
+ *     WritableBitMask: 0x3f
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, TXFTLR, 0x18, RW, (uint32_t)0x20, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, TXFTLR, 0x18, RW, (uint32_t)0x3f, (uint32_t)0x0);
 
 /*
  * Bit Field of Register TXFTLR
@@ -461,10 +461,10 @@ SEDI_RBF_DEFINE(SPI, TXFTLR, RSVD_TXFTLR, 6, 26, RO, (uint32_t)0x0);
  *   RXFTLR: Receive FIFO Threshold Level
  *     AddressOffset  : 0x1c
  *     AccessType     : RW
- *     WritableBitMask: 0x20
+ *     WritableBitMask: 0x3f
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, RXFTLR, 0x1c, RW, (uint32_t)0x20, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, RXFTLR, 0x1c, RW, (uint32_t)0x3f, (uint32_t)0x0);
 
 /*
  * Bit Field of Register RXFTLR
@@ -1148,10 +1148,10 @@ SEDI_RBF_DEFINE(SPI, DMACR, RSVD_DMACR, 2, 30, RO, (uint32_t)0x0);
  *   DMATDLR: DMA Transmit Data Level
  *     AddressOffset  : 0x50
  *     AccessType     : RW
- *     WritableBitMask: 0x20
+ *     WritableBitMask: 0x3f
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DMATDLR, 0x50, RW, (uint32_t)0x20, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DMATDLR, 0x50, RW, (uint32_t)0x3f, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DMATDLR
@@ -1179,10 +1179,10 @@ SEDI_RBF_DEFINE(SPI, DMATDLR, RSVD_DMATDLR, 6, 26, RO, (uint32_t)0x0);
  *   DMARDLR: DMA Receive Data Level
  *     AddressOffset  : 0x54
  *     AccessType     : RW
- *     WritableBitMask: 0x20
+ *     WritableBitMask: 0x3f
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DMARDLR, 0x54, RW, (uint32_t)0x20, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DMARDLR, 0x54, RW, (uint32_t)0x3f, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DMARDLR
@@ -1252,10 +1252,10 @@ SEDI_RBF_DEFINE(SPI, SSI_VERSION_ID, SSI_COMP_VERSION, 0, 32, RO, (uint32_t)0x34
  *   DR0: Data Register x
  *     AddressOffset  : 0x60
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR0, 0x60, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR0, 0x60, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR0
@@ -1273,10 +1273,10 @@ SEDI_RBF_DEFINE(SPI, DR0, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR1: Data Register x
  *     AddressOffset  : 0x64
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR1, 0x64, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR1, 0x64, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR1
@@ -1294,10 +1294,10 @@ SEDI_RBF_DEFINE(SPI, DR1, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR2: Data Register x
  *     AddressOffset  : 0x68
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR2, 0x68, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR2, 0x68, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR2
@@ -1315,10 +1315,10 @@ SEDI_RBF_DEFINE(SPI, DR2, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR3: Data Register x
  *     AddressOffset  : 0x6c
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR3, 0x6c, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR3, 0x6c, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR3
@@ -1336,10 +1336,10 @@ SEDI_RBF_DEFINE(SPI, DR3, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR4: Data Register x
  *     AddressOffset  : 0x70
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR4, 0x70, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR4, 0x70, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR4
@@ -1357,10 +1357,10 @@ SEDI_RBF_DEFINE(SPI, DR4, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR5: Data Register x
  *     AddressOffset  : 0x74
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR5, 0x74, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR5, 0x74, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR5
@@ -1378,10 +1378,10 @@ SEDI_RBF_DEFINE(SPI, DR5, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR6: Data Register x
  *     AddressOffset  : 0x78
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR6, 0x78, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR6, 0x78, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR6
@@ -1399,10 +1399,10 @@ SEDI_RBF_DEFINE(SPI, DR6, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR7: Data Register x
  *     AddressOffset  : 0x7c
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR7, 0x7c, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR7, 0x7c, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR7
@@ -1420,10 +1420,10 @@ SEDI_RBF_DEFINE(SPI, DR7, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR8: Data Register x
  *     AddressOffset  : 0x80
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR8, 0x80, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR8, 0x80, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR8
@@ -1441,10 +1441,10 @@ SEDI_RBF_DEFINE(SPI, DR8, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR9: Data Register x
  *     AddressOffset  : 0x84
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR9, 0x84, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR9, 0x84, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR9
@@ -1462,10 +1462,10 @@ SEDI_RBF_DEFINE(SPI, DR9, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR10: Data Register x
  *     AddressOffset  : 0x88
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR10, 0x88, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR10, 0x88, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR10
@@ -1483,10 +1483,10 @@ SEDI_RBF_DEFINE(SPI, DR10, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR11: Data Register x
  *     AddressOffset  : 0x8c
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR11, 0x8c, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR11, 0x8c, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR11
@@ -1504,10 +1504,10 @@ SEDI_RBF_DEFINE(SPI, DR11, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR12: Data Register x
  *     AddressOffset  : 0x90
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR12, 0x90, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR12, 0x90, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR12
@@ -1525,10 +1525,10 @@ SEDI_RBF_DEFINE(SPI, DR12, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR13: Data Register x
  *     AddressOffset  : 0x94
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR13, 0x94, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR13, 0x94, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR13
@@ -1546,10 +1546,10 @@ SEDI_RBF_DEFINE(SPI, DR13, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR14: Data Register x
  *     AddressOffset  : 0x98
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR14, 0x98, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR14, 0x98, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR14
@@ -1567,10 +1567,10 @@ SEDI_RBF_DEFINE(SPI, DR14, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR15: Data Register x
  *     AddressOffset  : 0x9c
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR15, 0x9c, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR15, 0x9c, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR15
@@ -1588,10 +1588,10 @@ SEDI_RBF_DEFINE(SPI, DR15, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR16: Data Register x
  *     AddressOffset  : 0xa0
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR16, 0xa0, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR16, 0xa0, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR16
@@ -1609,10 +1609,10 @@ SEDI_RBF_DEFINE(SPI, DR16, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR17: Data Register x
  *     AddressOffset  : 0xa4
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR17, 0xa4, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR17, 0xa4, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR17
@@ -1630,10 +1630,10 @@ SEDI_RBF_DEFINE(SPI, DR17, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR18: Data Register x
  *     AddressOffset  : 0xa8
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR18, 0xa8, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR18, 0xa8, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR18
@@ -1651,10 +1651,10 @@ SEDI_RBF_DEFINE(SPI, DR18, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR19: Data Register x
  *     AddressOffset  : 0xac
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR19, 0xac, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR19, 0xac, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR19
@@ -1672,10 +1672,10 @@ SEDI_RBF_DEFINE(SPI, DR19, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR20: Data Register x
  *     AddressOffset  : 0xb0
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR20, 0xb0, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR20, 0xb0, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR20
@@ -1693,10 +1693,10 @@ SEDI_RBF_DEFINE(SPI, DR20, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR21: Data Register x
  *     AddressOffset  : 0xb4
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR21, 0xb4, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR21, 0xb4, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR21
@@ -1714,10 +1714,10 @@ SEDI_RBF_DEFINE(SPI, DR21, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR22: Data Register x
  *     AddressOffset  : 0xb8
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR22, 0xb8, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR22, 0xb8, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR22
@@ -1735,10 +1735,10 @@ SEDI_RBF_DEFINE(SPI, DR22, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR23: Data Register x
  *     AddressOffset  : 0xbc
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR23, 0xbc, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR23, 0xbc, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR23
@@ -1756,10 +1756,10 @@ SEDI_RBF_DEFINE(SPI, DR23, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR24: Data Register x
  *     AddressOffset  : 0xc0
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR24, 0xc0, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR24, 0xc0, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR24
@@ -1777,10 +1777,10 @@ SEDI_RBF_DEFINE(SPI, DR24, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR25: Data Register x
  *     AddressOffset  : 0xc4
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR25, 0xc4, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR25, 0xc4, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR25
@@ -1798,10 +1798,10 @@ SEDI_RBF_DEFINE(SPI, DR25, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR26: Data Register x
  *     AddressOffset  : 0xc8
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR26, 0xc8, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR26, 0xc8, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR26
@@ -1819,10 +1819,10 @@ SEDI_RBF_DEFINE(SPI, DR26, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR27: Data Register x
  *     AddressOffset  : 0xcc
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR27, 0xcc, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR27, 0xcc, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR27
@@ -1840,10 +1840,10 @@ SEDI_RBF_DEFINE(SPI, DR27, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR28: Data Register x
  *     AddressOffset  : 0xd0
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR28, 0xd0, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR28, 0xd0, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR28
@@ -1861,10 +1861,10 @@ SEDI_RBF_DEFINE(SPI, DR28, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR29: Data Register x
  *     AddressOffset  : 0xd4
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR29, 0xd4, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR29, 0xd4, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR29
@@ -1882,10 +1882,10 @@ SEDI_RBF_DEFINE(SPI, DR29, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR30: Data Register x
  *     AddressOffset  : 0xd8
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR30, 0xd8, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR30, 0xd8, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR30
@@ -1903,10 +1903,10 @@ SEDI_RBF_DEFINE(SPI, DR30, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR31: Data Register x
  *     AddressOffset  : 0xdc
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR31, 0xdc, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR31, 0xdc, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR31
@@ -1924,10 +1924,10 @@ SEDI_RBF_DEFINE(SPI, DR31, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR32: Data Register x
  *     AddressOffset  : 0xe0
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR32, 0xe0, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR32, 0xe0, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR32
@@ -1945,10 +1945,10 @@ SEDI_RBF_DEFINE(SPI, DR32, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR33: Data Register x
  *     AddressOffset  : 0xe4
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR33, 0xe4, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR33, 0xe4, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR33
@@ -1966,10 +1966,10 @@ SEDI_RBF_DEFINE(SPI, DR33, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR34: Data Register x
  *     AddressOffset  : 0xe8
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR34, 0xe8, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR34, 0xe8, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR34
@@ -1987,10 +1987,10 @@ SEDI_RBF_DEFINE(SPI, DR34, DR, 0, 32, RW, (uint32_t)0x0);
  *   DR35: Data Register x
  *     AddressOffset  : 0xec
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, DR35, 0xec, RW, (uint32_t)0x80000000, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, DR35, 0xec, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DR35
@@ -2008,10 +2008,10 @@ SEDI_RBF_DEFINE(SPI, DR35, DR, 0, 32, RW, (uint32_t)0x0);
  *   RX_SAMPLE_DLY: RX Sample Delay Register
  *     AddressOffset  : 0xf0
  *     AccessType     : RW
- *     WritableBitMask: 0x80
+ *     WritableBitMask: 0xff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(SPI, RX_SAMPLE_DLY, 0xf0, RW, (uint32_t)0x80, (uint32_t)0x0);
+SEDI_REG_DEFINE(SPI, RX_SAMPLE_DLY, 0xf0, RW, (uint32_t)0xff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register RX_SAMPLE_DLY

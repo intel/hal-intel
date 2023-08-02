@@ -7,7 +7,7 @@
 /*
  * This file has been automatically generated
  * Tool Version: 1.0.0
- * Generation Date: 2023-07-14
+ * Generation Date: 2023-08-01
  */
 
 #ifndef _SEDI_I2C_REGS_H_
@@ -22,10 +22,10 @@
  *   CON: I2C Control Register
  *     AddressOffset  : 0x0
  *     AccessType     : RW
- *     WritableBitMask: 0xfed
+ *     WritableBitMask: 0xfef
  *     ResetValue     : (uint32_t)0x67
  */
-SEDI_REG_DEFINE(I2C, CON, 0x0, RW, (uint32_t)0xfed, (uint32_t)0x67);
+SEDI_REG_DEFINE(I2C, CON, 0x0, RW, (uint32_t)0xfef, (uint32_t)0x67);
 
 /*
  * Bit Field of Register CON
@@ -306,10 +306,10 @@ SEDI_RBF_DEFINE(I2C, CON, RSVD_IC_CON_2, 26, 6, RO, (uint32_t)0x0);
  *   TAR: I2C Target Address Register
  *     AddressOffset  : 0x4
  *     AccessType     : RW
- *     WritableBitMask: 0x1e00
+ *     WritableBitMask: 0x1fff
  *     ResetValue     : (uint32_t)0x55
  */
-SEDI_REG_DEFINE(I2C, TAR, 0x4, RW, (uint32_t)0x1e00, (uint32_t)0x55);
+SEDI_REG_DEFINE(I2C, TAR, 0x4, RW, (uint32_t)0x1fff, (uint32_t)0x55);
 
 /*
  * Bit Field of Register TAR
@@ -407,10 +407,10 @@ SEDI_RBF_DEFINE(I2C, TAR, RSVD_IC_TAR_2, 17, 15, RO, (uint32_t)0x0);
  *   SAR: I2C Slave Address Register
  *     AddressOffset  : 0x8
  *     AccessType     : RW
- *     WritableBitMask: 0x200
+ *     WritableBitMask: 0x3ff
  *     ResetValue     : (uint32_t)0x55
  */
-SEDI_REG_DEFINE(I2C, SAR, 0x8, RW, (uint32_t)0x200, (uint32_t)0x55);
+SEDI_REG_DEFINE(I2C, SAR, 0x8, RW, (uint32_t)0x3ff, (uint32_t)0x55);
 
 /*
  * Bit Field of Register SAR
@@ -438,10 +438,10 @@ SEDI_RBF_DEFINE(I2C, SAR, RSVD_IC_SAR, 10, 22, RO, (uint32_t)0x0);
  *   HS_MADDR: I2C High Speed Master Mode Code Address Register
  *     AddressOffset  : 0xc
  *     AccessType     : RW
- *     WritableBitMask: 0x4
+ *     WritableBitMask: 0x7
  *     ResetValue     : (uint32_t)0x1
  */
-SEDI_REG_DEFINE(I2C, HS_MADDR, 0xc, RW, (uint32_t)0x4, (uint32_t)0x1);
+SEDI_REG_DEFINE(I2C, HS_MADDR, 0xc, RW, (uint32_t)0x7, (uint32_t)0x1);
 
 /*
  * Bit Field of Register HS_MADDR
@@ -469,10 +469,10 @@ SEDI_RBF_DEFINE(I2C, HS_MADDR, RSVD_IC_HS_MAR, 3, 29, RO, (uint32_t)0x0);
  *   DATA_CMD: I2C Rx/Tx Data Buffer and Command Register
  *     AddressOffset  : 0x10
  *     AccessType     : RW
- *     WritableBitMask: 0x780
+ *     WritableBitMask: 0x7ff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(I2C, DATA_CMD, 0x10, RW, (uint32_t)0x780, (uint32_t)0x0);
+SEDI_REG_DEFINE(I2C, DATA_CMD, 0x10, RW, (uint32_t)0x7ff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DATA_CMD
@@ -548,10 +548,10 @@ SEDI_RBF_DEFINE(I2C, DATA_CMD, RSVD_IC_DATA_CMD, 12, 20, RO, (uint32_t)0x0);
  *   SS_SCL_HCNT: Standard Speed I2C Clock SCL High Count Register
  *     AddressOffset  : 0x14
  *     AccessType     : RW
- *     WritableBitMask: 0x8000
+ *     WritableBitMask: 0xffff
  *     ResetValue     : (uint32_t)0x1e8
  */
-SEDI_REG_DEFINE(I2C, SS_SCL_HCNT, 0x14, RW, (uint32_t)0x8000, (uint32_t)0x1e8);
+SEDI_REG_DEFINE(I2C, SS_SCL_HCNT, 0x14, RW, (uint32_t)0xffff, (uint32_t)0x1e8);
 
 /*
  * Bit Field of Register SS_SCL_HCNT
@@ -579,10 +579,10 @@ SEDI_RBF_DEFINE(I2C, SS_SCL_HCNT, RSVD_IC_SS_SCL_HIGH_COUNT, 16, 16, RO, (uint32
  *   SS_SCL_LCNT: Standard Speed I2C Clock SCL Low Count Register
  *     AddressOffset  : 0x18
  *     AccessType     : RW
- *     WritableBitMask: 0x8000
+ *     WritableBitMask: 0xffff
  *     ResetValue     : (uint32_t)0x1f3
  */
-SEDI_REG_DEFINE(I2C, SS_SCL_LCNT, 0x18, RW, (uint32_t)0x8000, (uint32_t)0x1f3);
+SEDI_REG_DEFINE(I2C, SS_SCL_LCNT, 0x18, RW, (uint32_t)0xffff, (uint32_t)0x1f3);
 
 /*
  * Bit Field of Register SS_SCL_LCNT
@@ -610,10 +610,10 @@ SEDI_RBF_DEFINE(I2C, SS_SCL_LCNT, RSVD_IC_SS_SCL_LOW_COUNT, 16, 16, RO, (uint32_
  *   FS_SCL_HCNT: Fast Mode or Fast Mode Plus I2C Clock SCL High Count Register
  *     AddressOffset  : 0x1c
  *     AccessType     : RW
- *     WritableBitMask: 0x8000
+ *     WritableBitMask: 0xffff
  *     ResetValue     : (uint32_t)0x71
  */
-SEDI_REG_DEFINE(I2C, FS_SCL_HCNT, 0x1c, RW, (uint32_t)0x8000, (uint32_t)0x71);
+SEDI_REG_DEFINE(I2C, FS_SCL_HCNT, 0x1c, RW, (uint32_t)0xffff, (uint32_t)0x71);
 
 /*
  * Bit Field of Register FS_SCL_HCNT
@@ -641,10 +641,10 @@ SEDI_RBF_DEFINE(I2C, FS_SCL_HCNT, RSVD_IC_FS_SCL_HCNT, 16, 16, RO, (uint32_t)0x0
  *   FS_SCL_LCNT: Fast Mode or Fast Mode Plus I2C Clock SCL Low Count Register
  *     AddressOffset  : 0x20
  *     AccessType     : RW
- *     WritableBitMask: 0x8000
+ *     WritableBitMask: 0xffff
  *     ResetValue     : (uint32_t)0x7c
  */
-SEDI_REG_DEFINE(I2C, FS_SCL_LCNT, 0x20, RW, (uint32_t)0x8000, (uint32_t)0x7c);
+SEDI_REG_DEFINE(I2C, FS_SCL_LCNT, 0x20, RW, (uint32_t)0xffff, (uint32_t)0x7c);
 
 /*
  * Bit Field of Register FS_SCL_LCNT
@@ -672,10 +672,10 @@ SEDI_RBF_DEFINE(I2C, FS_SCL_LCNT, RSVD_IC_FS_SCL_LCNT, 16, 16, RO, (uint32_t)0x0
  *   HS_SCL_HCNT: High Speed I2C Clock SCL High Count Register
  *     AddressOffset  : 0x24
  *     AccessType     : RW
- *     WritableBitMask: 0x8000
+ *     WritableBitMask: 0xffff
  *     ResetValue     : (uint32_t)0x29
  */
-SEDI_REG_DEFINE(I2C, HS_SCL_HCNT, 0x24, RW, (uint32_t)0x8000, (uint32_t)0x29);
+SEDI_REG_DEFINE(I2C, HS_SCL_HCNT, 0x24, RW, (uint32_t)0xffff, (uint32_t)0x29);
 
 /*
  * Bit Field of Register HS_SCL_HCNT
@@ -703,10 +703,10 @@ SEDI_RBF_DEFINE(I2C, HS_SCL_HCNT, RSVD_IC_HS_SCL_HCNT, 16, 16, RO, (uint32_t)0x0
  *   HS_SCL_LCNT: High Speed I2C Clock SCL Low Count Register
  *     AddressOffset  : 0x28
  *     AccessType     : RW
- *     WritableBitMask: 0x8000
+ *     WritableBitMask: 0xffff
  *     ResetValue     : (uint32_t)0x32
  */
-SEDI_REG_DEFINE(I2C, HS_SCL_LCNT, 0x28, RW, (uint32_t)0x8000, (uint32_t)0x32);
+SEDI_REG_DEFINE(I2C, HS_SCL_LCNT, 0x28, RW, (uint32_t)0xffff, (uint32_t)0x32);
 
 /*
  * Bit Field of Register HS_SCL_LCNT
@@ -1517,10 +1517,10 @@ SEDI_RBF_DEFINE(I2C, RAW_INTR_STAT, RSVD_IC_RAW_INTR_STAT, 20, 12, RO, (uint32_t
  *   RX_TL: I2C Receive FIFO Threshold Register
  *     AddressOffset  : 0x38
  *     AccessType     : RW
- *     WritableBitMask: 0x80
+ *     WritableBitMask: 0xff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(I2C, RX_TL, 0x38, RW, (uint32_t)0x80, (uint32_t)0x0);
+SEDI_REG_DEFINE(I2C, RX_TL, 0x38, RW, (uint32_t)0xff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register RX_TL
@@ -1548,10 +1548,10 @@ SEDI_RBF_DEFINE(I2C, RX_TL, RSVD_IC_RX_TL, 8, 24, RO, (uint32_t)0x0);
  *   TX_TL: I2C Transmit FIFO Threshold Register
  *     AddressOffset  : 0x3c
  *     AccessType     : RW
- *     WritableBitMask: 0x80
+ *     WritableBitMask: 0xff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(I2C, TX_TL, 0x3c, RW, (uint32_t)0x80, (uint32_t)0x0);
+SEDI_REG_DEFINE(I2C, TX_TL, 0x3c, RW, (uint32_t)0xff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register TX_TL
@@ -2486,10 +2486,10 @@ SEDI_RBF_DEFINE(I2C, RXFLR, RSVD_RXFLR, 7, 25, RO, (uint32_t)0x0);
  *   SDA_HOLD: I2C SDA Hold Time Length Register
  *     AddressOffset  : 0x7c
  *     AccessType     : RW
- *     WritableBitMask: 0x808000
+ *     WritableBitMask: 0xffffff
  *     ResetValue     : (uint32_t)0x5
  */
-SEDI_REG_DEFINE(I2C, SDA_HOLD, 0x7c, RW, (uint32_t)0x808000, (uint32_t)0x5);
+SEDI_REG_DEFINE(I2C, SDA_HOLD, 0x7c, RW, (uint32_t)0xffffff, (uint32_t)0x5);
 
 /*
  * Bit Field of Register SDA_HOLD
@@ -2829,10 +2829,10 @@ SEDI_RBF_DEFINE(I2C, DMA_CR, RSVD_IC_DMA_CR_2_31, 2, 30, RO, (uint32_t)0x0);
  *   DMA_TDLR: DMA Transmit Data Level Register
  *     AddressOffset  : 0x8c
  *     AccessType     : RW
- *     WritableBitMask: 0x20
+ *     WritableBitMask: 0x3f
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(I2C, DMA_TDLR, 0x8c, RW, (uint32_t)0x20, (uint32_t)0x0);
+SEDI_REG_DEFINE(I2C, DMA_TDLR, 0x8c, RW, (uint32_t)0x3f, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DMA_TDLR
@@ -2860,10 +2860,10 @@ SEDI_RBF_DEFINE(I2C, DMA_TDLR, RSVD_DMA_TDLR, 6, 26, RO, (uint32_t)0x0);
  *   DMA_RDLR: DMA Receive Data Level Register
  *     AddressOffset  : 0x90
  *     AccessType     : RW
- *     WritableBitMask: 0x20
+ *     WritableBitMask: 0x3f
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(I2C, DMA_RDLR, 0x90, RW, (uint32_t)0x20, (uint32_t)0x0);
+SEDI_REG_DEFINE(I2C, DMA_RDLR, 0x90, RW, (uint32_t)0x3f, (uint32_t)0x0);
 
 /*
  * Bit Field of Register DMA_RDLR
@@ -2891,10 +2891,10 @@ SEDI_RBF_DEFINE(I2C, DMA_RDLR, RSVD_DMA_RDLR, 6, 26, RO, (uint32_t)0x0);
  *   SDA_SETUP: I2C SDA Setup Register
  *     AddressOffset  : 0x94
  *     AccessType     : RW
- *     WritableBitMask: 0x80
+ *     WritableBitMask: 0xff
  *     ResetValue     : (uint32_t)0x2
  */
-SEDI_REG_DEFINE(I2C, SDA_SETUP, 0x94, RW, (uint32_t)0x80, (uint32_t)0x2);
+SEDI_REG_DEFINE(I2C, SDA_SETUP, 0x94, RW, (uint32_t)0xff, (uint32_t)0x2);
 
 /*
  * Bit Field of Register SDA_SETUP
@@ -3012,10 +3012,10 @@ SEDI_RBF_DEFINE(I2C, ENABLE_STATUS, RSVD_IC_ENABLE_STATUS, 3, 29, RO, (uint32_t)
  *   FS_SPKLEN: I2C SS, FS or FM+  spike suppression limit
  *     AddressOffset  : 0xa0
  *     AccessType     : RW
- *     WritableBitMask: 0x80
+ *     WritableBitMask: 0xff
  *     ResetValue     : (uint32_t)0x5
  */
-SEDI_REG_DEFINE(I2C, FS_SPKLEN, 0xa0, RW, (uint32_t)0x80, (uint32_t)0x5);
+SEDI_REG_DEFINE(I2C, FS_SPKLEN, 0xa0, RW, (uint32_t)0xff, (uint32_t)0x5);
 
 /*
  * Bit Field of Register FS_SPKLEN
@@ -3043,10 +3043,10 @@ SEDI_RBF_DEFINE(I2C, FS_SPKLEN, RSVD_IC_FS_SPKLEN, 8, 24, RO, (uint32_t)0x0);
  *   HS_SPKLEN: I2C HS spike suppression limit register
  *     AddressOffset  : 0xa4
  *     AccessType     : RW
- *     WritableBitMask: 0x80
+ *     WritableBitMask: 0xff
  *     ResetValue     : (uint32_t)0x2
  */
-SEDI_REG_DEFINE(I2C, HS_SPKLEN, 0xa4, RW, (uint32_t)0x80, (uint32_t)0x2);
+SEDI_REG_DEFINE(I2C, HS_SPKLEN, 0xa4, RW, (uint32_t)0xff, (uint32_t)0x2);
 
 /*
  * Bit Field of Register HS_SPKLEN
@@ -3107,10 +3107,10 @@ SEDI_RBF_DEFINE(I2C, CLR_RESTART_DET, RSVD_IC_CLR_RESTART_DET, 1, 31, RO, (uint3
  *   SCL_STUCK_AT_LOW_TIMEOUT: I2C SCL Stuck at Low Timeout register
  *     AddressOffset  : 0xac
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)-1
  */
-SEDI_REG_DEFINE(I2C, SCL_STUCK_AT_LOW_TIMEOUT, 0xac, RW, (uint32_t)0x80000000, (uint32_t)-1);
+SEDI_REG_DEFINE(I2C, SCL_STUCK_AT_LOW_TIMEOUT, 0xac, RW, (uint32_t)0xffffffff, (uint32_t)-1);
 
 /*
  * Bit Field of Register SCL_STUCK_AT_LOW_TIMEOUT
@@ -3128,10 +3128,10 @@ SEDI_RBF_DEFINE(I2C, SCL_STUCK_AT_LOW_TIMEOUT, IC_SCL_STUCK_LOW_TIMEOUT, 0, 32, 
  *   SDA_STUCK_AT_LOW_TIMEOUT: I2C SDA Stuck at Low Timeout register
  *     AddressOffset  : 0xb0
  *     AccessType     : RW
- *     WritableBitMask: 0x80000000
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)-1
  */
-SEDI_REG_DEFINE(I2C, SDA_STUCK_AT_LOW_TIMEOUT, 0xb0, RW, (uint32_t)0x80000000, (uint32_t)-1);
+SEDI_REG_DEFINE(I2C, SDA_STUCK_AT_LOW_TIMEOUT, 0xb0, RW, (uint32_t)0xffffffff, (uint32_t)-1);
 
 /*
  * Bit Field of Register SDA_STUCK_AT_LOW_TIMEOUT
