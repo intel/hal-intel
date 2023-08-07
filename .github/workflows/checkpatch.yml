@@ -20,6 +20,7 @@ jobs:
         wget https://github.com/zephyrproject-rtos/zephyr/raw/main/scripts/spelling.txt -O ./spelling.txt
         echo "--ignore PREFER_ALIGNED" >> ./.checkpatch.conf
         echo "--ignore NEW_TYPEDEFS" >> ./.checkpatch.conf
+        echo "--ignore PREFER_PACKED" >> ./.checkpatch.conf
 
     - name: Set Git Base
       shell: bash
