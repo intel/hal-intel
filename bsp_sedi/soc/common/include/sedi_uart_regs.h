@@ -7,7 +7,7 @@
 /*
  * This file has been automatically generated
  * Tool Version: 1.0.0
- * Generation Date: 2023-08-02
+ * Generation Date: 2023-08-07
  */
 
 #ifndef _SEDI_UART_REGS_H_
@@ -22,10 +22,10 @@
  *   RBR: Receive Buffer Register
  *     AddressOffset  : 0x0
  *     AccessType     : RW
- *     WritableBitMask: 0x0
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(UART, RBR, 0x0, RW, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(UART, RBR, 0x0, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
  * Bit Field of Register RBR
@@ -42,10 +42,31 @@ SEDI_REG_DEFINE(UART, RBR, 0x0, RW, (uint32_t)0x0, (uint32_t)0x0);
  *   IER: Interrupt Enable Register
  *     AddressOffset  : 0x4
  *     AccessType     : RW
- *     WritableBitMask: 0x0
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(UART, IER, 0x4, RW, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(UART, IER, 0x4, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+
+/**
+ * TODO:
+ *     the IER register field definitions are missing in the osxml file,
+ *     manually added, should fix it in the osxml input.
+ **/
+SEDI_RBF_DEFINE(UART, IER, ERBFI, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(UART, IER, ERBFI, DISABLE, 0x0);
+SEDI_RBFV_DEFINE(UART, IER, ERBFI, ENABLE, 0x1);
+
+SEDI_RBF_DEFINE(UART, IER, ETBEI, 1, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(UART, IER, ETBEI, DISABLE, 0x0);
+SEDI_RBFV_DEFINE(UART, IER, ETBEI, ENABLE, 0x1);
+
+SEDI_RBF_DEFINE(UART, IER, ELSI, 2, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(UART, IER, ELSI, DISABLE, 0x9);
+SEDI_RBFV_DEFINE(UART, IER, ELSI, ENABLE, 0x1);
+
+SEDI_RBF_DEFINE(UART, IER, PTIME, 7, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(UART, IER, PTIME, DISABLE, 0x0);
+SEDI_RBFV_DEFINE(UART, IER, PTIME, ENABLE, 0x1);
 
 /*
  * Bit Field of Register IER
@@ -62,10 +83,28 @@ SEDI_REG_DEFINE(UART, IER, 0x4, RW, (uint32_t)0x0, (uint32_t)0x0);
  *   IIR: Interrupt Identification Register
  *     AddressOffset  : 0x8
  *     AccessType     : RW
- *     WritableBitMask: 0x0
+ *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(UART, IIR, 0x8, RW, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(UART, IIR, 0x8, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+/**
+ * TODO:
+ *     the IIR register field definitions are missing in the osxml file,
+ *     manually added, should fix it in the osxml input.
+ **/
+SEDI_RBF_DEFINE(UART, IIR, FIFOE, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(UART, IIR, FIFOE, DISABLE, 0x0);
+SEDI_RBFV_DEFINE(UART, IIR, FIFOE, ENABLE, 0x1);
+
+SEDI_RBF_DEFINE(UART, IIR, RFIFOR, 1, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(UART, IIR, RFIFOR, DISABLE, 0x0);
+SEDI_RBFV_DEFINE(UART, IIR, RFIFOR, ENABLE, 0x1);
+
+SEDI_RBF_DEFINE(UART, IIR, XFIFOR, 2, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(UART, IIR, XFIFOR, DISABLE, 0x0);
+SEDI_RBFV_DEFINE(UART, IIR, XFIFOR, ENABLE, 0x1);
+
+SEDI_RBF_DEFINE(UART, IIR, IID, 0, 4, RO, 0);
 
 /*
  * Bit Field of Register IIR
@@ -1423,6 +1462,15 @@ SEDI_RBF_DEFINE(UART, CTR, Peripheral_ID, 0, 32, RO, (uint32_t)0x44570110);
  */
 
 typedef struct {
+	/* Rx Buffer/ Tx Holding/ Div Latch Low register  */
+	__IO_RW uint32_t rbr_thr_dll;
+
+	/* Interrupt Enable / Div Latch High register */
+	__IO_RW uint32_t ier_dlh;
+
+	/* Interrupt Identification/FIFO Ctrl register */
+	__IO_RW uint32_t iir_fcr;
+
 	/* Line Control Register */
 	__IO_RW uint32_t lcr;
 
