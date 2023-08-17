@@ -244,6 +244,8 @@ uint32_t sedi_hpet_get_int_status(IN sedi_hpet_t timer_id)
 	return (hpet_reg->gis_low & BIT(timer_id)) ? 1 : 0;
 }
 
+#include <string.h>
+static char buffer[3];
 int32_t sedi_hpet_init(void)
 {
 	static int sedi_hpet_inited;
@@ -251,6 +253,7 @@ int32_t sedi_hpet_init(void)
 	if (sedi_hpet_inited)
 		return 0;
 
+	memcpy(&buffer[0], &hpet_reg, sizeof(hpet_reg));
 	sedi_hpet_inited = 1;
 
 	wait_for_idle(GENERAL_CONFIG | MAIN_COUNTER_VALUE | TIMER0_CONFIG_CAPS | TIMER0_COMPARATOR |
