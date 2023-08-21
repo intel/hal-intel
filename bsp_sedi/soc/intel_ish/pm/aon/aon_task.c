@@ -310,6 +310,78 @@ static int restore_main_fw(void)
 
 #define SRAM_POWER_OFF_BANKS	CONFIG_RAM_BANKS
 
+/* SRAM needs time to enter retention mode */
+#define CYCLES_PER_US                  100
+#define SRAM_RETENTION_US_DELAY	       5
+#define SRAM_RETENTION_CYCLES_DELAY    (SRAM_RETENTION_US_DELAY * CYCLES_PER_US)
+
+#ifdef CONFIG_SOC_INTEL_ISH_5_6_0
+#define SRAM_WARM_UP_COUNTER	(1000)
+#define SRAM_CTRL_ERASE_SIZE_BIT	2
+#define SRAM_CTRL_ERASE_BYTE_TO_QWORD	3
+#define SRAM_BANK_ERASE_SIZE                                                   \
+	((CONFIG_RAM_BANK_SIZE >> SRAM_CTRL_ERASE_BYTE_TO_QWORD)               \
+	 << SRAM_CTRL_ERASE_SIZE_BIT)
+#define SRAM_TILES		(CONFIG_RAM_BANKS * 2)
+
+static uint32_t sram_toggle_tile(uint32_t tile_id, uint32_t enable)
+{
+	uint32_t pmu_sram_val = read32(PMU_SRAM_PG_EN);
+	uint32_t pmu_toggle_bit = (1 << tile_id);
+	uint32_t u = 0;
+
+	if (enable && (pmu_sram_val & pmu_toggle_bit)) {
+		pmu_sram_val &= ~pmu_toggle_bit;
+		write32(PMU_SRAM_PG_EN, pmu_sram_val);
+		while (!(pmu_toggle_bit & read32(PMU_SRAM_PWR_STATUS)))
+			;
+		for (u = 0; u < SRAM_WARM_UP_COUNTER; ++u)
+			__asm__ volatile ("nop");
+	} else if (!enable && (~pmu_sram_val & pmu_toggle_bit)) {
+		pmu_sram_val |= pmu_toggle_bit;
+		write32(PMU_SRAM_PG_EN, pmu_sram_val);
+		while ((pmu_toggle_bit & read32(PMU_SRAM_PWR_STATUS)))
+			;
+		for (u = 0; u < SRAM_WARM_UP_COUNTER; ++u)
+			__asm__ volatile ("nop");
+	} else {
+		enable = 0;
+	}
+	return enable;
+}
+
+static void sram_toggle_bank(unsigned int bank_number, unsigned int enable)
+{
+	uint32_t tile_id = bank_number << 1;
+
+	if (enable) {
+		if (sram_toggle_tile(tile_id, enable) &&
+		    sram_toggle_tile((tile_id + 1), enable)) {
+			write32(ISH_SRAM_CTRL_ERASE_ADDR,
+				CONFIG_RAM_BASE +
+					bank_number * CONFIG_RAM_BANK_SIZE);
+			write32(ISH_SRAM_CTRL_ERASE_CTRL, (SRAM_BANK_ERASE_SIZE | 0x1));
+			while (read32(ISH_SRAM_CTRL_ERASE_CTRL) & 0x1)
+				;
+		}
+	} else {
+		sram_toggle_tile(tile_id, enable);
+		sram_toggle_tile((tile_id + 1), enable);
+	}
+
+	write32(ISH_SRAM_CTRL_INTR, read32(ISH_SRAM_CTRL_INTR));
+}
+
+static void sram_power(int on)
+{
+	int i;
+
+	for (i = 0; i < SRAM_POWER_OFF_BANKS; i++) {
+		sram_toggle_bank(i, on);
+	}
+}
+#else
+
 /**
  * check SRAM bank i power gated status in PMU_SRAM_PG_EN register
  * 1: power gated 0: not power gated
@@ -341,11 +413,6 @@ static int restore_main_fw(void)
 
 /* SRAM needs time to warm up after power on */
 #define SRAM_WARM_UP_DELAY_CNT		10
-
-/* SRAM needs time to enter retention mode */
-#define CYCLES_PER_US                  100
-#define SRAM_RETENTION_US_DELAY	       5
-#define SRAM_RETENTION_CYCLES_DELAY    (SRAM_RETENTION_US_DELAY * CYCLES_PER_US)
 
 static void sram_power(int on)
 {
@@ -395,6 +462,7 @@ static void sram_power(int on)
 
 	}
 }
+#endif
 
 #define RTC_TICKS_IN_SECOND 32768
 
@@ -498,15 +566,65 @@ static inline void clear_vnnred_aoncg(void)
 	write32(CCU_AONCG_EN, 0);
 }
 
+#ifdef CONFIG_SOC_INTEL_ISH_5_6_0
+#define STRINGIFY(x)			#x
+#define SLINE(num)			STRINGIFY(num)
+#define RETENTION_EXIT_CYCLES_DELAY	5
+
+static void sram_enter_sleep_mode(void)
+{
+	uint32_t val, sum_mask, mask;
+
+	sum_mask = mask = 0x1;
+	val = read32(PMU_SRAM_DEEPSLEEP);
+	while (sum_mask <= CONFIG_RAM_BANK_TILE_MASK) {
+		if (!(val & mask)) {
+			write32(PMU_SRAM_DEEPSLEEP, val | sum_mask);
+			while (read32(PMU_SRAM_PWR_STATUS) & mask)
+				;
+		}
+		mask <<= 1;
+		sum_mask += mask;
+	}
+}
+
+static void sram_exit_sleep_mode(void)
+{
+	uint32_t val, sum_mask, mask;
+
+	sum_mask = mask = 0x1;
+	val = read32(PMU_SRAM_DEEPSLEEP);
+	while (sum_mask <= CONFIG_RAM_BANK_TILE_MASK) {
+		if ((val & mask)) {
+			write32(PMU_SRAM_DEEPSLEEP, val & ~sum_mask);
+			while (!(read32(PMU_SRAM_PWR_STATUS) & mask))
+				;
+			__asm__ volatile (
+					"movl $"SLINE(RETENTION_EXIT_CYCLES_DELAY)", %%ecx;"
+					"loop .;\n\t"
+					:
+					:
+					: "ecx"
+					);
+		}
+		mask <<= 1;
+		sum_mask += mask;
+	}
+}
+#endif
+
 static void handle_d0i2(void)
 {
 	pg_exit_save_ctx();
 	aon_share.pg_exit = 0;
 
+#ifdef CONFIG_SOC_INTEL_ISH_5_6_0
+	sram_enter_sleep_mode();
+#else
 	/* set main SRAM into retention mode*/
 	write32(PMU_LDO_CTRL, (PMU_LDO_ENABLE_BIT
 		| PMU_LDO_RETENTION_BIT));
-
+#endif
 	/* delay some cycles before halt */
 	delay(SRAM_RETENTION_CYCLES_DELAY);
 
@@ -532,6 +650,9 @@ static void handle_d0i2(void)
 	if (read32(PMU_RST_PREP) & PMU_RST_PREP_AVAIL)
 		handle_reset(ISH_PM_STATE_RESET_PREP);
 
+#ifdef CONFIG_SOC_INTEL_ISH_5_6_0
+	sram_exit_sleep_mode();
+#else
 	/* set main SRAM intto normal mode */
 	write32(PMU_LDO_CTRL, PMU_LDO_ENABLE_BIT);
 
@@ -541,6 +662,7 @@ static void handle_d0i2(void)
 	 */
 	while (!(read32(PMU_LDO_CTRL) & PMU_LDO_READY_BIT))
 		continue;
+#endif
 
 	if (aon_share.pg_exit)
 		ish_dma_set_msb(PAGING_CHAN, aon_share.uma_msb,
