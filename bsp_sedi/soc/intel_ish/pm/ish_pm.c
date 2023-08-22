@@ -493,7 +493,8 @@ static void handle_d3(uint32_t irq_vec)
 		write32(SEDI_IOAPIC_EOI, irq_vec);
 		write32(LAPIC_EOI, 0x0);
 
-		ish_pm_reset(ISH_PM_STATE_D3);
+		if (!(pm_ctx.aon_share->host_in_suspend))
+			ish_pm_reset(ISH_PM_STATE_D3);
 	}
 }
 
@@ -581,6 +582,11 @@ void ish_pm_reset(enum ish_pm_state pm_state)
 void sedi_pm_reset(void)
 {
 	ish_mia_reset();
+}
+
+void sedi_pm_host_suspend(uint32_t suspend)
+{
+	pm_ctx.aon_share->host_in_suspend = suspend;
 }
 
 /*

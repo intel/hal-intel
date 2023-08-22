@@ -850,8 +850,10 @@ void ish_aon_main(void)
 		/* check if D3 rising status */
 		if (read32(PMU_D3_STATUS) &
 		    (PMU_D3_BIT_RISING_EDGE_STATUS | PMU_D3_BIT_SET)) {
-			aon_share.pm_state = ISH_PM_STATE_D3;
-			handle_d3();
+			if (!(aon_share.host_in_suspend)) {
+				aon_share.pm_state = ISH_PM_STATE_D3;
+				handle_d3();
+			}
 		}
 
 		/* restore main FW's IDT and switch back to main FW */
