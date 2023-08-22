@@ -55,6 +55,9 @@ struct ish_aon_share {
 	 */
 	uint32_t main_fw_rw_addr;
 	uint32_t main_fw_rw_size;
+
+	/* host suspend state */
+	uint32_t host_in_suspend;
 } __attribute__((packed));
 
 #endif /* _AON_SHARE_H_ */
