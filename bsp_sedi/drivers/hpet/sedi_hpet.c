@@ -124,27 +124,24 @@ int sedi_hpet_set_comparator(IN sedi_hpet_t timer_id, IN uint64_t value)
 	 */
 	uint32_t sts_wait = CTRL_STS_GENERAL_INT_STATUS | CTRL_STS_TIMER0_COMPARATOR |
 			    CTRL_STS_TIMER1_COMPARATOR | CTRL_STS_TIMER2_COMPARATOR;
+	uint64_t now;
+	int64_t diff;
 
 	if ((timer_id != HPET_0) && (value >> 32)) {
 		/* it's wrong to set into a 32-bits timer */
 		return SEDI_DRIVER_ERROR_PARAMETER;
 	}
 
-	if (SEDI_REG_GET(HPET, HPET_CTRL_STS) & sts_wait) {
-		uint64_t now;
-		int64_t diff;
+	wait_for_idle(sts_wait);
+	now = sedi_hpet_get_main_counter();
 
-		wait_for_idle(sts_wait);
-		now = sedi_hpet_get_main_counter();
-
-		if (timer_id == HPET_0) {
-			diff = (int64_t)(value - now);
-		} else {
-			diff = (int32_t)((uint32_t)value - (uint32_t)now);
-		}
-		if (diff < hpet_min_delay) {
-			_value = now + hpet_min_delay;
-		}
+	if (timer_id == HPET_0) {
+		diff = (int64_t)(value - now);
+	} else {
+		diff = (int32_t)((uint32_t)value - (uint32_t)now);
+	}
+	if (diff < hpet_min_delay) {
+		_value = now + hpet_min_delay;
 	}
 
 	return sedi_hpet_update_comparator(timer_id, _value);
