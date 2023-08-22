@@ -568,9 +568,9 @@ void sedi_pm_init(void)
 	write32(PMU_ISH_FABRIC_CNT, (read32(PMU_ISH_FABRIC_CNT) & 0xffff0000) | FABRIC_IDLE_COUNT);
 	write32(PMU_PGCB_CLKGATE_CTRL, TRUNK_CLKGATE_COUNT);
 
-	IRQ_CONNECT(SEDI_IRQ_RESET_PREP, 2, reset_prep_isr, 0, IOAPIC_LEVEL);
-	IRQ_CONNECT(SEDI_IRQ_PMU2IOAPIC, 2, pmu_wakeup_isr, 0, IOAPIC_LEVEL);
-	IRQ_CONNECT(SEDI_IRQ_PCIEDEV, 2, pcie_dev_isr, 0, IOAPIC_LEVEL);
+	IRQ_CONNECT(SEDI_IRQ_RESET_PREP, 5, reset_prep_isr, 0, IOAPIC_LEVEL);
+	IRQ_CONNECT(SEDI_IRQ_PMU2IOAPIC, 5, pmu_wakeup_isr, 0, IOAPIC_LEVEL);
+	IRQ_CONNECT(SEDI_IRQ_PCIEDEV, 5, pcie_dev_isr, 0, IOAPIC_LEVEL);
 
 	/* unmask reset prep avail interrupt */
 	write32(PMU_RST_PREP, 0);

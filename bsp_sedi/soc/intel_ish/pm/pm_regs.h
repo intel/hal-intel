@@ -215,9 +215,9 @@
 
 #define IOAPIC_NUM_RTES 64
 
-#define SEDI_VEC_RESET_PREP		64
-#define SEDI_VEC_PMU2IOAPIC		65
-#define SEDI_VEC_PCIEDEV		66
+#define SEDI_VEC_RESET_PREP		112
+#define SEDI_VEC_PMU2IOAPIC		113
+#define SEDI_VEC_PCIEDEV		114
 
 /* SRAM memory definitions */
 #define CONFIG_RAM_BASE			0xFF200000
