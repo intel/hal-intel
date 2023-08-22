@@ -316,33 +316,47 @@ static void enter_d0i0(void)
 
 static void enter_d0i1(void)
 {
+#ifndef CONFIG_SOC_INTEL_ISH_5_6_0
 	uint64_t ioapic_state;
+#endif
 	uint64_t t0, t1;
 
+#ifndef CONFIG_SOC_INTEL_ISH_5_6_0
 	ioapic_state = sedi_core_get_irq_map();
 	pm_disable_irqs(ioapic_state);
+#endif
 	sedi_core_irq_enable(SEDI_IRQ_PMU2IOAPIC);
 	sedi_core_irq_enable(SEDI_IRQ_RESET_PREP);
 
 	t0 = sedi_rtc_get_us();
 	pm_ctx.aon_share->pm_state = ISH_PM_STATE_D0I1;
 
+#ifndef CONFIG_SOC_INTEL_ISH_5_6_0
 	/* enable Trunk Clock Gating (TCG) of ISH */
 	write32(CCU_TCG_EN, 1);
+#else
+	write32(CCU_BCG_MIA, read32(CCU_BCG_MIA) | CCU_BCG_BIT_MIA);
+#endif
 
 	/* halt ISH cpu, will wakeup from PMU wakeup interrupt */
 	ish_mia_halt();
 
+#ifndef CONFIG_SOC_INTEL_ISH_5_6_0
 	/* disable Trunk Clock Gating (TCG) of ISH */
 	write32(CCU_TCG_EN, 0);
+#else
+	write32(CCU_BCG_MIA, read32(CCU_BCG_MIA) & (~CCU_BCG_BIT_MIA));
+#endif
 
 	pm_ctx.aon_share->pm_state = ISH_PM_STATE_D0;
 	t1 = sedi_rtc_get_us();
 	log_pm_stat(&pm_stats.d0i1, t0, t1);
 
+#ifndef CONFIG_SOC_INTEL_ISH_5_6_0
 	/* restore interrupts */
 	pm_enable_irqs(ioapic_state);
-	sedi_core_irq_enable(SEDI_IRQ_PMU2IOAPIC);
+#endif
+	sedi_core_irq_disable(SEDI_IRQ_PMU2IOAPIC);
 }
 
 static void enter_d0i2(void)
@@ -386,7 +400,7 @@ static void enter_d0i2(void)
 
 	/* restore interrupts */
 	pm_enable_irqs(ioapic_state);
-	sedi_core_irq_enable(SEDI_IRQ_PMU2IOAPIC);
+	sedi_core_irq_disable(SEDI_IRQ_PMU2IOAPIC);
 }
 
 static void enter_d0i3(void)
@@ -430,7 +444,7 @@ static void enter_d0i3(void)
 
 	/* restore interrupts */
 	pm_enable_irqs(ioapic_state);
-	sedi_core_irq_enable(SEDI_IRQ_PMU2IOAPIC);
+	sedi_core_irq_disable(SEDI_IRQ_PMU2IOAPIC);
 }
 
 static void pre_setting_d0ix(void)
@@ -448,9 +462,13 @@ void sedi_pm_enter_power_state(int state)
 {
 	switch (state) {
 	case ISH_PM_STATE_D0I1:
+#ifndef CONFIG_SOC_INTEL_ISH_5_6_0
 		pre_setting_d0ix();
+#endif
 		enter_d0i1();
+#ifndef CONFIG_SOC_INTEL_ISH_5_6_0
 		post_setting_d0ix();
+#endif
 		break;
 	case ISH_PM_STATE_D0I2:
 		pre_setting_d0ix();
