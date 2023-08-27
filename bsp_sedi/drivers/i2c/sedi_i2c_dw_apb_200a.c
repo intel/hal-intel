@@ -628,7 +628,9 @@ int32_t sedi_i2c_set_power(IN sedi_i2c_t i2c_device, IN sedi_power_state_t state
 	switch (state) {
 	case SEDI_POWER_FULL:
 		sedi_pm_set_device_power(id, state);
+		dw_i2c_clear_interrupt(context->base);
 		dw_i2c_irq_config(context->base, 0);
+		dw_i2c_disable(context->base);
 		dw_i2c_config_speed(context->base, context->speed,
 			context->clk_info);
 		break;
