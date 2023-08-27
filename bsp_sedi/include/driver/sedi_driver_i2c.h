@@ -254,6 +254,29 @@ typedef struct {
 } sedi_i2c_capabilities_t;
 
 /*!
+ * \struct sedi_i2c_bus_clk_t
+ * \brief I2C bus clock frequency configuration.
+ * \ingroup sedi_driver_i2c
+ */
+typedef struct{
+	uint16_t		sda_hold;
+	uint16_t		hcnt;
+	uint16_t		lcnt;
+} sedi_i2c_bus_clk_t;
+
+/*!
+ * \struct sedi_i2c_bus_info_t
+ * \brief I2C bus clock frequency configuration for each mode.
+ * \ingroup sedi_driver_i2c
+ */
+typedef struct {
+	sedi_i2c_bus_clk_t	std_clk;
+	sedi_i2c_bus_clk_t	fst_clk;
+	sedi_i2c_bus_clk_t	fsp_clk;
+	sedi_i2c_bus_clk_t	high_clk;
+} sedi_i2c_bus_info_t;
+
+/*!
  * \defgroup i2c_event_handler I2C Event Handler Callback
  * \ingroup sedi_driver_i2c
  * \{
