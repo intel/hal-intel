@@ -6,6 +6,8 @@
 
 #include "sedi_i2c_dw_apb_200a.h"
 #include "sedi_driver_pm.h"
+#include <sedi_driver_i2c.h>
+#include <sedi_i2c_regs.h>
 #include "sedi_driver_core.h"
 
 #define I2C_SDA_HOLD_DEFAULT (133)
@@ -20,6 +22,48 @@
 #define LBW_CLK_MHZ (sedi_pm_get_lbw_clock() / 1000000)
 
 enum { I2C_SPEED_STANDARD = 0, I2C_SPEED_FAST, I2C_SPEED_FAST_PLUS, I2C_SPEED_HIGH, I2C_SPEED_MAX };
+
+#define BSETS_ABORT_SOURCE_NO_ACK  \
+	(SEDI_RBFVM(I2C, TX_ABRT_SOURCE, ABRT_7B_ADDR_NOACK, ACTIVE) | \
+	 SEDI_RBFVM(I2C, TX_ABRT_SOURCE, ABRT_10ADDR1_NOACK, ACTIVE) | \
+	 SEDI_RBFVM(I2C, TX_ABRT_SOURCE, ABRT_10ADDR2_NOACK, ACTIVE) | \
+	 SEDI_RBFVM(I2C, TX_ABRT_SOURCE, ABRT_TXDATA_NOACK, ABRT_TXDATA_NOACK_GENERATED) | \
+	 SEDI_RBFVM(I2C, TX_ABRT_SOURCE, ABRT_GCALL_NOACK, ABRT_GCALL_NOACK_GENERATED))
+
+#define BSETS_DMA_ENABLE  \
+	(SEDI_RBFVM(I2C, DMA_CR, RDMAE, ENABLED) | \
+	 SEDI_RBFVM(I2C, DMA_CR, TDMAE, ENABLED))
+
+#define BSETS_INTR_ERROR  \
+	(SEDI_RBFVM(I2C, INTR_STAT, R_RX_UNDER, ACTIVE) | \
+	 SEDI_RBFVM(I2C, INTR_STAT, R_RX_OVER, ACTIVE)  | \
+	 SEDI_RBFVM(I2C, INTR_STAT, R_TX_OVER, ACTIVE)  | \
+	 SEDI_RBFVM(I2C, INTR_STAT, R_TX_ABRT, ACTIVE))
+
+#define BSETS_INTR_SEND  \
+	(SEDI_RBFVM(I2C, INTR_STAT, R_TX_EMPTY, ACTIVE) | \
+	 SEDI_RBFVM(I2C, INTR_STAT, R_STOP_DET, ACTIVE) | \
+	 BSETS_INTR_ERROR)
+
+#define BSETS_INTR_RECV  \
+	(SEDI_RBFVM(I2C, INTR_STAT, R_TX_EMPTY, ACTIVE) | \
+	 SEDI_RBFVM(I2C, INTR_STAT, R_RX_FULL, ACTIVE)  | \
+	 SEDI_RBFVM(I2C, INTR_STAT, R_STOP_DET, ACTIVE) | \
+	 BSETS_INTR_ERROR)
+
+#define BSETS_INTR_SLAVE  \
+	(SEDI_RBFVM(I2C, INTR_STAT, R_RD_REQ, ACTIVE) | \
+	 SEDI_RBFVM(I2C, INTR_STAT, R_RX_FULL, ACTIVE) | \
+	 SEDI_RBFVM(I2C, INTR_STAT, R_STOP_DET, ACTIVE) | \
+	 BSETS_INTR_ERROR  | \
+	 SEDI_RBFVM(I2C, INTR_STAT, R_START_DET, ACTIVE) | \
+	 SEDI_RBFVM(I2C, INTR_STAT, R_RESTART_DET, ACTIVE))
+
+#define BSETS_MASTER_DEFAULT  \
+	(SEDI_RBFVM(I2C, CON, IC_SLAVE_DISABLE, SLAVE_DISABLED) | \
+	 SEDI_RBFVM(I2C, CON, IC_RESTART_EN, ENABLED) | \
+	 SEDI_RBFVM(I2C, CON, MASTER_MODE, ENABLED) | \
+	 SEDI_RBFVM(I2C, CON, TX_EMPTY_CTRL, ENABLED))
 
 typedef enum {
 	I2C_DMA_DIRECTION_TX = 0,
@@ -58,8 +102,30 @@ struct i2c_context {
 	sedi_i2c_bus_info_t bus_info;
 };
 
-static uint32_t regval_speed[I2C_SPEED_MAX] = { BIT_SPEED_STANDARD, BIT_SPEED_FAST,
-						BIT_SPEED_FAST_PLUS, BIT_SPEED_HIGH };
+static uint32_t regval_speed[I2C_SPEED_MAX] = {
+	SEDI_RBFVM(I2C, CON, SPEED, STANDARD),
+	SEDI_RBFVM(I2C, CON, SPEED, FAST),
+	SEDI_RBFVM(I2C, CON, SPEED, FAST),
+	SEDI_RBFVM(I2C, CON, SPEED, HIGH)
+};
+
+/*
+ * For example, standard mode is 100KHz, 10000ns per period, 5000ns for
+ * SCL low & high level.
+ */
+#define I2C_SS_SCL_HIGH 4000
+#define I2C_SS_SCL_LOW 4700
+#define I2C_FS_SCL_HIGH 600
+#define I2C_FS_SCL_LOW 1300
+#define I2C_FSP_SCL_HIGH 300
+#define I2C_FSP_SCL_LOW 600
+#ifndef I2C_SCL_400PF
+#define I2C_HS_SCL_HIGH 70
+#define I2C_HS_SCL_LOW 590
+#else
+#define I2C_HS_SCL_HIGH 160
+#define I2C_HS_SCL_LOW 320
+#endif
 
 static void init_i2c_prescale(sedi_i2c_bus_info_t *bus_info)
 {
@@ -84,43 +150,43 @@ static void init_i2c_prescale(sedi_i2c_bus_info_t *bus_info)
 
 static void dw_i2c_enable(uint32_t base)
 {
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)base;
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
+
+	if (SEDI_PREG_RBFV_IS_SET(I2C, ENABLE_STATUS, IC_EN, ENABLED, &i2c->enable_status)) {
+		return;
+	}
 
 	/* prevent tx empty interrupt after enable */
 	i2c->intr_mask = 0;
 
-	if (i2c->enable_status & BIT_STATUS_ENABLE) {
-		return;
-	}
-
-	i2c->enable = 1;
-	while (0 == (i2c->enable_status & BIT_STATUS_ENABLE))
+	i2c->enable = SEDI_RBFVM(I2C, ENABLE, ENABLE, ENABLED);
+	while (SEDI_PREG_RBFV_IS_SET(I2C, ENABLE_STATUS, IC_EN, DISABLED, &i2c->enable_status))
 		;
 }
 
 static int dw_i2c_disable(uint32_t base)
 {
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)base;
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
 	/* If already disabled, return */
-	if ((i2c->enable & 0x1) == 0) {
+	if (SEDI_PREG_RBFV_IS_SET(I2C, ENABLE, ENABLE, DISABLED, &i2c->enable)) {
 		return 0;
 	}
 
 	i2c->dma_cr = 0;
 	i2c->intr_mask = 0;
 
-	if (i2c->status & BIT_STATUS_MASTER_ACTIVE) {
-		i2c->enable |= BIT_ABORT_TRANSFER;
-		while ((i2c->enable_status & BIT_ABORT_TRANSFER) != 0)
+	if (SEDI_PREG_RBFV_IS_SET(I2C, STATUS, MST_ACTIVITY, ACTIVE, &i2c->status)) {
+		SEDI_PREG_RBFV_SET(I2C, ENABLE, ABORT, ENABLED, &i2c->enable);
+		while (SEDI_PREG_RBFV_IS_SET(I2C, ENABLE, ABORT, ENABLED, &i2c->enable))
 			;
 	}
 
-	while (i2c->status & BIT_STATUS_MASTER_ACTIVE)
+	while (SEDI_PREG_RBFV_IS_SET(I2C, STATUS, MST_ACTIVITY, ACTIVE, &i2c->status))
 		;
 
 	i2c->enable = 0;
-	while ((i2c->enable_status & BIT_STATUS_ENABLE))
+	while (SEDI_PREG_RBFV_IS_SET(I2C, ENABLE_STATUS, IC_EN, ENABLED, &i2c->enable_status))
 		;
 
 	return 0;
@@ -128,13 +194,12 @@ static int dw_i2c_disable(uint32_t base)
 
 static int dw_i2c_config_addr(uint32_t base, uint16_t slave_addr)
 {
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)base;
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
+	i2c->tar = SEDI_RBFM_VALUE(I2C, TAR, IC_TAR, slave_addr);
 	if (slave_addr & SEDI_I2C_ADDRESS_10BIT) {
-		i2c->tar = BIT_10BIT_MASTER_DYNAMIC;
+		SEDI_PREG_RBFV_SET(I2C, TAR, IC_10BITADDR_MASTER, ADDR_10BITS, &i2c->tar);
 	}
-
-	i2c->tar = slave_addr;
 
 	return 0;
 }
@@ -142,13 +207,13 @@ static int dw_i2c_config_addr(uint32_t base, uint16_t slave_addr)
 static int dw_i2c_config_speed(uint32_t base, int speed,
 		sedi_i2c_bus_clk_t *cfg)
 {
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)base;
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
-	if (i2c->enable_status & BIT_STATUS_ENABLE) {
+	if (SEDI_PREG_RBFV_IS_SET(I2C, ENABLE_STATUS, IC_EN, ENABLED, &i2c->enable_status)) {
 		return -1;
 	}
 
-	i2c->con = CONFIG_MASTER_DEFAULT | regval_speed[speed];
+	i2c->con = BSETS_MASTER_DEFAULT | regval_speed[speed];
 
 	/* config sda_hold if needed */
 	if (cfg->sda_hold) {
@@ -178,45 +243,45 @@ static int dw_i2c_config_speed(uint32_t base, int speed,
 
 static int dw_i2c_config_txfifo(uint32_t base, uint32_t watermark)
 {
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)base;
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
-	i2c->tx_tl = watermark;
+	SEDI_PREG_RBF_SET(I2C, TX_TL, TX_TL, watermark, &i2c->tx_tl);
 
 	return 0;
 }
 
 static int dw_i2c_config_rxfifo(uint32_t base, uint32_t watermark)
 {
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)base;
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
-	i2c->rx_tl = watermark - 1;
+	SEDI_PREG_RBF_SET(I2C, RX_TL, RX_TL, watermark - 1, &i2c->rx_tl);
 
 	return 0;
 }
 
 static int dw_i2c_poll_write(uint32_t base, const uint8_t *buffer, uint32_t length, bool pending)
 {
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)base;
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
-	uint32_t cmd = BIT_CMD_WRITE;
+	uint32_t cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, WRITE);
 
 	for (uint32_t i = 0; i < length; i++) {
 		if ((i == length - 1) && (!pending)) {
-			cmd |= BIT_CMD_STOP;
+			cmd |= SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE);
 		}
 
 		i2c->data_cmd = buffer[i] | cmd;
 		/* Check abort and error */
 		do {
-			if (i2c->raw_intr_stat & CONFIG_INTR_ERROR) {
+			if (i2c->raw_intr_stat & BSETS_INTR_ERROR) {
 				return -1;
 			}
 
-		} while (0 == (i2c->status & BIT_STATUS_TX_EMPTY));
+		} while (SEDI_PREG_RBFV_IS_SET(I2C, STATUS, TFE, NON_EMPTY, &i2c->status));
 	}
 
 	/* Wait for end */
-	while (1 == (i2c->status & BIT_STATUS_ACTIVE)) {
+	while (SEDI_PREG_RBFV_IS_SET(I2C, STATUS, ACTIVITY, ACTIVE, &i2c->status)) {
 	}
 
 	return 0;
@@ -224,28 +289,28 @@ static int dw_i2c_poll_write(uint32_t base, const uint8_t *buffer, uint32_t leng
 
 static int dw_i2c_poll_read(uint32_t base, uint8_t *buffer, uint32_t length, bool pending)
 {
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)base;
-	uint32_t cmd = BIT_CMD_READ;
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
+	uint32_t cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ);
 
 	for (uint32_t i = 0; i < length; i++) {
 		if ((i == length - 1) && (!pending)) {
-			cmd |= BIT_CMD_STOP;
+			cmd |= SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE);
 		}
 
 		i2c->data_cmd = cmd;
 		do {
 			/* Check abort and error*/
-			if (i2c->raw_intr_stat & CONFIG_INTR_ERROR) {
+			if (i2c->raw_intr_stat & BSETS_INTR_ERROR) {
 				return -1;
 			}
 
-		} while (0 == (i2c->status & BIT_STATUS_RX_NOT_EMPTY));
+		} while (SEDI_PREG_RBFV_IS_SET(I2C, STATUS, RFNE, EMPTY, &i2c->status));
 
 		buffer[i] = (uint8_t)(i2c->data_cmd & 0xFF);
 	}
 
 	/* Wait for end */
-	while (1 == (i2c->status & BIT_STATUS_ACTIVE)) {
+	while (SEDI_PREG_RBFV_IS_SET(I2C, STATUS, ACTIVITY, ACTIVE, &i2c->status)) {
 	}
 
 	return 0;
@@ -253,14 +318,14 @@ static int dw_i2c_poll_read(uint32_t base, uint8_t *buffer, uint32_t length, boo
 
 static inline void dw_i2c_irq_config(uint32_t base, uint32_t config)
 {
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)base;
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
 	i2c->intr_mask = config;
 }
 
 static uint32_t dw_i2c_clear_interrupt(uint32_t base)
 {
-	i2c_dw_apb200a_regs_t *i2c = (void *)base;
+	sedi_i2c_regs_t *i2c = (void *)base;
 	uint32_t value;
 	uint32_t stat;
 
@@ -279,35 +344,35 @@ static uint32_t dw_i2c_clear_interrupt(uint32_t base)
 
 static void dw_i2c_dma_enable(uint32_t base, int fifo_depth)
 {
-	i2c_dw_apb200a_regs_t *i2c = (void *)base;
+	sedi_i2c_regs_t *i2c = (void *)base;
 
-	i2c->dma_tdlr = fifo_depth;
-	i2c->dma_rdlr = fifo_depth - 1;
+	i2c->dma_tdlr = SEDI_RBFM_VALUE(I2C, DMA_TDLR, DMATDL, fifo_depth);
+	i2c->dma_rdlr = SEDI_RBFM_VALUE(I2C, DMA_RDLR, DMARDL, fifo_depth - 1);
 
-	i2c->dma_cr = BIT_DMA_ENABLE;
+	i2c->dma_cr = BSETS_DMA_ENABLE;
 }
 
 /* force enter IDLE mode */
 static void dw_i2c_abort(struct i2c_context *context)
 {
-	i2c_dw_apb200a_regs_t *i2c = (void *)context->base;
+	sedi_i2c_regs_t *i2c = (void *)context->base;
 	uint32_t value;
 
-	if (i2c->enable == 0) {
+	if (SEDI_PREG_RBFV_IS_SET(I2C, ENABLE, ENABLE, DISABLED, &i2c->enable)) {
 		return;
 	}
 
 	i2c->dma_cr = 0;
 	i2c->intr_mask = 0;
 
-	i2c->enable |= BIT_ABORT_TRANSFER;
+	SEDI_PREG_RBFV_SET(I2C, ENABLE, ABORT, ENABLED, &i2c->enable);
 
 	/* Waiting for abort operation finished, HW can clear */
-	while ((i2c->raw_intr_stat & BIT_INTR_TX_ABORT) == 0) {
+	while (SEDI_PREG_RBFV_IS_SET(I2C, RAW_INTR_STAT, TX_ABRT, INACTIVE, &i2c->raw_intr_stat)) {
 		;
 	}
 
-	while (i2c->rxflr != 0) {
+	while (SEDI_PREG_RBFV_GET(I2C, RXFLR, RXFLR, &i2c->rxflr) != 0) {
 		value = i2c->data_cmd;
 	}
 
@@ -323,23 +388,23 @@ static void dw_i2c_abort(struct i2c_context *context)
 
 static uint32_t dw_i2c_dr_address(uint32_t base)
 {
-	i2c_dw_apb200a_regs_t *i2c = (void *)base;
+	sedi_i2c_regs_t *i2c = (void *)base;
 
 	return (uint32_t)&i2c->data_cmd;
 }
 
 static uint32_t dw_i2c_abort_analysis(uint32_t base)
 {
-	i2c_dw_apb200a_regs_t *i2c = (void *)base;
+	sedi_i2c_regs_t *i2c = (void *)base;
 	uint32_t abort_src, event = SEDI_I2C_EVENT_TRANSFER_INCOMPLETE;
 
 	abort_src = i2c->tx_abrt_source;
 
-	if (abort_src & BIT_ABORT_SOURCE_NO_ACK) {
+	if (abort_src & BSETS_ABORT_SOURCE_NO_ACK) {
 		event |= SEDI_I2C_EVENT_ADDRESS_NACK;
 	}
 
-	if (abort_src & BIT_ABORT_ARB_LOST) {
+	if (SEDI_PREG_RBFV_IS_SET(I2C, TX_ABRT_SOURCE, ARB_LOST, ABRT_LOST_GENERATED, &abort_src)) {
 		event |= SEDI_I2C_EVENT_ARBITRATION_LOST;
 	}
 
@@ -369,7 +434,7 @@ sedi_driver_version_t sedi_i2c_get_version(void)
 int sedi_i2c_get_capabilities(IN sedi_i2c_t i2c_device, sedi_i2c_capabilities_t *cap)
 {
 	struct i2c_context *context = &contexts[i2c_device];
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)(context->base);
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
 
 	DBG_CHECK(i2c_device < SEDI_I2C_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
@@ -379,9 +444,12 @@ int sedi_i2c_get_capabilities(IN sedi_i2c_t i2c_device, sedi_i2c_capabilities_t 
 		driver_capabilities[i2c_device].is_available = 0;
 	}
 
-	driver_capabilities[i2c_device].rx_buffer_depth = i2c->comp_param_1.rx_buffer_depth + 1;
-	driver_capabilities[i2c_device].tx_buffer_depth = i2c->comp_param_1.tx_buffer_depth + 1;
-	driver_capabilities[i2c_device].dma = i2c->comp_param_1.has_dma;
+	driver_capabilities[i2c_device].rx_buffer_depth =
+		SEDI_PREG_RBFV_GET(I2C, COMP_PARAM_1, RX_BUFFER_DEPTH, &i2c->comp_param_1) + 1;
+	driver_capabilities[i2c_device].tx_buffer_depth =
+		SEDI_PREG_RBFV_GET(I2C, COMP_PARAM_1, TX_BUFFER_DEPTH, &i2c->comp_param_1) + 1;
+	driver_capabilities[i2c_device].dma =
+		SEDI_PREG_RBFV_GET(I2C, COMP_PARAM_1, HAS_DMA, &i2c->comp_param_1);
 
 	*cap = driver_capabilities[i2c_device];
 
@@ -460,7 +528,7 @@ static void callback_tx_dma_transfer(const sedi_dma_t dma, const int chan, const
 				     void *param)
 {
 	struct i2c_context *context = &contexts[(int)param];
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)(context->base);
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
 	uint8_t last_byte;
 	int pending;
 	int result;
@@ -472,7 +540,7 @@ static void callback_tx_dma_transfer(const sedi_dma_t dma, const int chan, const
 	last_byte = context->buf[context->buf_size - 1];
 	pending = context->pending;
 
-	i2c->dma_cr &= ~BIT_DMA_TX_ENABLE;
+	SEDI_PREG_RBFV_SET(I2C, DMA_CR, TDMAE, DISABLED, &i2c->dma_cr);
 	context->buf_index = context->buf_size;
 	context->tx_dma_chan = SEDI_I2C_DMA_CHANNEL_UNUSED;
 
@@ -480,14 +548,14 @@ static void callback_tx_dma_transfer(const sedi_dma_t dma, const int chan, const
 		/* If no STOP, all data sent by DMA, enable TX_EMPTY interrupt
 		 * to get stop condition.
 		 */
-		i2c->tx_tl = 0;
-		i2c->intr_mask |= BIT_INTR_TX_EMPTY;
+		SEDI_PREG_RBF_SET(I2C, TX_TL, TX_TL, 0, &i2c->tx_tl);
+		SEDI_PREG_RBFV_SET(I2C, INTR_MASK, M_TX_EMPTY, DISABLED, &i2c->intr_mask);
 	} else {
 		/* WA for I2C DMA transfer, wait until FIFO not full*/
 		/* If need STOP, last data sent by interrupt */
-		while (i2c->txflr == I2C_FIFO_DEPTH) {
+		while (SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr) == I2C_FIFO_DEPTH) {
 		}
-		i2c->data_cmd = last_byte | BIT_CMD_STOP;
+		i2c->data_cmd = last_byte | SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE);
 	}
 	PARAM_UNUSED(result);
 }
@@ -496,14 +564,14 @@ static void callback_rx_dma_transfer(const sedi_dma_t dma, const int chan, const
 				     void *param)
 {
 	struct i2c_context *context = &contexts[(int)param];
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)(context->base);
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
 
 	PARAM_UNUSED(dma);
 	PARAM_UNUSED(chan);
 	PARAM_UNUSED(event);
 
 	/* Disable the Rx dma request */
-	i2c->dma_cr &= ~BIT_DMA_RX_ENABLE;
+	SEDI_PREG_RBFV_SET(I2C, DMA_CR, RDMAE, DISABLED, &i2c->dma_cr);
 	/* Let stop detect interrupt end transfer */
 	context->buf_index = context->buf_size;
 	context->rx_dma_chan = SEDI_I2C_DMA_CHANNEL_UNUSED;
@@ -513,19 +581,19 @@ static void callback_rx_cmd_dma_transfer(const sedi_dma_t dma, const int chan, c
 					 void *param)
 {
 	struct i2c_context *context = &contexts[(int)param];
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)(context->base);
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
 
 	PARAM_UNUSED(dma);
 	PARAM_UNUSED(chan);
 	PARAM_UNUSED(event);
 
 	/* Send the last command, which is different from previous one*/
-	while (i2c->txflr == I2C_FIFO_DEPTH) {
+	while (SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr) == I2C_FIFO_DEPTH) {
 	}
 	if (context->pending) {
-		i2c->data_cmd = BIT_CMD_READ;
+		i2c->data_cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ);
 	} else {
-		i2c->data_cmd = BIT_CMD_READ | BIT_CMD_STOP;
+		i2c->data_cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ) | SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE);
 	}
 
 	context->tx_dma_chan = SEDI_I2C_DMA_CHANNEL_UNUSED;
@@ -604,7 +672,7 @@ int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t dma, IN 
 				  IN bool pending)
 {
 	DBG_CHECK(i2c_device < SEDI_I2C_NUM, SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(0 != (addr & BIT_MASK_ADDR), SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(0 != (addr & SEDI_RBFM(I2C, TAR, IC_TAR)), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(NULL != data, SEDI_DRIVER_ERROR_PARAMETER);
 
 	int ret;
@@ -654,7 +722,7 @@ int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t dma, IN 
 
 	dw_i2c_dma_enable(context->base, 1);
 
-	dw_i2c_irq_config(context->base, CONFIG_INTR_ERROR | BIT_INTR_STOP_DET);
+	dw_i2c_irq_config(context->base, BSETS_INTR_ERROR | SEDI_RBFVM(I2C, INTR_MASK, M_STOP_DET, DISABLED));
 
 	return SEDI_DRIVER_OK;
 }
@@ -664,7 +732,7 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t dma, IN u
 				 IN uint32_t num, IN bool pending)
 {
 	DBG_CHECK(i2c_device < SEDI_I2C_NUM, SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(0 != (addr & BIT_MASK_ADDR), SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(0 != (addr & SEDI_RBFM(I2C, TAR, IC_TAR)), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(NULL != data, SEDI_DRIVER_ERROR_PARAMETER);
 
 	if (num <= SEDI_I2C_DMA_LENGTH_LIMIT) {
@@ -673,7 +741,7 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t dma, IN u
 
 	int ret;
 	struct i2c_context *context = &contexts[i2c_device];
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)(context->base);
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
 
 	if (context->status.busy) {
 		return SEDI_DRIVER_ERROR_BUSY;
@@ -704,7 +772,7 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t dma, IN u
 	context->rx_dma_chan = dma_chan;
 
 	/* First write the command into register */
-	i2c->data_cmd = BIT_CMD_READ | BIT_CMD_RESTART;
+	i2c->data_cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ) | SEDI_RBFVM(I2C, DATA_CMD, RESTART, ENABLE);
 
 	/* Clean the cmd */
 	sedi_core_clean_dcache_by_addr((uint32_t *)(&dma_cmd), sizeof(dma_cmd));
@@ -721,7 +789,7 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t dma, IN u
 
 	dw_i2c_dma_enable(context->base, 1);
 
-	dw_i2c_irq_config(context->base, CONFIG_INTR_ERROR | BIT_INTR_STOP_DET);
+	dw_i2c_irq_config(context->base, BSETS_INTR_ERROR | SEDI_RBFVM(I2C, INTR_MASK, M_STOP_DET, DISABLED));
 
 	return SEDI_DRIVER_OK;
 }
@@ -730,7 +798,7 @@ int32_t sedi_i2c_master_write_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, 
 				    IN uint32_t num, IN bool pending)
 {
 	DBG_CHECK(i2c_device < SEDI_I2C_NUM, SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(0 != (addr & BIT_MASK_ADDR), SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(0 != (addr & SEDI_RBFM(I2C, TAR, IC_TAR)), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(NULL != data, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(0 != num, SEDI_DRIVER_ERROR_PARAMETER);
 
@@ -769,7 +837,7 @@ int32_t sedi_i2c_master_write_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, 
 	context->buf_index = 0;
 	context->pending = pending;
 
-	dw_i2c_irq_config(context->base, CONFIG_INTR_SEND);
+	dw_i2c_irq_config(context->base, BSETS_INTR_SEND);
 
 	return SEDI_DRIVER_OK;
 }
@@ -778,7 +846,7 @@ int32_t sedi_i2c_master_read_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, O
 				   IN uint32_t num, IN bool pending)
 {
 	DBG_CHECK(i2c_device < SEDI_I2C_NUM, SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(0 != (addr & BIT_MASK_ADDR), SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(0 != (addr & SEDI_RBFM(I2C, TAR, IC_TAR)), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(NULL != data, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(0 != num, SEDI_DRIVER_ERROR_PARAMETER);
 
@@ -817,7 +885,7 @@ int32_t sedi_i2c_master_read_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, O
 	context->rx_cmd_index = 0;
 	context->pending = pending;
 
-	dw_i2c_irq_config(context->base, CONFIG_INTR_RECV);
+	dw_i2c_irq_config(context->base, BSETS_INTR_RECV);
 
 	return SEDI_DRIVER_OK;
 }
@@ -826,7 +894,7 @@ int32_t sedi_i2c_master_poll_write(IN sedi_i2c_t i2c_device, IN uint32_t addr, I
 				   IN uint32_t num, IN bool pending)
 {
 	DBG_CHECK(i2c_device < SEDI_I2C_NUM, SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(0 != (addr & BIT_MASK_ADDR), SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(0 != (addr & SEDI_RBFM(I2C, TAR, IC_TAR)), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(NULL != data, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(0 != num, SEDI_DRIVER_ERROR_PARAMETER);
 
@@ -863,7 +931,7 @@ int32_t sedi_i2c_master_poll_read(IN sedi_i2c_t i2c_device, IN uint32_t addr, OU
 				  IN uint32_t num, IN bool pending)
 {
 	DBG_CHECK(i2c_device < SEDI_I2C_NUM, SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(0 != (addr & BIT_MASK_ADDR), SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(0 != (addr & SEDI_RBFM(I2C, TAR, IC_TAR)), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(NULL != data, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(0 != num, SEDI_DRIVER_ERROR_PARAMETER);
 
@@ -988,11 +1056,11 @@ int sedi_i2c_get_status(IN sedi_i2c_t i2c_device, sedi_i2c_status_t *status)
 static void i2c_isr_recv(sedi_i2c_t i2c_device)
 {
 	struct i2c_context *context = &contexts[i2c_device];
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)(context->base);
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
 	uint32_t data_remain;
 
 	/* Receive all data from FIFO */
-	uint32_t size = i2c->rxflr;
+	uint32_t size = SEDI_PREG_RBFV_GET(I2C, RXFLR, RXFLR, &i2c->rxflr);
 
 	if (context->rx_cmd_index < size) {
 		uint32_t dummy;
@@ -1007,15 +1075,16 @@ static void i2c_isr_recv(sedi_i2c_t i2c_device)
 	}
 
 	while (size > 0) {
-		context->buf[context->buf_index] = (i2c->data_cmd & 0xFF);
+		context->buf[context->buf_index] = SEDI_PREG_RBFV_GET(I2C,
+				DATA_CMD, DAT, &i2c->data_cmd);
 		context->buf_index++;
 		size--;
 	}
 
 	/* If need to change watermark */
 	data_remain = context->buf_size - context->buf_index;
-	if ((data_remain <= i2c->rx_tl) && (data_remain != 0)) {
-		i2c->rx_tl = data_remain - 1;
+	if ((data_remain <= SEDI_PREG_RBFV_GET(I2C, RX_TL, RX_TL, &i2c->rx_tl)) && (data_remain != 0)) {
+		SEDI_PREG_RBF_SET(I2C, RX_TL, RX_TL, data_remain - 1, &i2c->rx_tl);
 	}
 }
 
@@ -1023,13 +1092,13 @@ static void i2c_isr_recv(sedi_i2c_t i2c_device)
 static void i2c_isr_ask_data(sedi_i2c_t i2c_device)
 {
 	struct i2c_context *context = &contexts[i2c_device];
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)(context->base);
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
 
 	uint32_t tx_fifo_space = 0, rx_fifo_space = 0;
 	uint32_t rx_pending = context->rx_cmd_index - context->buf_index;
 	uint32_t size = context->buf_size - context->rx_cmd_index;
 	uint32_t fifo_size = 0;
-	uint32_t data = BIT_CMD_READ;
+	uint32_t data = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ);
 	bool last_data = false;
 
 	/* No need to send anymore */
@@ -1038,16 +1107,16 @@ static void i2c_isr_ask_data(sedi_i2c_t i2c_device)
 	}
 
 	/* Decide how many space there are */
-	if (I2C_FIFO_DEPTH - i2c->txflr <= rx_pending) {
+	if ((I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr)) <= rx_pending) {
 		return;
 	}
 
-	tx_fifo_space = I2C_FIFO_DEPTH - i2c->txflr - rx_pending;
+	tx_fifo_space = I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr) - rx_pending;
 
 	/* To prevent RX FIFO overflow, need to make sure command number less
 	 * than the space in RX FIFO.
 	 */
-	rx_fifo_space = I2C_FIFO_DEPTH - i2c->rxflr;
+	rx_fifo_space = I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, RXFLR, RXFLR, &i2c->rxflr);
 
 	if (tx_fifo_space < rx_fifo_space) {
 		fifo_size = tx_fifo_space;
@@ -1064,14 +1133,14 @@ static void i2c_isr_ask_data(sedi_i2c_t i2c_device)
 	while (size > 0) {
 		/* If it is first data, need RESTART */
 		if (context->rx_cmd_index == 0) {
-			data |= BIT_CMD_RESTART;
+			data |= SEDI_RBFVM(I2C, DATA_CMD, RESTART, ENABLE);
 		}
 
 		/* Last data need STOP flag */
 		if ((size == 1) && last_data && (!(context->pending))) {
-			data |= BIT_CMD_STOP;
+			data |= SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE);
 			/*  Disable tx empty interrupt */
-			i2c->intr_mask &= ~BIT_INTR_TX_EMPTY;
+			i2c->intr_mask &= ~SEDI_RBFVM(I2C, INTR_MASK, M_TX_EMPTY, ENABLED);
 		}
 
 		i2c->data_cmd = data;
@@ -1079,14 +1148,14 @@ static void i2c_isr_ask_data(sedi_i2c_t i2c_device)
 		size--;
 
 		/* Reset data */
-		data = BIT_CMD_READ;
+		data = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ);
 	}
 }
 
 static void i2c_isr_send(sedi_i2c_t i2c_device)
 {
 	struct i2c_context *context = &contexts[i2c_device];
-	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)(context->base);
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
 
 	uint32_t tx_fifo_space = 0;
 	uint32_t size = context->buf_size - context->buf_index;
@@ -1099,7 +1168,7 @@ static void i2c_isr_send(sedi_i2c_t i2c_device)
 	}
 
 	/* Decide how many space there are */
-	tx_fifo_space = I2C_FIFO_DEPTH - i2c->txflr;
+	tx_fifo_space = I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr);
 
 	if (size <= tx_fifo_space) {
 		last_data = true;
@@ -1124,11 +1193,11 @@ static void i2c_isr_send(sedi_i2c_t i2c_device)
 		 * to 0, this will have a interrupt while all data sent out
 		 */
 		if (context->pending) {
-			i2c->tx_tl = 0;
+			SEDI_PREG_RBF_SET(I2C, TX_TL, TX_TL, 0, &i2c->tx_tl);
 		} else {
-			data |= BIT_CMD_STOP;
+			SEDI_PREG_RBFV_SET(I2C, DATA_CMD, STOP, ENABLE, &data);
 			/* Disable tx empty interrupt */
-			i2c->intr_mask &= ~BIT_INTR_TX_EMPTY;
+			i2c->intr_mask &= ~SEDI_RBFVM(I2C, INTR_MASK, M_TX_EMPTY, DISABLED);
 		}
 	}
 
@@ -1139,7 +1208,7 @@ static void i2c_isr_send(sedi_i2c_t i2c_device)
 static void i2c_isr_complete(sedi_i2c_t i2c_device, bool is_error)
 {
 	struct i2c_context *context = &contexts[i2c_device];
-	i2c_dw_apb200a_regs_t *regs = (void *)context->base;
+	sedi_i2c_regs_t *regs = (void *)context->base;
 	uint32_t event, val;
 
 	dw_i2c_irq_config(context->base, 0);
@@ -1172,7 +1241,7 @@ static void i2c_isr_complete(sedi_i2c_t i2c_device, bool is_error)
 void sedi_i2c_isr_handler(IN sedi_i2c_t i2c_device)
 {
 	struct i2c_context *context = &contexts[i2c_device];
-	i2c_dw_apb200a_regs_t *regs = (void *)context->base;
+	sedi_i2c_regs_t *regs = (void *)context->base;
 	uint32_t stat, val;
 
 	/* Return if enter into isr unexpectedly */
@@ -1184,13 +1253,13 @@ void sedi_i2c_isr_handler(IN sedi_i2c_t i2c_device)
 	stat = regs->intr_stat;
 
 	/* If error happened, go to end*/
-	if (stat & CONFIG_INTR_ERROR) {
+	if (stat & BSETS_INTR_ERROR) {
 		i2c_isr_complete(i2c_device, true);
 		return;
 	}
 
 	/* check if there is a entity in rx fifo */
-	if (stat & BIT_INTR_RX_FULL) {
+	if (SEDI_PREG_RBFV_IS_SET(I2C, INTR_STAT, R_RX_FULL, ACTIVE, &stat)) {
 		i2c_isr_recv(i2c_device);
 		/* For receive with no STOP, while all data received, ended */
 		if ((context->buf_index == context->buf_size) && (context->pending)) {
@@ -1200,7 +1269,7 @@ void sedi_i2c_isr_handler(IN sedi_i2c_t i2c_device)
 	}
 
 	/* For transfer need STOP flag, use STOP as transfer end condition */
-	if ((stat & BIT_INTR_STOP_DET) && (context->pending == 0)) {
+	if ((SEDI_PREG_RBFV_IS_SET(I2C, INTR_STAT, R_STOP_DET, ACTIVE, &stat)) && (context->pending == 0)) {
 		/* Clear stop detect interrupt */
 		val = regs->clr_stop_det;
 		i2c_isr_complete(i2c_device, false);
@@ -1208,13 +1277,13 @@ void sedi_i2c_isr_handler(IN sedi_i2c_t i2c_device)
 	}
 	/* For send with no STOP, while TX FIFO empty, ended */
 	if ((context->pending) && (context->buf_index == context->buf_size) &&
-	    (stat & BIT_INTR_TX_EMPTY)) {
+	    (SEDI_PREG_RBFV_IS_SET(I2C, INTR_STAT, R_TX_EMPTY, ACTIVE, &stat))) {
 		i2c_isr_complete(i2c_device, false);
 		return;
 	}
 
 	/* TX empty condition */
-	if (stat & BIT_INTR_TX_EMPTY) {
+	if (SEDI_PREG_RBFV_IS_SET(I2C, INTR_STAT, R_TX_EMPTY, ACTIVE, &stat)) {
 		/*If it is read operation, need to send cmd*/
 		if (context->status.direction == 1) {
 			i2c_isr_ask_data(i2c_device);
