@@ -8,6 +8,7 @@
 #include "sedi_driver_pm.h"
 #include "sedi_driver_core.h"
 
+#define I2C_SDA_HOLD_DEFAULT (133)
 #define I2C_FIFO_DEFAULT_WATERMARK (I2C_FIFO_DEPTH / 2U)
 
 /*
@@ -53,27 +54,31 @@ struct i2c_context {
 	dma_memory_type_t rx_memory_type;
 
 	int speed;
+	sedi_i2c_bus_clk_t *clk_info;
+	sedi_i2c_bus_info_t bus_info;
 };
 
 static uint32_t regval_speed[I2C_SPEED_MAX] = { BIT_SPEED_STANDARD, BIT_SPEED_FAST,
 						BIT_SPEED_FAST_PLUS, BIT_SPEED_HIGH };
 
-static uint32_t regval_scl_hcnt[I2C_SPEED_MAX] = { 0 };
-
-static uint32_t regval_scl_lcnt[I2C_SPEED_MAX] = { 0 };
-
-static void init_i2c_prescale(void)
+static void init_i2c_prescale(sedi_i2c_bus_info_t *bus_info)
 {
-	if (regval_scl_hcnt[I2C_SPEED_STANDARD] == 0) {
-		regval_scl_hcnt[I2C_SPEED_STANDARD] = LBW_CLK_MHZ * I2C_SS_SCL_HIGH / NS_PER_US;
-		regval_scl_hcnt[I2C_SPEED_FAST] = LBW_CLK_MHZ * I2C_FS_SCL_HIGH / NS_PER_US;
-		regval_scl_hcnt[I2C_SPEED_FAST_PLUS] = LBW_CLK_MHZ * I2C_FSP_SCL_HIGH / NS_PER_US;
-		regval_scl_hcnt[I2C_SPEED_HIGH] = LBW_CLK_MHZ * I2C_HS_SCL_HIGH / NS_PER_US;
+	if (bus_info->std_clk.hcnt == 0) {
 
-		regval_scl_lcnt[I2C_SPEED_STANDARD] = LBW_CLK_MHZ * I2C_SS_SCL_LOW / NS_PER_US;
-		regval_scl_lcnt[I2C_SPEED_FAST] = LBW_CLK_MHZ * I2C_FS_SCL_LOW / NS_PER_US;
-		regval_scl_lcnt[I2C_SPEED_FAST_PLUS] = LBW_CLK_MHZ * I2C_FSP_SCL_LOW / NS_PER_US;
-		regval_scl_lcnt[I2C_SPEED_HIGH] = LBW_CLK_MHZ * I2C_HS_SCL_LOW / NS_PER_US;
+		bus_info->std_clk.sda_hold = LBW_CLK_MHZ * I2C_SDA_HOLD_DEFAULT / NS_PER_US;
+		bus_info->fst_clk.sda_hold = LBW_CLK_MHZ * I2C_SDA_HOLD_DEFAULT / NS_PER_US;
+		bus_info->fsp_clk.sda_hold = LBW_CLK_MHZ * I2C_SDA_HOLD_DEFAULT / NS_PER_US;
+		bus_info->high_clk.sda_hold = LBW_CLK_MHZ * I2C_SDA_HOLD_DEFAULT / NS_PER_US;
+
+		bus_info->std_clk.hcnt = LBW_CLK_MHZ * I2C_SS_SCL_HIGH / NS_PER_US;
+		bus_info->fst_clk.hcnt = LBW_CLK_MHZ * I2C_FS_SCL_HIGH / NS_PER_US;
+		bus_info->fsp_clk.hcnt = LBW_CLK_MHZ * I2C_FSP_SCL_HIGH / NS_PER_US;
+		bus_info->high_clk.hcnt = LBW_CLK_MHZ * I2C_HS_SCL_HIGH / NS_PER_US;
+
+		bus_info->std_clk.lcnt = LBW_CLK_MHZ * I2C_SS_SCL_LOW / NS_PER_US;
+		bus_info->fst_clk.lcnt = LBW_CLK_MHZ * I2C_FS_SCL_LOW / NS_PER_US;
+		bus_info->fsp_clk.lcnt = LBW_CLK_MHZ * I2C_FSP_SCL_LOW / NS_PER_US;
+		bus_info->high_clk.lcnt = LBW_CLK_MHZ * I2C_HS_SCL_LOW / NS_PER_US;
 	}
 }
 
@@ -134,7 +139,8 @@ static int dw_i2c_config_addr(uint32_t base, uint16_t slave_addr)
 	return 0;
 }
 
-static int dw_i2c_config_speed(uint32_t base, int speed)
+static int dw_i2c_config_speed(uint32_t base, int speed,
+		sedi_i2c_bus_clk_t *cfg)
 {
 	i2c_dw_apb200a_regs_t *i2c = (i2c_dw_apb200a_regs_t *)base;
 
@@ -144,19 +150,27 @@ static int dw_i2c_config_speed(uint32_t base, int speed)
 
 	i2c->con = CONFIG_MASTER_DEFAULT | regval_speed[speed];
 
-	i2c->ss_scl_hcnt = regval_scl_hcnt[I2C_SPEED_STANDARD];
-	i2c->ss_scl_lcnt = regval_scl_lcnt[I2C_SPEED_STANDARD];
+	/* config sda_hold if needed */
+	if (cfg->sda_hold) {
+		i2c->sda_hold = cfg->sda_hold;
+	}
 
-	/* if speed is not fast or fast plus mode, the reg will not be used */
-	i2c->fs_scl_hcnt = regval_scl_hcnt[speed];
-	i2c->fs_scl_lcnt = regval_scl_lcnt[speed];
-
-	i2c->hs_scl_hcnt = regval_scl_hcnt[I2C_SPEED_HIGH];
-	i2c->hs_scl_lcnt = regval_scl_lcnt[I2C_SPEED_HIGH];
-
-	if (speed == I2C_SPEED_HIGH) {
-		i2c->fs_scl_hcnt = regval_scl_hcnt[I2C_SPEED_FAST];
-		i2c->fs_scl_lcnt = regval_scl_lcnt[I2C_SPEED_FAST];
+	switch (speed) {
+	case I2C_SPEED_STANDARD:
+		i2c->ss_scl_hcnt = cfg->hcnt;
+		i2c->ss_scl_lcnt = cfg->lcnt;
+		break;
+	case I2C_SPEED_FAST:
+	case I2C_SPEED_FAST_PLUS:
+		i2c->fs_scl_hcnt = cfg->hcnt;
+		i2c->fs_scl_lcnt = cfg->lcnt;
+		break;
+	case I2C_SPEED_HIGH:
+		i2c->hs_scl_hcnt = cfg->hcnt;
+		i2c->hs_scl_lcnt = cfg->lcnt;
+		break;
+	default:
+		return SEDI_DRIVER_ERROR_UNSUPPORTED;
 	}
 
 	return 0;
@@ -279,6 +293,10 @@ static void dw_i2c_abort(struct i2c_context *context)
 	i2c_dw_apb200a_regs_t *i2c = (void *)context->base;
 	uint32_t value;
 
+	if (i2c->enable == 0) {
+		return;
+	}
+
 	i2c->dma_cr = 0;
 	i2c->intr_mask = 0;
 
@@ -385,9 +403,14 @@ int32_t sedi_i2c_init(IN sedi_i2c_t i2c_device,
 	context->tx_dma_chan = SEDI_I2C_DMA_CHANNEL_UNUSED;
 	context->rx_dma_chan = SEDI_I2C_DMA_CHANNEL_UNUSED;
 
-	init_i2c_prescale();
+	init_i2c_prescale(&(context->bus_info));
 
 	context->base = base;
+
+	/* i2c default configuration */
+	context->speed = I2C_SPEED_STANDARD;
+	context->clk_info = &(context->bus_info.std_clk);
+	dw_i2c_config_speed(context->base, context->speed, context->clk_info);
 
 	return SEDI_DRIVER_OK;
 }
@@ -415,7 +438,8 @@ int32_t sedi_i2c_set_power(IN sedi_i2c_t i2c_device, IN sedi_power_state_t state
 	case SEDI_POWER_FULL:
 		sedi_pm_set_device_power(id, state);
 		dw_i2c_irq_config(context->base, 0);
-		dw_i2c_config_speed(context->base, context->speed);
+		dw_i2c_config_speed(context->base, context->speed,
+			context->clk_info);
 		break;
 	case SEDI_POWER_SUSPEND:
 	case SEDI_POWER_FORCE_SUSPEND:
@@ -894,17 +918,22 @@ int32_t sedi_i2c_control(IN sedi_i2c_t i2c_device, IN uint32_t control, IN uint3
 	case SEDI_I2C_BUS_SPEED:
 		if (arg == SEDI_I2C_BUS_SPEED_STANDARD) {
 			context->speed = I2C_SPEED_STANDARD;
+			context->clk_info = &(context->bus_info.std_clk);
 		} else if (arg == SEDI_I2C_BUS_SPEED_FAST) {
 			context->speed = I2C_SPEED_FAST;
+			context->clk_info = &(context->bus_info.fst_clk);
 		} else if (arg == SEDI_I2C_BUS_SPEED_FAST_PLUS) {
 			context->speed = I2C_SPEED_FAST_PLUS;
+			context->clk_info = &(context->bus_info.fsp_clk);
 		} else if (arg == SEDI_I2C_BUS_SPEED_HIGH) {
 			context->speed = I2C_SPEED_HIGH;
+			context->clk_info = &(context->bus_info.high_clk);
 		} else {
 			ret = SEDI_DRIVER_ERROR;
 		}
 		dw_i2c_disable(context->base);
-		dw_i2c_config_speed(context->base, context->speed);
+		dw_i2c_config_speed(context->base, context->speed,
+		       context->clk_info);
 		break;
 
 	/* force i2c enter IDLE mode */
