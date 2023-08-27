@@ -1036,6 +1036,8 @@ int32_t sedi_i2c_master_poll_write(IN sedi_i2c_t i2c_device, IN uint32_t addr, I
 		return SEDI_DRIVER_ERROR_BUSY;
 	}
 
+	/* Clear all status first */
+	dw_i2c_clear_interrupt(context->base);
 	ret = dw_i2c_config_addr(context->base, addr);
 
 	context->status.busy = 1U;
@@ -1049,6 +1051,8 @@ int32_t sedi_i2c_master_poll_write(IN sedi_i2c_t i2c_device, IN uint32_t addr, I
 
 	if (ret != 0) {
 		context->status.event = dw_i2c_abort_analysis(context->base);
+		dw_i2c_clear_interrupt(context->base);
+		dw_i2c_disable(context->base);
 	} else {
 		context->status.event = SEDI_I2C_EVENT_TRANSFER_DONE;
 	}
@@ -1073,6 +1077,8 @@ int32_t sedi_i2c_master_poll_read(IN sedi_i2c_t i2c_device, IN uint32_t addr, OU
 		return SEDI_DRIVER_ERROR_BUSY;
 	}
 
+	/* Clear all status first */
+	dw_i2c_clear_interrupt(context->base);
 	ret = dw_i2c_config_addr(context->base, addr);
 	if (ret != 0) {
 		return SEDI_DRIVER_ERROR;
@@ -1090,6 +1096,8 @@ int32_t sedi_i2c_master_poll_read(IN sedi_i2c_t i2c_device, IN uint32_t addr, OU
 
 	if (ret != 0) {
 		context->status.event = dw_i2c_abort_analysis(context->base);
+		dw_i2c_clear_interrupt(context->base);
+		dw_i2c_disable(context->base);
 	}
 	context->status.busy = 0U;
 	context->buf_index = num;
