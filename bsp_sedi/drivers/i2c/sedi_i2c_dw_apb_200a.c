@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "sedi_i2c_dw_apb_200a.h"
+#include "sedi_driver_dma.h"
 #include "sedi_driver_pm.h"
 #include <sedi_driver_i2c.h>
 #include <sedi_i2c_regs.h>
@@ -126,6 +126,14 @@ static uint32_t regval_speed[I2C_SPEED_MAX] = {
 #define I2C_HS_SCL_HIGH 160
 #define I2C_HS_SCL_LOW 320
 #endif
+
+#define I2C_CONTEXT_INIT(x)                                                                        \
+	{                                                                                          \
+		.base = SEDI_I2C_##x##_REG_BASE, .dma_handshake = 0xff, .speed = I2C_SPEED_FAST,   \
+		.tx_memory_type = DMA_SRAM_MEM, .rx_memory_type = DMA_SRAM_MEM                     \
+	}
+struct i2c_context contexts[SEDI_I2C_NUM] = { I2C_CONTEXT_INIT(0), I2C_CONTEXT_INIT(1),
+					      I2C_CONTEXT_INIT(2) };
 
 static void init_i2c_prescale(sedi_i2c_bus_info_t *bus_info)
 {
@@ -411,6 +419,123 @@ static uint32_t dw_i2c_abort_analysis(uint32_t base)
 	return event;
 }
 
+/* Used for sending cmd for I2C read operation */
+static void i2c_ask_data(sedi_i2c_t i2c_device)
+{
+	struct i2c_context *context = &contexts[i2c_device];
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
+
+	uint32_t tx_fifo_space = 0, rx_fifo_space = 0;
+	uint32_t rx_pending = context->rx_cmd_index - context->buf_index;
+	uint32_t size = context->buf_size - context->rx_cmd_index;
+	uint32_t fifo_size = 0;
+	uint32_t data = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ);
+	bool last_data = false;
+
+	/* No need to send anymore */
+	if (context->rx_cmd_index == context->buf_size) {
+		return;
+	}
+
+	/* Decide how many space there are */
+	if ((I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr)) <= rx_pending) {
+		return;
+	}
+
+	tx_fifo_space = I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr) - rx_pending;
+
+	/* To prevent RX FIFO overflow, need to make sure command number less
+	 * than the space in RX FIFO.
+	 */
+	rx_fifo_space = I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, RXFLR, RXFLR, &i2c->rxflr);
+
+	if (tx_fifo_space < rx_fifo_space) {
+		fifo_size = tx_fifo_space;
+	} else {
+		fifo_size = rx_fifo_space;
+	}
+
+	if (size <= fifo_size) {
+		last_data = true;
+	} else {
+		size = fifo_size;
+	}
+
+	while (size > 0) {
+		/* If it is first data, need RESTART */
+		if (context->rx_cmd_index == 0) {
+			data |= SEDI_RBFVM(I2C, DATA_CMD, RESTART, ENABLE);
+		}
+
+		/* Last data need STOP flag */
+		if ((size == 1) && last_data && (!(context->pending))) {
+			data |= SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE);
+			/*  Disable tx empty interrupt */
+			i2c->intr_mask &= ~SEDI_RBFVM(I2C, INTR_MASK, M_TX_EMPTY, ENABLED);
+		}
+
+		i2c->data_cmd = data;
+		context->rx_cmd_index++;
+		size--;
+
+		/* Reset data */
+		data = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ);
+	}
+}
+
+static void i2c_send(sedi_i2c_t i2c_device)
+{
+	struct i2c_context *context = &contexts[i2c_device];
+	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
+
+	uint32_t tx_fifo_space = 0;
+	uint32_t size = context->buf_size - context->buf_index;
+	uint32_t data = 0;
+	uint8_t *buf = context->buf;
+	bool last_data = false;
+
+	if (context->buf_index == context->buf_size) {
+		return;
+	}
+
+	/* Decide how many space there are */
+	tx_fifo_space = I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr);
+
+	if (size <= tx_fifo_space) {
+		last_data = true;
+	} else {
+		size = tx_fifo_space;
+	}
+
+	/* Not last data */
+	while (size > 1) {
+		data = buf[context->buf_index];
+		i2c->data_cmd = data;
+		size--;
+		context->buf_index++;
+	}
+
+	/* Last data transfer  */
+	data = buf[context->buf_index];
+
+	/* If it is the last data for whole transfer */
+	if (last_data) {
+		/* NO need to send STOP, but need to change watermark
+		 * to 0, this will have a interrupt while all data sent out
+		 */
+		if (context->pending) {
+			SEDI_PREG_RBF_SET(I2C, TX_TL, TX_TL, 0, &i2c->tx_tl);
+		} else {
+			SEDI_PREG_RBFV_SET(I2C, DATA_CMD, STOP, ENABLE, &data);
+			/* Disable tx empty interrupt */
+			i2c->intr_mask &= ~SEDI_RBFVM(I2C, INTR_MASK, M_TX_EMPTY, DISABLED);
+		}
+	}
+
+	i2c->data_cmd = data;
+	context->buf_index++;
+}
+
 /******************************************************************************
  * SEDI interface
  *****************************************************************************/
@@ -423,8 +548,6 @@ static const sedi_driver_version_t driver_version = { SEDI_I2C_API_VERSION, SEDI
 static sedi_i2c_capabilities_t driver_capabilities[SEDI_I2C_NUM] = { 0 };
 /* Used for I2C DMA Rx */
 static uint8_t dma_cmd __attribute__((aligned(32))) = 1;
-
-static struct i2c_context contexts[SEDI_I2C_NUM];
 
 sedi_driver_version_t sedi_i2c_get_version(void)
 {
@@ -837,6 +960,9 @@ int32_t sedi_i2c_master_write_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, 
 	context->buf_index = 0;
 	context->pending = pending;
 
+	/* FIFO fill */
+	i2c_send(i2c_device);
+
 	dw_i2c_irq_config(context->base, BSETS_INTR_SEND);
 
 	return SEDI_DRIVER_OK;
@@ -865,7 +991,7 @@ int32_t sedi_i2c_master_read_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, O
 		/* If less than half FIFO, just set watermark to transfer size
 		 */
 		dw_i2c_config_rxfifo(context->base, num);
-		dw_i2c_config_txfifo(context->base, num);
+		dw_i2c_config_txfifo(context->base, 0);
 	} else {
 		dw_i2c_config_rxfifo(context->base, I2C_FIFO_DEFAULT_WATERMARK);
 		dw_i2c_config_txfifo(context->base, I2C_FIFO_DEFAULT_WATERMARK);
@@ -884,6 +1010,9 @@ int32_t sedi_i2c_master_read_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, O
 	context->buf_index = 0;
 	context->rx_cmd_index = 0;
 	context->pending = pending;
+
+	/* FIFO fill */
+	i2c_ask_data(i2c_device);
 
 	dw_i2c_irq_config(context->base, BSETS_INTR_RECV);
 
@@ -1088,123 +1217,6 @@ static void i2c_isr_recv(sedi_i2c_t i2c_device)
 	}
 }
 
-/* Used for sending cmd for I2C read operation */
-static void i2c_isr_ask_data(sedi_i2c_t i2c_device)
-{
-	struct i2c_context *context = &contexts[i2c_device];
-	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
-
-	uint32_t tx_fifo_space = 0, rx_fifo_space = 0;
-	uint32_t rx_pending = context->rx_cmd_index - context->buf_index;
-	uint32_t size = context->buf_size - context->rx_cmd_index;
-	uint32_t fifo_size = 0;
-	uint32_t data = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ);
-	bool last_data = false;
-
-	/* No need to send anymore */
-	if (context->rx_cmd_index == context->buf_size) {
-		return;
-	}
-
-	/* Decide how many space there are */
-	if ((I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr)) <= rx_pending) {
-		return;
-	}
-
-	tx_fifo_space = I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr) - rx_pending;
-
-	/* To prevent RX FIFO overflow, need to make sure command number less
-	 * than the space in RX FIFO.
-	 */
-	rx_fifo_space = I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, RXFLR, RXFLR, &i2c->rxflr);
-
-	if (tx_fifo_space < rx_fifo_space) {
-		fifo_size = tx_fifo_space;
-	} else {
-		fifo_size = rx_fifo_space;
-	}
-
-	if (size <= fifo_size) {
-		last_data = true;
-	} else {
-		size = fifo_size;
-	}
-
-	while (size > 0) {
-		/* If it is first data, need RESTART */
-		if (context->rx_cmd_index == 0) {
-			data |= SEDI_RBFVM(I2C, DATA_CMD, RESTART, ENABLE);
-		}
-
-		/* Last data need STOP flag */
-		if ((size == 1) && last_data && (!(context->pending))) {
-			data |= SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE);
-			/*  Disable tx empty interrupt */
-			i2c->intr_mask &= ~SEDI_RBFVM(I2C, INTR_MASK, M_TX_EMPTY, ENABLED);
-		}
-
-		i2c->data_cmd = data;
-		context->rx_cmd_index++;
-		size--;
-
-		/* Reset data */
-		data = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ);
-	}
-}
-
-static void i2c_isr_send(sedi_i2c_t i2c_device)
-{
-	struct i2c_context *context = &contexts[i2c_device];
-	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
-
-	uint32_t tx_fifo_space = 0;
-	uint32_t size = context->buf_size - context->buf_index;
-	uint32_t data = 0;
-	uint8_t *buf = context->buf;
-	bool last_data = false;
-
-	if (context->buf_index == context->buf_size) {
-		return;
-	}
-
-	/* Decide how many space there are */
-	tx_fifo_space = I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr);
-
-	if (size <= tx_fifo_space) {
-		last_data = true;
-	} else {
-		size = tx_fifo_space;
-	}
-
-	/* Not last data */
-	while (size > 1) {
-		data = buf[context->buf_index];
-		i2c->data_cmd = data;
-		size--;
-		context->buf_index++;
-	}
-
-	/* Last data transfer  */
-	data = buf[context->buf_index];
-
-	/* If it is the last data for whole transfer */
-	if (last_data) {
-		/* NO need to send STOP, but need to change watermark
-		 * to 0, this will have a interrupt while all data sent out
-		 */
-		if (context->pending) {
-			SEDI_PREG_RBF_SET(I2C, TX_TL, TX_TL, 0, &i2c->tx_tl);
-		} else {
-			SEDI_PREG_RBFV_SET(I2C, DATA_CMD, STOP, ENABLE, &data);
-			/* Disable tx empty interrupt */
-			i2c->intr_mask &= ~SEDI_RBFVM(I2C, INTR_MASK, M_TX_EMPTY, DISABLED);
-		}
-	}
-
-	i2c->data_cmd = data;
-	context->buf_index++;
-}
-
 static void i2c_isr_complete(sedi_i2c_t i2c_device, bool is_error)
 {
 	struct i2c_context *context = &contexts[i2c_device];
@@ -1286,9 +1298,9 @@ void sedi_i2c_isr_handler(IN sedi_i2c_t i2c_device)
 	if (SEDI_PREG_RBFV_IS_SET(I2C, INTR_STAT, R_TX_EMPTY, ACTIVE, &stat)) {
 		/*If it is read operation, need to send cmd*/
 		if (context->status.direction == 1) {
-			i2c_isr_ask_data(i2c_device);
+			i2c_ask_data(i2c_device);
 		} else {
-			i2c_isr_send(i2c_device);
+			i2c_send(i2c_device);
 		}
 	}
 	PARAM_UNUSED(val);
