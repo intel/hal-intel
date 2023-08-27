@@ -285,7 +285,7 @@ static int dw_i2c_poll_write(uint32_t base, const uint8_t *buffer, uint32_t leng
 				return -1;
 			}
 
-		} while (SEDI_PREG_RBFV_IS_SET(I2C, STATUS, TFE, NON_EMPTY, &i2c->status));
+		} while (SEDI_PREG_RBFV_IS_SET(I2C, STATUS, TFNF, FULL, &i2c->status));
 	}
 
 	/* Wait for end */
