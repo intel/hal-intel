@@ -77,7 +77,6 @@ static void gpio_reset_register(IN sedi_gpio_t gpio_device)
 {
 	gpio_bsp_regs_t *reg = resources_map[gpio_device].reg;
 	uint8_t i;
-	uint32_t val;
 
 	for (i = 0; i < SEDI_GPIO_SOC_PORT_NUM; i++) {
 		reg->gpdr[i] = 0;
@@ -85,9 +84,11 @@ static void gpio_reset_register(IN sedi_gpio_t gpio_device)
 		reg->gfer[i] = 0;
 		reg->gfbr[i] = 0;
 		reg->gimr[i] = 0;
-		val = reg->gisr[i];
+		/* Clear all status bits */
+		reg->gisr[i] = 0xFFFFFFFF;
 		reg->gwmr[i] = 0;
-		val = reg->gwsr[i];
+		/* Clear all status bits */
+		reg->gwsr[i] = 0xFFFFFFFF;
 	}
 }
 
