@@ -765,11 +765,12 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 			context->data_tx += SPI_DMA_MAX_SIZE;
 			context->dma_tx_finished = false;
 			/* start dma first */
-			config_and_enable_dma_channel(
-			spi_device, context->tx_dma, context->dma_handshake, context->tx_channel, 0, 1,
-			(uint32_t)(context->data_tx), lld_spi_dr_address(context->base), len,
-			true);
-			sedi_dma_start_transfer(context->tx_dma, context->tx_channel, (uint32_t)(context->data_tx),
+			config_and_enable_dma_channel(spi_device, context->tx_dma,
+						      context->dma_handshake, context->tx_channel,
+						      0, 1, (uint32_t)(context->data_tx),
+						      lld_spi_dr_address(context->base), len, true);
+			sedi_dma_start_transfer(context->tx_dma, context->tx_channel,
+						(uint32_t)(context->data_tx),
 						lld_spi_dr_address(context->base), len);
 
 		} else if (context->transfer_mode == SPI_TRANSFER_MODE_RECEIVE) {
@@ -777,12 +778,13 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 			context->dma_rx_finished = false;
 			/* Configure rx channel */
 			context->base->ctrl1 = len / context->frame_size - 1;
-			sedi_dma_start_transfer(context->rx_dma, context->rx_channel, lld_spi_dr_address(context->base),
-						(uint32_t)(context->data_rx), len);
-			config_and_enable_dma_channel(spi_device, context->rx_dma, context->rx_handshake,
-						context->rx_channel, 0, 1,
+			sedi_dma_start_transfer(context->rx_dma, context->rx_channel,
 						lld_spi_dr_address(context->base),
-						(uint32_t)(context->data_rx), len, false);
+						(uint32_t)(context->data_rx), len);
+			config_and_enable_dma_channel(spi_device, context->rx_dma,
+						      context->rx_handshake, context->rx_channel, 0,
+						      1, lld_spi_dr_address(context->base),
+						      (uint32_t)(context->data_rx), len, false);
 
 		} else {
 			context->data_tx += SPI_DMA_MAX_SIZE;
@@ -790,19 +792,21 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 			context->dma_tx_finished = false;
 			context->dma_rx_finished = false;
 			/* Enable both channel to do transfer */
-			config_and_enable_dma_channel(
-			spi_device, context->tx_dma, context->dma_handshake, context->tx_channel, 0, 1,
-			(uint32_t)(context->data_tx), lld_spi_dr_address(context->base), len,
-			true);
-			config_and_enable_dma_channel(spi_device, context->rx_dma, context->rx_handshake,
-						context->rx_channel, 0, 1,
-						lld_spi_dr_address(context->base),
-						(uint32_t)(context->data_rx), len, false);
+			config_and_enable_dma_channel(spi_device, context->tx_dma,
+						      context->dma_handshake, context->tx_channel,
+						      0, 1, (uint32_t)(context->data_tx),
+						      lld_spi_dr_address(context->base), len, true);
+			config_and_enable_dma_channel(spi_device, context->rx_dma,
+						      context->rx_handshake, context->rx_channel, 0,
+						      1, lld_spi_dr_address(context->base),
+						      (uint32_t)(context->data_rx), len, false);
 			/* Enable both channel and start rx firstly to do transfer */
-			sedi_dma_start_transfer(context->rx_dma, context->rx_channel, lld_spi_dr_address(context->base),
+			sedi_dma_start_transfer(context->rx_dma, context->rx_channel,
+						lld_spi_dr_address(context->base),
 						(uint32_t)(context->data_rx), len);
-			sedi_dma_start_transfer(context->tx_dma, context->tx_channel, (uint32_t)(context->data_tx),
-				lld_spi_dr_address(context->base), len);
+			sedi_dma_start_transfer(context->tx_dma, context->tx_channel,
+						(uint32_t)(context->data_tx),
+						lld_spi_dr_address(context->base), len);
 		}
 
 		/* Return to start another transfer */
@@ -970,8 +974,9 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 		sedi_dma_start_transfer(rx_dma, rx_dma_chan, lld_spi_dr_address(context->base),
 					(uint32_t)data_in, len);
 	} else {
-		/* the SPI transaction may interrupted by some other events between Tx/Rx dma enable,
-		which probably lead to rx fifo overflow, start rx channel firstly */
+		/* the SPI transaction may interrupted by some other events between Tx/Rx dma
+		 * enable, which probably lead to rx fifo overflow, start rx channel firstly.
+		 */
 		sedi_dma_start_transfer(rx_dma, rx_dma_chan, lld_spi_dr_address(context->base),
 					(uint32_t)data_in, len);
 		sedi_dma_start_transfer(tx_dma, tx_dma_chan, (uint32_t)data_out,

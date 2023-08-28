@@ -509,7 +509,7 @@ bool sedi_uart_is_irq_pending(IN sedi_uart_t uart);
 bool sedi_uart_is_tx_complete(IN sedi_uart_t uart);
 
 /**
- * @brief Is receive data available in the interupt context.
+ * @brief Is receive data available in the interrupt context.
  *
  * This function returns a boolean value indicating
  * whether the interrupt is asserted due to data availability
@@ -662,7 +662,7 @@ int sedi_uart_irq_err_disable(IN sedi_uart_t uart);
 int sedi_uart_update_irq_cache(IN sedi_uart_t uart);
 
 /**
- * @brief Sets the baud rate for uart specifed uart port.
+ * @brief Sets the baud rate for uart specified uart port.
  *
  * @param[in] uart UART port index.
  * @param[in] baud_rate to set.
@@ -1081,7 +1081,7 @@ int sedi_uart_set_tx_only_mode(IN sedi_uart_t uart, bool tx_only);
 int sedi_uart_rs485_enable(IN sedi_uart_t uart);
 
 /**
- * @brief Disble rs-485 signals for selected uart.
+ * @brief Disable rs-485 signals for selected uart.
  *
  * @param[in] uart UART port index.
  *
