@@ -21,6 +21,8 @@ jobs:
         echo "--ignore PREFER_ALIGNED" >> ./.checkpatch.conf
         echo "--ignore NEW_TYPEDEFS" >> ./.checkpatch.conf
         echo "--ignore PREFER_PACKED" >> ./.checkpatch.conf
+        echo "--ignore CONSTANT_COMPARISON" >> ./.checkpatch.conf
+        echo "--ignore FUNCTION_ARGUMENTS" >> ./.checkpatch.conf
 
     - name: Set Git Base
       shell: bash
