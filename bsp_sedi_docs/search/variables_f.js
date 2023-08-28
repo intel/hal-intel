@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['usr_799',['usr',['../structsedi__uart__reg__t.html#ae7decd98dd57971904b7f95d28cffd2e',1,'sedi_uart_reg_t']]]
+  ['year_969',['year',['../structsedi__rtc__time__t.html#a53dc7f23808f268cdabf5f1b191cbac6',1,'sedi_rtc_time_t']]]
 ];

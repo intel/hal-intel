@@ -1,0 +1,4 @@
+<map id="sedi_uart_config_t" name="sedi_uart_config_t">
+<area shape="rect" id="node1" title="UART configuration structure type." alt="" coords="5,95,145,121"/>
+<area shape="rect" id="node2" href="$structsedi__uart__lc__t.html" title="UART Line control." alt="" coords="19,5,131,32"/>
+</map>

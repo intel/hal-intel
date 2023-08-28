@@ -1,5 +1,7 @@
 <map id="i2c_context" name="i2c_context">
-<area shape="rect" id="node1" title=" " alt="" coords="112,95,209,121"/>
-<area shape="rect" id="node2" href="$structsedi__i2c__status__t.html" title="I2C Status." alt="" coords="5,5,140,32"/>
-<area shape="rect" id="node3" href="$structsedi__i2c__capabilities__t.html" title="I2C Driver Capabilities." alt="" coords="164,5,333,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="189,228,287,255"/>
+<area shape="rect" id="node2" href="$structsedi__i2c__status__t.html" title="I2C Status." alt="" coords="5,139,140,165"/>
+<area shape="rect" id="node3" href="$structsedi__i2c__bus__info__t.html" title="I2C bus clock frequency configuration for each mode." alt="" coords="269,139,418,165"/>
+<area shape="rect" id="node4" href="$structsedi__i2c__bus__clk__t.html" title="I2C bus clock frequency configuration." alt="" coords="139,5,281,32"/>
+<area shape="rect" id="node5" href="$structsedi__i2c__capabilities__t.html" title="I2C Driver Capabilities." alt="" coords="443,139,612,165"/>
 </map>

@@ -73,9 +73,11 @@ Collaboration diagram for i2c_context:</div>
 <div class="dyncontent">
 <div class="center"><img src="structi2c__context__coll__graph.png" border="0" usemap="#ai2c__context_coll__map" alt="Collaboration graph"/></div>
 <map name="ai2c__context_coll__map" id="ai2c__context_coll__map">
-<area shape="rect" title=" " alt="" coords="112,95,209,121"/>
-<area shape="rect" href="structsedi__i2c__status__t.html" title="I2C Status." alt="" coords="5,5,140,32"/>
-<area shape="rect" href="structsedi__i2c__capabilities__t.html" title="I2C Driver Capabilities." alt="" coords="164,5,333,32"/>
+<area shape="rect" title=" " alt="" coords="189,228,287,255"/>
+<area shape="rect" href="structsedi__i2c__status__t.html" title="I2C Status." alt="" coords="5,139,140,165"/>
+<area shape="rect" href="structsedi__i2c__bus__info__t.html" title="I2C bus clock frequency configuration for each mode." alt="" coords="269,139,418,165"/>
+<area shape="rect" href="structsedi__i2c__bus__clk__t.html" title="I2C bus clock frequency configuration." alt="" coords="139,5,281,32"/>
+<area shape="rect" href="structsedi__i2c__capabilities__t.html" title="I2C Driver Capabilities." alt="" coords="443,139,612,165"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -138,6 +140,12 @@ dma_memory_type_t&#160;</td><td class="memItemRight" valign="bottom"><b>rx_memor
 <tr class="memitem:af1e91a78a8910a224caa61ec39e8b2b4"><td class="memItemLeft" align="right" valign="top"><a id="af1e91a78a8910a224caa61ec39e8b2b4"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>speed</b></td></tr>
 <tr class="separator:af1e91a78a8910a224caa61ec39e8b2b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94c44800783326478620fc099b9a7cfc"><td class="memItemLeft" align="right" valign="top"><a id="a94c44800783326478620fc099b9a7cfc"></a>
+<a class="el" href="structsedi__i2c__bus__clk__t.html">sedi_i2c_bus_clk_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>clk_info</b></td></tr>
+<tr class="separator:a94c44800783326478620fc099b9a7cfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa636bb792274053f2a17803b5cf13a32"><td class="memItemLeft" align="right" valign="top"><a id="aa636bb792274053f2a17803b5cf13a32"></a>
+<a class="el" href="structsedi__i2c__bus__info__t.html">sedi_i2c_bus_info_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>bus_info</b></td></tr>
+<tr class="separator:aa636bb792274053f2a17803b5cf13a32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>bsp_sedi/drivers/i2c/sedi_i2c_dw_apb_200a.c</li>

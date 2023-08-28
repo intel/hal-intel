@@ -1,0 +1,5 @@
+<map id="sedi_uart_rs485_config_t" name="sedi_uart_rs485_config_t">
+<area shape="rect" id="node1" title="UART RS&#45;485 configuration structure type." alt="" coords="108,124,291,151"/>
+<area shape="rect" id="node2" href="$structsedi__uart__rs485__transfer__mode__t.html" title="UART RS&#45;485 transfer mode." alt="" coords="5,5,188,47"/>
+<area shape="rect" id="node3" href="$structsedi__uart__rs485__polarity.html" title="UART RS&#45;485 polarity for de and re signals." alt="" coords="212,13,395,39"/>
+</map>

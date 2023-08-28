@@ -1,0 +1,5 @@
+<map id="UART" name="UART">
+<area shape="rect" id="node1" href="$group__uart__structure__type.html" title=" " alt="" coords="113,5,268,31"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,35,63,60"/>
+<area shape="rect" id="node3" href="$group__uart__function__calls.html" title="UART Driver Function Calls." alt="" coords="111,55,271,95"/>
+</map>

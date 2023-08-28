@@ -65,93 +65,35 @@ $(function() {
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structsedi__uart__dma__xfer__t-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">sedi_uart_dma_xfer_t Struct Reference</div>  </div>
+<div class="title">sedi_uart_dma_xfer_t Struct Reference<div class="ingroups"><a class="el" href="group__sedi__driver__uart.html">UART</a> &raquo; <a class="el" href="group__uart__structure__type.html">UART Structure Type</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>UART DMA transfer structure.  
+ <a href="structsedi__uart__dma__xfer__t.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="sedi__driver__uart_8h_source.html">sedi_driver_uart.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a4aaf4ebce7045979569c482ab9d7be94"><td class="memItemLeft" align="right" valign="top">sedi_dma_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsedi__uart__dma__xfer__t.html#a4aaf4ebce7045979569c482ab9d7be94">dma_dev</a></td></tr>
-<tr class="separator:a4aaf4ebce7045979569c482ab9d7be94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addae8a2353607d52763a30a4d260af7e"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsedi__uart__dma__xfer__t.html#addae8a2353607d52763a30a4d260af7e">channel</a></td></tr>
-<tr class="separator:addae8a2353607d52763a30a4d260af7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87c8f91ccd32880558a5037e47c36910"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsedi__uart__dma__xfer__t.html#a87c8f91ccd32880558a5037e47c36910">data</a></td></tr>
-<tr class="separator:a87c8f91ccd32880558a5037e47c36910"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba3361d7b2960b150b9dd41601f46aa4"><td class="memItemLeft" align="right" valign="top"><a id="aba3361d7b2960b150b9dd41601f46aa4"></a>
-void(*&#160;</td><td class="memItemRight" valign="bottom"><b>callback</b> )(void *cb_param, int error, uint32_t status, uint32_t <a class="el" href="structsedi__uart__dma__xfer__t.html#a89289abf0723d19f5cba262e04d724ef">len</a>)</td></tr>
-<tr class="separator:aba3361d7b2960b150b9dd41601f46aa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca7deda8fc9b853ea2792e81980b2025"><td class="memItemLeft" align="right" valign="top"><a id="aca7deda8fc9b853ea2792e81980b2025"></a>
+<tr class="memitem:ga4aaf4ebce7045979569c482ab9d7be94"><td class="memItemLeft" align="right" valign="top">sedi_dma_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uart__function__calls.html#ga4aaf4ebce7045979569c482ab9d7be94">dma_dev</a></td></tr>
+<tr class="separator:ga4aaf4ebce7045979569c482ab9d7be94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaddae8a2353607d52763a30a4d260af7e"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uart__function__calls.html#gaddae8a2353607d52763a30a4d260af7e">channel</a></td></tr>
+<tr class="separator:gaddae8a2353607d52763a30a4d260af7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga87c8f91ccd32880558a5037e47c36910"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uart__function__calls.html#ga87c8f91ccd32880558a5037e47c36910">data</a></td></tr>
+<tr class="separator:ga87c8f91ccd32880558a5037e47c36910"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaba3361d7b2960b150b9dd41601f46aa4"><td class="memItemLeft" align="right" valign="top">
+void(*&#160;</td><td class="memItemRight" valign="bottom"><b>callback</b> )(void *cb_param, int error, uint32_t status, uint32_t <a class="el" href="group__uart__function__calls.html#ga89289abf0723d19f5cba262e04d724ef">len</a>)</td></tr>
+<tr class="separator:gaba3361d7b2960b150b9dd41601f46aa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaca7deda8fc9b853ea2792e81980b2025"><td class="memItemLeft" align="right" valign="top">
 void *&#160;</td><td class="memItemRight" valign="bottom"><b>cb_param</b></td></tr>
-<tr class="separator:aca7deda8fc9b853ea2792e81980b2025"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89289abf0723d19f5cba262e04d724ef"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsedi__uart__dma__xfer__t.html#a89289abf0723d19f5cba262e04d724ef">len</a></td></tr>
-<tr class="separator:a89289abf0723d19f5cba262e04d724ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:gaca7deda8fc9b853ea2792e81980b2025"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga89289abf0723d19f5cba262e04d724ef"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__uart__function__calls.html#ga89289abf0723d19f5cba262e04d724ef">len</a></td></tr>
+<tr class="separator:ga89289abf0723d19f5cba262e04d724ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>UART DMA transfer structure </p>
-</div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="addae8a2353607d52763a30a4d260af7e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#addae8a2353607d52763a30a4d260af7e">&#9670;&nbsp;</a></span>channel</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t sedi_uart_dma_xfer_t::channel</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Dma channel number to be used. </p>
-
-</div>
-</div>
-<a id="a87c8f91ccd32880558a5037e47c36910"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87c8f91ccd32880558a5037e47c36910">&#9670;&nbsp;</a></span>data</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t* sedi_uart_dma_xfer_t::data</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Data ptr. </p>
-
-</div>
-</div>
-<a id="a4aaf4ebce7045979569c482ab9d7be94"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4aaf4ebce7045979569c482ab9d7be94">&#9670;&nbsp;</a></span>dma_dev</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">sedi_dma_t sedi_uart_dma_xfer_t::dma_dev</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Dma device to be used. </p>
-
-</div>
-</div>
-<a id="a89289abf0723d19f5cba262e04d724ef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a89289abf0723d19f5cba262e04d724ef">&#9670;&nbsp;</a></span>len</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint32_t sedi_uart_dma_xfer_t::len</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Callback param. Length of transfer. </p>
-
-</div>
-</div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<div class="textblock"><p>UART DMA transfer structure. </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>bsp_sedi/include/driver/<a class="el" href="sedi__driver__uart_8h_source.html">sedi_driver_uart.h</a></li>
 </ul>
 </div><!-- contents -->

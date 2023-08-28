@@ -1,0 +1,4 @@
+<map id="sedi_uart_9bit_config_t" name="sedi_uart_9bit_config_t">
+<area shape="rect" id="node1" title="UART 9bit configuration structure type." alt="" coords="5,109,177,136"/>
+<area shape="rect" id="node2" href="$structsedi__uart__9bit__addr__mode__t.html" title="Hardware / Software based address transmit and address match control." alt="" coords="16,5,167,47"/>
+</map>
