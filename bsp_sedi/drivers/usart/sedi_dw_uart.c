@@ -9,39 +9,37 @@
 #include <sedi_uart_regs.h>
 
 #define HAS_ADVANCED_UART_CONFIGURATION (0)
-#define HAS_UART_RS485_SUPPORT (0)
-#define HAS_UART_9BIT_SUPPORT (0)
-#define HAS_UART_SOFT_RST (0)
+#define HAS_UART_RS485_SUPPORT          (0)
+#define HAS_UART_9BIT_SUPPORT           (0)
+#define HAS_UART_SOFT_RST               (0)
 
 /* No interrupt pending */
 #define SEDI_UART_IIR_NO_INTERRUPT_PENDING (0x01)
 /* Transmit Holding Register Empty. */
-#define SEDI_UART_IIR_THR_EMPTY (0x02)
+#define SEDI_UART_IIR_THR_EMPTY            (0x02)
 /* Received Data Available. */
-#define SEDI_UART_IIR_RECV_DATA_AVAIL (0x04)
+#define SEDI_UART_IIR_RECV_DATA_AVAIL      (0x04)
 /* Receiver Line Status. */
-#define SEDI_UART_IIR_RECV_LINE_STATUS (0x06)
+#define SEDI_UART_IIR_RECV_LINE_STATUS     (0x06)
 /* Character Timeout. */
-#define SEDI_UART_IIR_CHAR_TIMEOUT (0x0C)
+#define SEDI_UART_IIR_CHAR_TIMEOUT         (0x0C)
 /* Interrupt ID Mask. */
-#define SEDI_UART_IIR_IID_MASK (0x0F)
+#define SEDI_UART_IIR_IID_MASK             (0x0F)
 
 /* Default FIFO RX & TX Thresholds, half full for both. */
 #define SEDI_UART_FCR_DEFAULT_TX_RX_THRESHOLD (0xB0)
 /* Change TX Threshold to empty, keep RX Threshold to default. */
-#define SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD (0x80)
+#define SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD   (0x80)
 
-#define BSETS_UART_LSR_ERROR	\
-		(SEDI_RBFVM(UART, LSR, OE, OVER_RUN_ERROR) | \
-		SEDI_RBFVM(UART, LSR, PE, PARITY_ERROR) | \
-		SEDI_RBFVM(UART, LSR, FE, FRAMING_ERROR) | \
-		SEDI_RBFVM(UART, LSR, BI, BREAK))
+#define BSETS_UART_LSR_ERROR                                                                       \
+	(SEDI_RBFVM(UART, LSR, OE, OVER_RUN_ERROR) | SEDI_RBFVM(UART, LSR, PE, PARITY_ERROR) |     \
+	 SEDI_RBFVM(UART, LSR, FE, FRAMING_ERROR) | SEDI_RBFVM(UART, LSR, BI, BREAK))
 
 /* SCR bit to indicate updated status for LSR. */
 #define SEDI_UART_SCR_STATUS_UPDATE (0x1)
 
 /* FIFO Depth. */
-#define SEDI_UART_FIFO_DEPTH (64)
+#define SEDI_UART_FIFO_DEPTH      (64)
 /* FIFO Half Depth. */
 #define SEDI_UART_FIFO_HALF_DEPTH (SEDI_UART_FIFO_DEPTH / 2)
 
@@ -49,9 +47,9 @@
 /* Serial clock period in NS. */
 #define SEDI_UART_SERIAL_CLK_PERIOD_NS (10)
 /* Max DE signal assertion , deassertion time in NS. */
-#define SEDI_UART_DE_AT_DT_NS_MAX (2550)
+#define SEDI_UART_DE_AT_DT_NS_MAX      (2550)
 /* Max Turnaround time in NS. */
-#define SEDI_UART_TAT_NS_MAX (655350)
+#define SEDI_UART_TAT_NS_MAX           (655350)
 
 /** Full Duplex mode. */
 #define SEDI_UART_XFER_MODE_FULL_DUPLEX (0)
@@ -66,22 +64,21 @@
 #define SEDI_UART_DLF_SCALAR (100)
 
 /* Get the lower byte from the divisor.*/
-#define SEDI_UART_GET_DLL(divisor) (divisor & 0xFF)
+#define SEDI_UART_GET_DLL(divisor) ((divisor) & 0xFF)
 
 /* Get the higher byte from the divisor. */
-#define SEDI_UART_GET_DLH(divisor) ((divisor & 0xFF00) >> 8)
-
+#define SEDI_UART_GET_DLH(divisor) (((divisor) & 0xFF00) >> 8)
 
 /* Packs the assertion and deassertion time to a uint32_t. */
-#define SEDI_UART_DET_AT_DT_PACK(assertion_time, de_assertion_time)				\
-			((uint32_t)(((uint32_t)(assertion_time)) << SEDI_RBFO(UART, DET, DE_Assertion_Time) | \
-					((uint32_t)(de_assertion_time))				\
-						<< SEDI_RBFO(UART, DET, DE_De_assertion_Time)))
+#define SEDI_UART_DET_AT_DT_PACK(assertion_time, de_assertion_time)                                \
+	((uint32_t)(((uint32_t)(assertion_time)) << SEDI_RBFO(UART, DET, DE_Assertion_Time) |      \
+		    ((uint32_t)(de_assertion_time))                                                \
+			    << SEDI_RBFO(UART, DET, DE_De_assertion_Time)))
 
 /* Packs the de to re and re to de times to a uint32_t. */
-#define SEDI_UART_TAT_PACK(de_to_re, re_to_de)					\
-		((uint32_t)(((uint32_t)(de_to_re)) << SEDI_RBFO(UART, TAT, DE_to_RE) |	\
-			((uint32_t)(re_to_de)) << SEDI_RBFO(UART, TAT, RE_to_DE)))
+#define SEDI_UART_TAT_PACK(de_to_re, re_to_de)                                                     \
+	((uint32_t)(((uint32_t)(de_to_re)) << SEDI_RBFO(UART, TAT, DE_to_RE) |                     \
+		    ((uint32_t)(re_to_de)) << SEDI_RBFO(UART, TAT, RE_to_DE)))
 
 /**
  * UART context to be saved between sleep/resume.
@@ -117,15 +114,15 @@ typedef struct {
 static sedi_uart_context_t uart_context[SEDI_UART_NUM];
 
 static sedi_uart_regs_t *sedi_uart[SEDI_UART_NUM] = {(sedi_uart_regs_t *)SEDI_UART_0_REG_BASE,
-												(sedi_uart_regs_t *)SEDI_UART_1_REG_BASE,
-												(sedi_uart_regs_t *)SEDI_UART_2_REG_BASE};
+						     (sedi_uart_regs_t *)SEDI_UART_1_REG_BASE,
+						     (sedi_uart_regs_t *)SEDI_UART_2_REG_BASE};
 
 #define SEDI_UART sedi_uart
 
 /* Transmit & Receive control. */
 typedef struct {
-	uint8_t tx_disable : 1;
-	uint8_t rx_disable : 1;
+	uint8_t tx_disable: 1;
+	uint8_t rx_disable: 1;
 } uart_xfer_ctrl_t;
 
 static uart_xfer_ctrl_t uart_xfer_ctrl[SEDI_UART_NUM];
@@ -138,8 +135,8 @@ static const sedi_uart_transfer_t *uart_write_transfer[SEDI_UART_NUM];
 static uint32_t iir_cache[SEDI_UART_NUM];
 static uint32_t baud_rate_cache[SEDI_UART_NUM];
 static uint32_t clk_speed_cache[SEDI_UART_NUM];
-static uint32_t status_report_mask[SEDI_UART_NUM] = {BSETS_UART_LSR_ERROR,
-		BSETS_UART_LSR_ERROR, BSETS_UART_LSR_ERROR};
+static uint32_t status_report_mask[SEDI_UART_NUM] = {BSETS_UART_LSR_ERROR, BSETS_UART_LSR_ERROR,
+						     BSETS_UART_LSR_ERROR};
 
 typedef struct {
 	uint32_t enable_unsol_rx;
@@ -161,7 +158,10 @@ typedef struct {
 static io_vec_cntxt_t vec_read_ctxt[SEDI_UART_NUM];
 static io_vec_cntxt_t vec_write_ctxt[SEDI_UART_NUM];
 
-typedef enum { WRITE, READ } dma_operation_type_t;
+typedef enum {
+	WRITE,
+	READ
+} dma_operation_type_t;
 
 typedef struct {
 	const sedi_uart_dma_xfer_t *dma_xfer;
@@ -172,22 +172,22 @@ typedef struct {
 static uint32_t uart_dma_hs_id[SEDI_UART_NUM];
 
 static uart_dma_ctxt_t dma_write_ctxt[SEDI_UART_NUM] = {
-	{ .dma_xfer = NULL, .uart = SEDI_UART_0, .operation = WRITE },
-	{ .dma_xfer = NULL, .uart = SEDI_UART_1, .operation = WRITE },
-	{ .dma_xfer = NULL, .uart = SEDI_UART_2, .operation = WRITE }
+	{.dma_xfer = NULL, .uart = SEDI_UART_0, .operation = WRITE},
+	{.dma_xfer = NULL, .uart = SEDI_UART_1, .operation = WRITE},
+	{.dma_xfer = NULL, .uart = SEDI_UART_2, .operation = WRITE}
 };
 
 static uart_dma_ctxt_t dma_read_ctxt[SEDI_UART_NUM] = {
-	{ .dma_xfer = NULL, .uart = SEDI_UART_0, .operation = READ },
-	{ .dma_xfer = NULL, .uart = SEDI_UART_1, .operation = READ },
-	{ .dma_xfer = NULL, .uart = SEDI_UART_2, .operation = READ }
+	{.dma_xfer = NULL, .uart = SEDI_UART_0, .operation = READ},
+	{.dma_xfer = NULL, .uart = SEDI_UART_1, .operation = READ},
+	{.dma_xfer = NULL, .uart = SEDI_UART_2, .operation = READ}
 };
 
 /* DMA driver requires to have a callback to be provided during init even
  * when in polled mode. Adding a dummy callback for this.
  */
-static void sedi_dma_poll_dummy_cb(IN sedi_dma_t dma_dev, IN int channel,
-				   IN int event, INOUT void *param)
+static void sedi_dma_poll_dummy_cb(IN sedi_dma_t dma_dev, IN int channel, IN int event,
+				   INOUT void *param)
 {
 	PARAM_UNUSED(event);
 	PARAM_UNUSED(param);
@@ -195,8 +195,8 @@ static void sedi_dma_poll_dummy_cb(IN sedi_dma_t dma_dev, IN int channel,
 	PARAM_UNUSED(channel);
 }
 
-static void sedi_dma_event_cb(IN sedi_dma_t dma_device, IN int channel_id,
-			      IN int event, INOUT void *param)
+static void sedi_dma_event_cb(IN sedi_dma_t dma_device, IN int channel_id, IN int event,
+			      INOUT void *param)
 {
 	(void)dma_device;
 	(void)channel_id;
@@ -210,14 +210,13 @@ static void sedi_dma_event_cb(IN sedi_dma_t dma_device, IN int channel_id,
 	if (ctxt->operation == READ) {
 		if (event == SEDI_DMA_EVENT_TRANSFER_DONE) {
 			if (xfer->callback) {
-				xfer->callback(xfer->cb_param, SEDI_DRIVER_OK,
-					       line_err_status, xfer->len);
+				xfer->callback(xfer->cb_param, SEDI_DRIVER_OK, line_err_status,
+					       xfer->len);
 			}
 		} else {
 			if (xfer->callback) {
-				xfer->callback(xfer->cb_param,
-					       SEDI_DRIVER_ERROR,
-					       line_err_status, xfer->len);
+				xfer->callback(xfer->cb_param, SEDI_DRIVER_ERROR, line_err_status,
+					       xfer->len);
 			}
 		}
 	} else if (ctxt->operation == WRITE) {
@@ -228,14 +227,13 @@ static void sedi_dma_event_cb(IN sedi_dma_t dma_device, IN int channel_id,
 			while (!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED))) {
 			}
 			if (xfer->callback) {
-				xfer->callback(xfer->cb_param, SEDI_DRIVER_OK,
-					       line_err_status, xfer->len);
+				xfer->callback(xfer->cb_param, SEDI_DRIVER_OK, line_err_status,
+					       xfer->len);
 			}
 		} else {
 			if (xfer->callback) {
-				xfer->callback(xfer->cb_param,
-					       SEDI_DRIVER_ERROR,
-					       line_err_status, xfer->len);
+				xfer->callback(xfer->cb_param, SEDI_DRIVER_ERROR, line_err_status,
+					       xfer->len);
 			}
 		}
 	}
@@ -271,13 +269,11 @@ static void uart_soft_rst_instance(sedi_uart_t uart)
 }
 #endif
 
-static void io_vec_write_callback(void *data, int error, uint32_t status,
-				  uint32_t len)
+static void io_vec_write_callback(void *data, int error, uint32_t status, uint32_t len)
 {
 
 	sedi_uart_t uart = (sedi_uart_t)(data);
-	const sedi_uart_io_vec_xfer_t *const vec_xfer =
-	    vec_write_ctxt[uart].vec;
+	const sedi_uart_io_vec_xfer_t *const vec_xfer = vec_write_ctxt[uart].vec;
 
 	uint32_t current_count;
 
@@ -290,8 +286,7 @@ static void io_vec_write_callback(void *data, int error, uint32_t status,
 		if (vec_xfer->callback) {
 
 			/* Call callback with error. */
-			vec_xfer->callback(vec_xfer->cb_data, error, status,
-					   current_count);
+			vec_xfer->callback(vec_xfer->cb_data, error, status, current_count);
 		}
 		/* Set active xfer to false. */
 		vec_write_ctxt[uart].active = false;
@@ -310,15 +305,13 @@ static void io_vec_write_callback(void *data, int error, uint32_t status,
 	while (!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED))) {
 	}
 
-	regs->iir_fcr =
-		(SEDI_RBFM(UART, IIR, FIFOE) | SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD);
+	regs->iir_fcr = (SEDI_RBFM(UART, IIR, FIFOE) | SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD);
 
 	/* Enable TX holding reg empty interrupt. */
 	regs->ier_dlh |= SEDI_RBFVM(UART, IER, ETBEI, ENABLE);
 }
 
-static void io_vec_read_callback(void *data, int error, uint32_t status,
-				 uint32_t len)
+static void io_vec_read_callback(void *data, int error, uint32_t status, uint32_t len)
 {
 	sedi_uart_t uart = (sedi_uart_t)(data);
 	const sedi_uart_io_vec_xfer_t *const vec_xfer = vec_read_ctxt[uart].vec;
@@ -333,8 +326,7 @@ static void io_vec_read_callback(void *data, int error, uint32_t status,
 	if (status || (current_count == vec_xfer->count)) {
 		if (vec_xfer->callback) {
 			/* Call callback with error. */
-			vec_xfer->callback(vec_xfer->cb_data, error, status,
-					   current_count);
+			vec_xfer->callback(vec_xfer->cb_data, error, status, current_count);
 		}
 		/* Set active xfer to false. */
 		vec_read_ctxt[uart].active = false;
@@ -378,8 +370,7 @@ static void handle_unsol_rx_data(const sedi_uart_t uart)
 {
 	sedi_uart_regs_t *const regs = SEDI_UART[uart];
 	uint32_t lsr = regs->lsr;
-	const sedi_uart_unsol_rx_t *const unsol_rx =
-	    unsol_read_ctxt[uart].unsol_rx;
+	const sedi_uart_unsol_rx_t *const unsol_rx = unsol_read_ctxt[uart].unsol_rx;
 	int32_t write_idx = unsol_read_ctxt[uart].write_idx;
 	int32_t read_idx = unsol_read_ctxt[uart].read_idx;
 
@@ -395,20 +386,17 @@ static void handle_unsol_rx_data(const sedi_uart_t uart)
 	if (read_idx < write_idx) {
 		unsol_read_ctxt[uart].curr_len = write_idx - read_idx;
 	} else {
-		unsol_read_ctxt[uart].curr_len =
-		    unsol_rx->size - read_idx + write_idx;
+		unsol_read_ctxt[uart].curr_len = unsol_rx->size - read_idx + write_idx;
 	}
-	unsol_rx->unsol_rx_callback(unsol_rx->cb_data, SEDI_DRIVER_OK,
-				    SEDI_UART_IDLE,
+	unsol_rx->unsol_rx_callback(unsol_rx->cb_data, SEDI_DRIVER_OK, SEDI_UART_IDLE,
 				    unsol_read_ctxt[uart].curr_len);
 }
 
 static void handle_unsol_rx_error(const sedi_uart_t uart, uint32_t line_status)
 {
-	const sedi_uart_unsol_rx_t *const unsol_rx =
-	    unsol_read_ctxt[uart].unsol_rx;
-	unsol_rx->unsol_rx_callback(unsol_rx->cb_data, SEDI_DRIVER_ERROR,
-				    line_status,
+	const sedi_uart_unsol_rx_t *const unsol_rx = unsol_read_ctxt[uart].unsol_rx;
+
+	unsol_rx->unsol_rx_callback(unsol_rx->cb_data, SEDI_DRIVER_ERROR, line_status,
 				    unsol_read_ctxt[uart].curr_len);
 }
 
@@ -426,10 +414,8 @@ void sedi_uart_isr_handler(const sedi_uart_t uart)
 {
 	sedi_uart_regs_t *const regs = SEDI_UART[uart];
 	uint8_t interrupt_id = regs->iir_fcr & SEDI_UART_IIR_IID_MASK;
-	const sedi_uart_transfer_t *const read_transfer =
-	    uart_read_transfer[uart];
-	const sedi_uart_transfer_t *const write_transfer =
-	    uart_write_transfer[uart];
+	const sedi_uart_transfer_t *const read_transfer = uart_read_transfer[uart];
+	const sedi_uart_transfer_t *const write_transfer = uart_write_transfer[uart];
 	uint32_t line_status;
 
 	/*
@@ -446,7 +432,7 @@ void sedi_uart_isr_handler(const sedi_uart_t uart)
 	case SEDI_UART_IIR_THR_EMPTY:
 		if (write_transfer) {
 			if (is_write_xfer_complete(uart)) {
-				 regs->ier_dlh &= ~SEDI_RBFVM(UART, IER, ETBEI, ENABLE);
+				regs->ier_dlh &= ~SEDI_RBFVM(UART, IER, ETBEI, ENABLE);
 
 				/*
 				 * At this point the FIFOs are empty, but the
@@ -461,9 +447,8 @@ void sedi_uart_isr_handler(const sedi_uart_t uart)
 				 */
 				regs->scr |= SEDI_UART_SCR_STATUS_UPDATE;
 				if (write_transfer->callback) {
-					write_transfer->callback(
-					    write_transfer->callback_data, 0,
-					    SEDI_UART_IDLE, write_pos[uart]);
+					write_transfer->callback(write_transfer->callback_data, 0,
+								 SEDI_UART_IDLE, write_pos[uart]);
 				}
 
 				if (vec_write_ctxt[uart].active == false) {
@@ -479,12 +464,10 @@ void sedi_uart_isr_handler(const sedi_uart_t uart)
 			 * in order to take advantage of the whole FIFO
 			 * capacity.
 			 */
-			int count = (write_pos[uart] == 0)
-					? SEDI_UART_FIFO_DEPTH
-					: SEDI_UART_FIFO_HALF_DEPTH;
+			int count = (write_pos[uart] == 0) ? SEDI_UART_FIFO_DEPTH
+							   : SEDI_UART_FIFO_HALF_DEPTH;
 			while (count-- && !is_write_xfer_complete(uart)) {
-				regs->rbr_thr_dll =
-					write_transfer->data[write_pos[uart]++];
+				regs->rbr_thr_dll = write_transfer->data[write_pos[uart]++];
 			}
 
 			/*
@@ -493,9 +476,8 @@ void sedi_uart_isr_handler(const sedi_uart_t uart)
 			 * TX buffer is empty.
 			 */
 			if (is_write_xfer_complete(uart)) {
-				 regs->iir_fcr =
-					SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD |
-					SEDI_RBFVM(UART, IIR, FIFOE, ENABLE);
+				regs->iir_fcr = SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD |
+						SEDI_RBFVM(UART, IIR, FIFOE, ENABLE);
 			}
 		}
 		break;
@@ -522,23 +504,19 @@ void sedi_uart_isr_handler(const sedi_uart_t uart)
 				 */
 				if (lsr & status_report_mask[uart]) {
 					regs->ier_dlh &= ~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) |
-						SEDI_RBFVM(UART, IER, ELSI, ENABLE));
+							   SEDI_RBFVM(UART, IER, ELSI, ENABLE));
 
 					if (read_transfer->callback) {
 						read_transfer->callback(
-						    read_transfer
-							->callback_data,
-						    SEDI_DRIVER_ERROR,
-						    lsr &
-							BSETS_UART_LSR_ERROR,
-						    0);
+							read_transfer->callback_data,
+							SEDI_DRIVER_ERROR,
+							lsr & BSETS_UART_LSR_ERROR, 0);
 					}
 					uart_read_transfer[uart] = NULL;
 					return;
 				}
 				if (lsr & SEDI_RBFVM(UART, LSR, DR, READY)) {
-					read_transfer->data[read_pos[uart]++] =
-						regs->rbr_thr_dll;
+					read_transfer->data[read_pos[uart]++] = regs->rbr_thr_dll;
 				} else {
 					/* No more data in the RX FIFO. */
 					break;
@@ -550,12 +528,11 @@ void sedi_uart_isr_handler(const sedi_uart_t uart)
 				 * Disable both 'Receiver Data Available' and
 				 * 'Receiver Line Status' interrupts.
 				 */
-				regs->ier_dlh &=
-					~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE));
+				regs->ier_dlh &= ~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) |
+						   SEDI_RBFVM(UART, IER, ELSI, ENABLE));
 				if (read_transfer->callback) {
-					read_transfer->callback(
-					    read_transfer->callback_data, 0,
-					    SEDI_UART_IDLE, read_pos[uart]);
+					read_transfer->callback(read_transfer->callback_data, 0,
+								SEDI_UART_IDLE, read_pos[uart]);
 				}
 
 				if (vec_read_ctxt[uart].active == false) {
@@ -571,31 +548,27 @@ void sedi_uart_isr_handler(const sedi_uart_t uart)
 
 	case SEDI_UART_IIR_RECV_LINE_STATUS:
 
-		line_status = regs->lsr & (SEDI_RBFVM(UART, LSR, ADDR_RCVD, 1) |
-			BSETS_UART_LSR_ERROR);
+		line_status =
+			regs->lsr & (SEDI_RBFVM(UART, LSR, ADDR_RCVD, 1) | BSETS_UART_LSR_ERROR);
 
 		if (status_report_mask[uart] & line_status) {
 			if (read_transfer) {
-				 regs->ier_dlh &=
-					~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE));
+				regs->ier_dlh &= ~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) |
+						   SEDI_RBFVM(UART, IER, ELSI, ENABLE));
 				if (read_transfer->callback) {
 					/*
 					 * Return the number of bytes read
 					 * a zero as a line status error
 					 * was detected.
 					 */
-					read_transfer->callback(
-					    read_transfer->callback_data,
-					    SEDI_DRIVER_ERROR,
-					    (status_report_mask[uart] &
-					     line_status),
-					    0);
+					read_transfer->callback(read_transfer->callback_data,
+						SEDI_DRIVER_ERROR,
+						(status_report_mask[uart] & line_status), 0);
 					uart_read_transfer[uart] = NULL;
 				}
 			} else {
 				if (unsol_read_ctxt[uart].enable_unsol_rx) {
-					handle_unsol_rx_error(uart,
-							      line_status);
+					handle_unsol_rx_error(uart, line_status);
 				}
 			}
 		}
@@ -612,17 +585,15 @@ void sedi_uart_isr_handler(const sedi_uart_t uart)
 		 * and report error.
 		 */
 		if (read_transfer && read_transfer->callback) {
-			regs->ier_dlh &=
-				~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE));
-			read_transfer->callback(read_transfer->callback_data,
-						SEDI_DRIVER_ERROR,
+			regs->ier_dlh &= ~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) |
+					   SEDI_RBFVM(UART, IER, ELSI, ENABLE));
+			read_transfer->callback(read_transfer->callback_data, SEDI_DRIVER_ERROR,
 						SEDI_UART_UNHANDLED_INT, 0);
 			uart_read_transfer[uart] = NULL;
 		}
 		if (write_transfer && write_transfer->callback) {
 			regs->ier_dlh &= ~SEDI_RBFVM(UART, IER, ETBEI, ENABLE);
-			write_transfer->callback(write_transfer->callback_data,
-						 SEDI_DRIVER_ERROR,
+			write_transfer->callback(write_transfer->callback_data, SEDI_DRIVER_ERROR,
 						 SEDI_UART_UNHANDLED_INT, 0);
 			uart_write_transfer[uart] = NULL;
 		}
@@ -643,8 +614,7 @@ int sedi_uart_set_config(IN sedi_uart_t uart, IN sedi_uart_config_t *cfg)
 
 	volatile uint32_t unused_lsr __attribute__((unused));
 
-	ret = sedi_uart_set_baud_rate(uart, cfg->baud_rate,
-			sedi_pm_get_hbw_clock());
+	ret = sedi_uart_set_baud_rate(uart, cfg->baud_rate, sedi_pm_get_hbw_clock());
 	if (ret != SEDI_DRIVER_OK) {
 		return SEDI_DRIVER_ERROR_PARAMETER;
 	}
@@ -655,13 +625,14 @@ int sedi_uart_set_config(IN sedi_uart_t uart, IN sedi_uart_config_t *cfg)
 	/* Hardware automatic flow control. */
 	regs->mcr = 0;
 	if (true == cfg->hw_fc) {
-		regs->mcr |= SEDI_RBFVM(UART, MCR, AFCE, ENABLED) | SEDI_RBFVM(UART, MCR, RTS, ACTIVE);
+		regs->mcr |=
+			SEDI_RBFVM(UART, MCR, AFCE, ENABLED) | SEDI_RBFVM(UART, MCR, RTS, ACTIVE);
 	}
 
 	/* FIFO's enable and reset, set interrupt threshold. */
 	regs->iir_fcr =
-		(SEDI_RBFVM(UART, IIR, FIFOE, ENABLE) | SEDI_RBFVM(UART, IIR, RFIFOR, ENABLE)
-		| SEDI_RBFVM(UART, IIR, XFIFOR, ENABLE) | SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD);
+		(SEDI_RBFVM(UART, IIR, FIFOE, ENABLE) | SEDI_RBFVM(UART, IIR, RFIFOR, ENABLE) |
+		 SEDI_RBFVM(UART, IIR, XFIFOR, ENABLE) | SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD);
 
 	/* Clear interrupt settings set by bootloader uart init.*/
 	regs->ier_dlh = 0;
@@ -689,8 +660,10 @@ int sedi_uart_get_status(IN sedi_uart_t uart, OUT uint32_t *const status)
 	sedi_uart_regs_t *const regs = SEDI_UART[uart];
 	uint32_t lsr = regs->lsr;
 
-	*status = lsr & (SEDI_RBFVM(UART, LSR, OE, OVER_RUN_ERROR) | SEDI_RBFVM(UART, LSR, PE, PARITY_ERROR) |
-		SEDI_RBFVM(UART, LSR, FE, FRAMING_ERROR) | SEDI_RBFVM(UART, LSR, BI, BREAK));
+	*status =
+		lsr & (SEDI_RBFVM(UART, LSR, OE, OVER_RUN_ERROR) |
+		       SEDI_RBFVM(UART, LSR, PE, PARITY_ERROR) |
+		       SEDI_RBFVM(UART, LSR, FE, FRAMING_ERROR) | SEDI_RBFVM(UART, LSR, BI, BREAK));
 
 	/*
 	 * Check as an IRQ TX completed, if so, the Shift register may still be
@@ -701,7 +674,6 @@ int sedi_uart_get_status(IN sedi_uart_t uart, OUT uint32_t *const status)
 		regs->scr &= ~SEDI_UART_SCR_STATUS_UPDATE;
 	} else if (!(lsr & (SEDI_RBFVM(UART, LSR, TEMT, ENABLED)))) {
 		*status |= SEDI_UART_TX_BUSY;
-
 	}
 
 	if (lsr & SEDI_RBFVM(UART, LSR, DR, READY)) {
@@ -731,13 +703,11 @@ int sedi_uart_write(IN sedi_uart_t uart, IN uint8_t data)
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_read(IN sedi_uart_t uart, OUT uint8_t *const data,
-		   OUT uint32_t *status)
+int sedi_uart_read(IN sedi_uart_t uart, OUT uint8_t *const data, OUT uint32_t *status)
 {
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(data != NULL, SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(unsol_read_ctxt[uart].enable_unsol_rx == false,
-		  SEDI_DRIVER_ERROR_UNSUPPORTED);
+	DBG_CHECK(unsol_read_ctxt[uart].enable_unsol_rx == false, SEDI_DRIVER_ERROR_UNSUPPORTED);
 
 	if (is_rx_disabled(uart)) {
 		return SEDI_DRIVER_ERROR_UNSUPPORTED;
@@ -793,8 +763,7 @@ int sedi_uart_read_non_block(IN sedi_uart_t uart, OUT uint8_t *const data)
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_write_buffer(IN sedi_uart_t uart, IN uint8_t *const data,
-			   IN uint32_t len)
+int sedi_uart_write_buffer(IN sedi_uart_t uart, IN uint8_t *const data, IN uint32_t len)
 {
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(data != NULL, SEDI_DRIVER_ERROR_PARAMETER);
@@ -824,16 +793,14 @@ int sedi_uart_write_buffer(IN sedi_uart_t uart, IN uint8_t *const data,
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_read_buffer(IN sedi_uart_t uart, OUT uint8_t *const data,
-			  IN uint32_t req_len, OUT uint32_t *comp_len,
-			  OUT uint32_t *status)
+int sedi_uart_read_buffer(IN sedi_uart_t uart, OUT uint8_t *const data, IN uint32_t req_len,
+			  OUT uint32_t *comp_len, OUT uint32_t *status)
 {
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(data != NULL, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(status != NULL, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(comp_len != NULL, SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(unsol_read_ctxt[uart].enable_unsol_rx == false,
-		  SEDI_DRIVER_ERROR_UNSUPPORTED);
+	DBG_CHECK(unsol_read_ctxt[uart].enable_unsol_rx == false, SEDI_DRIVER_ERROR_UNSUPPORTED);
 
 	if (is_rx_disabled(uart)) {
 		return SEDI_DRIVER_ERROR_UNSUPPORTED;
@@ -845,7 +812,7 @@ int sedi_uart_read_buffer(IN sedi_uart_t uart, OUT uint8_t *const data,
 	uint32_t lsr = 0;
 	*comp_len = 0;
 	while (read_len--) {
-		 while (!(lsr & SEDI_RBFVM(UART, LSR, DR, READY))) {
+		while (!(lsr & SEDI_RBFVM(UART, LSR, DR, READY))) {
 			lsr = regs->lsr;
 		}
 
@@ -862,8 +829,7 @@ int sedi_uart_read_buffer(IN sedi_uart_t uart, OUT uint8_t *const data,
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_write_async(IN sedi_uart_t uart,
-			  IN sedi_uart_transfer_t *const xfer)
+int sedi_uart_write_async(IN sedi_uart_t uart, IN sedi_uart_transfer_t *const xfer)
 {
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(xfer != NULL, SEDI_DRIVER_ERROR_PARAMETER);
@@ -886,15 +852,13 @@ int sedi_uart_write_async(IN sedi_uart_t uart,
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_read_async(IN sedi_uart_t uart,
-			 IN sedi_uart_transfer_t *const xfer)
+int sedi_uart_read_async(IN sedi_uart_t uart, IN sedi_uart_transfer_t *const xfer)
 {
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(xfer != NULL, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(uart_read_transfer[uart] == 0, SEDI_DRIVER_ERROR_BUSY);
 
-	DBG_CHECK(unsol_read_ctxt[uart].enable_unsol_rx == false,
-		  SEDI_DRIVER_ERROR_UNSUPPORTED);
+	DBG_CHECK(unsol_read_ctxt[uart].enable_unsol_rx == false, SEDI_DRIVER_ERROR_UNSUPPORTED);
 
 	if (is_rx_disabled(uart)) {
 		return SEDI_DRIVER_ERROR_UNSUPPORTED;
@@ -906,7 +870,7 @@ int sedi_uart_read_async(IN sedi_uart_t uart,
 	uart_read_transfer[uart] = xfer;
 
 	/* Set threshold. */
-	 regs->iir_fcr =
+	regs->iir_fcr =
 		(SEDI_RBFVM(UART, IIR, FIFOE, ENABLE) | SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD);
 
 	/*
@@ -934,8 +898,7 @@ int sedi_uart_async_write_terminate(IN sedi_uart_t uart)
 	regs->ier_dlh &= ~SEDI_RBFVM(UART, IER, ETBEI, ENABLE);
 	if (transfer) {
 		if (transfer->callback) {
-			transfer->callback(transfer->callback_data,
-					   SEDI_USART_ERROR_CANCELED,
+			transfer->callback(transfer->callback_data, SEDI_USART_ERROR_CANCELED,
 					   SEDI_UART_IDLE, write_pos[uart]);
 		}
 		uart_write_transfer[uart] = NULL;
@@ -961,12 +924,12 @@ int sedi_uart_async_read_terminate(IN sedi_uart_t uart)
 	 * Disable both 'Receiver Data Available' and 'Receiver Line Status'
 	 * interrupts.
 	 */
-	regs->ier_dlh &= ~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE));
+	regs->ier_dlh &=
+		~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE));
 
 	if (transfer) {
 		if (transfer->callback) {
-			transfer->callback(transfer->callback_data,
-					   SEDI_USART_ERROR_CANCELED,
+			transfer->callback(transfer->callback_data, SEDI_USART_ERROR_CANCELED,
 					   SEDI_UART_IDLE, read_pos[uart]);
 		}
 		uart_read_transfer[uart] = NULL;
@@ -977,8 +940,7 @@ int sedi_uart_async_read_terminate(IN sedi_uart_t uart)
 
 #if (HAS_UART_RS485_SUPPORT)
 
-int sedi_uart_rs485_set_config(IN sedi_uart_t uart,
-			       IN sedi_uart_rs485_config_t *cfg)
+int sedi_uart_rs485_set_config(IN sedi_uart_t uart, IN sedi_uart_rs485_config_t *cfg)
 {
 
 	uint32_t de_assertion_cycles;
@@ -990,28 +952,22 @@ int sedi_uart_rs485_set_config(IN sedi_uart_t uart,
 	sedi_uart_regs_t *const regs = SEDI_UART[uart];
 
 	DBG_CHECK(cfg != NULL, SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(cfg->de_assertion_time < SEDI_UART_DE_AT_DT_NS_MAX,
-		  SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(cfg->de_assertion_time < SEDI_UART_DE_AT_DT_NS_MAX, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(cfg->de_deassertion_time < SEDI_UART_DE_AT_DT_NS_MAX,
 		  SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(cfg->de_re_tat < SEDI_UART_TAT_NS_MAX,
-		  SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(cfg->re_de_tat < SEDI_UART_TAT_NS_MAX,
-		  SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(cfg->de_re_tat < SEDI_UART_TAT_NS_MAX, SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(cfg->re_de_tat < SEDI_UART_TAT_NS_MAX, SEDI_DRIVER_ERROR_PARAMETER);
 
 	/* Setting configuration for supporting RS-485 extension. */
 
 	/* Setting the bit enable writes to RS485 registers. */
 	regs->tcr |= SEDI_RBFVM(UART, TCR, RS485_EN, 1);
 
-	de_assertion_cycles =
-	    (cfg->de_assertion_time / SEDI_UART_SERIAL_CLK_PERIOD_NS);
-	de_deassertion_cycles =
-	    (cfg->de_deassertion_time / SEDI_UART_SERIAL_CLK_PERIOD_NS);
+	de_assertion_cycles = (cfg->de_assertion_time / SEDI_UART_SERIAL_CLK_PERIOD_NS);
+	de_deassertion_cycles = (cfg->de_deassertion_time / SEDI_UART_SERIAL_CLK_PERIOD_NS);
 
 	/* Set the values of assertion and de-assertion time. */
-	regs->det = SEDI_UART_DET_AT_DT_PACK(de_assertion_cycles,
-				de_deassertion_cycles);
+	regs->det = SEDI_UART_DET_AT_DT_PACK(de_assertion_cycles, de_deassertion_cycles);
 
 	/* Clearing previous values of transfer mode in TCR. */
 	regs->tcr &= ~(SEDI_RBFM(UART, TCR, XFER_MODE));
@@ -1019,26 +975,22 @@ int sedi_uart_rs485_set_config(IN sedi_uart_t uart,
 	/* The TAT values are valid only in half duplex mode. */
 	if (cfg->transfer_mode == SEDI_UART_RS485_XFER_MODE_HALF_DUPLEX) {
 		/* Setting the transfer mode in TCR. */
-		regs->tcr |=
-			(uint32_t)(SEDI_UART_XFER_MODE_HW_HALF_DUPLEX
-			<< (SEDI_RBFO(UART, TCR, XFER_MODE)));
+		regs->tcr |= (uint32_t)(SEDI_UART_XFER_MODE_HW_HALF_DUPLEX
+					<< (SEDI_RBFO(UART, TCR, XFER_MODE)));
 
 		/* Set the values of de-re and re-de tat.*/
-		de_re_tat_cycles =
-		    cfg->de_re_tat / SEDI_UART_SERIAL_CLK_PERIOD_NS;
-		re_de_tat_cycles =
-		    cfg->re_de_tat / SEDI_UART_SERIAL_CLK_PERIOD_NS;
-		 regs->tat = SEDI_UART_TAT_PACK(de_re_tat_cycles, re_de_tat_cycles);
+		de_re_tat_cycles = cfg->de_re_tat / SEDI_UART_SERIAL_CLK_PERIOD_NS;
+		re_de_tat_cycles = cfg->re_de_tat / SEDI_UART_SERIAL_CLK_PERIOD_NS;
+		regs->tat = SEDI_UART_TAT_PACK(de_re_tat_cycles, re_de_tat_cycles);
 	} else {
-		regs->tcr |=
-			(uint32_t)(SEDI_UART_XFER_MODE_FULL_DUPLEX
-				<< (SEDI_RBFO(UART, TCR, XFER_MODE)));
+		regs->tcr |= (uint32_t)(SEDI_UART_XFER_MODE_FULL_DUPLEX
+					<< (SEDI_RBFO(UART, TCR, XFER_MODE)));
 	}
 
 	/* Clearing previous values of DE & RE polarity in TCR. */
 	regs->tcr &= ~(SEDI_RBFVM(UART, TCR, RE_POL, 1) | SEDI_RBFVM(UART, TCR, DE_POL, 1));
 	regs->tcr |= (((cfg->re_polarity) << SEDI_RBFO(UART, TCR, RE_POL)) |
-				((cfg->de_polarity) << SEDI_RBFO(UART, TCR, DE_POL)));
+		      ((cfg->de_polarity) << SEDI_RBFO(UART, TCR, DE_POL)));
 
 	/* Enable or disable the driver based on config. */
 	regs->de_en = cfg->de_en;
@@ -1076,32 +1028,33 @@ int sedi_uart_rs485_enable(IN sedi_uart_t uart)
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_rs485_get_config(IN sedi_uart_t uart,
-			       sedi_uart_rs485_config_t *cfg)
+int sedi_uart_rs485_get_config(IN sedi_uart_t uart, sedi_uart_rs485_config_t *cfg)
 {
 
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(cfg != NULL, SEDI_DRIVER_ERROR_PARAMETER);
 	sedi_uart_regs_t *const regs = SEDI_UART[uart];
 
-	cfg->de_assertion_time = (uint32_t)(((regs->det & SEDI_RBFM(UART, DET, DE_Assertion_Time)) >>
-							SEDI_RBFO(UART, DET, DE_Assertion_Time)) *
-							SEDI_UART_SERIAL_CLK_PERIOD_NS);
+	cfg->de_assertion_time =
+		(uint32_t)(((regs->det & SEDI_RBFM(UART, DET, DE_Assertion_Time)) >>
+			    SEDI_RBFO(UART, DET, DE_Assertion_Time)) *
+			   SEDI_UART_SERIAL_CLK_PERIOD_NS);
 
-	cfg->de_deassertion_time = (uint32_t)(
-		((regs->det & SEDI_RBFM(UART, DET, DE_De_assertion_Time)) >> SEDI_RBFO(UART, DET, DE_De_assertion_Time)) *
-		SEDI_UART_SERIAL_CLK_PERIOD_NS);
+	cfg->de_deassertion_time =
+		(uint32_t)(((regs->det & SEDI_RBFM(UART, DET, DE_De_assertion_Time)) >>
+			    SEDI_RBFO(UART, DET, DE_De_assertion_Time)) *
+			   SEDI_UART_SERIAL_CLK_PERIOD_NS);
 
 	cfg->de_re_tat = (uint32_t)(((regs->tat & SEDI_RBFM(UART, TAT, DE_to_RE)) >>
-							SEDI_RBFO(UART, TAT, DE_to_RE)) *
-							SEDI_UART_SERIAL_CLK_PERIOD_NS);
+				     SEDI_RBFO(UART, TAT, DE_to_RE)) *
+				    SEDI_UART_SERIAL_CLK_PERIOD_NS);
 
 	cfg->re_de_tat = (uint32_t)(((regs->tat & SEDI_RBFM(UART, TAT, RE_to_DE)) >>
-							SEDI_RBFO(UART, TAT, RE_to_DE)) *
-							SEDI_UART_SERIAL_CLK_PERIOD_NS);
+				     SEDI_RBFO(UART, TAT, RE_to_DE)) *
+				    SEDI_UART_SERIAL_CLK_PERIOD_NS);
 
-	cfg->transfer_mode = (regs->tcr & SEDI_RBFM(UART, TCR, XFER_MODE)) >>
-							SEDI_RBFO(UART, TCR, XFER_MODE);
+	cfg->transfer_mode =
+		(regs->tcr & SEDI_RBFM(UART, TCR, XFER_MODE)) >> SEDI_RBFO(UART, TCR, XFER_MODE);
 
 	if (regs->tcr & (SEDI_RBFO(UART, TCR, DE_POL))) {
 		cfg->de_polarity = SEDI_UART_RS485_POL_ACTIVE_HIGH;
@@ -1140,8 +1093,7 @@ int sedi_uart_rs485_clear_config(IN sedi_uart_t uart)
 #endif /* HAS_UART_RS485_SUPPORT */
 
 #if (HAS_UART_9BIT_SUPPORT)
-int sedi_uart_9bit_set_config(IN sedi_uart_t uart,
-			      IN sedi_uart_9bit_config_t *cfg)
+int sedi_uart_9bit_set_config(IN sedi_uart_t uart, IN sedi_uart_9bit_config_t *cfg)
 {
 
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
@@ -1169,7 +1121,7 @@ int sedi_uart_9bit_disable(IN sedi_uart_t uart)
 {
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
-	 sedi_uart_regs_t *const regs = SEDI_UART[uart];
+	sedi_uart_regs_t *const regs = SEDI_UART[uart];
 
 	regs->lcr_ext &= ~(SEDI_RBFVM(UART, LCR_EXT, DLS_E, 1));
 	return SEDI_DRIVER_OK;
@@ -1237,8 +1189,7 @@ int sedi_uart_9bit_get_config(IN sedi_uart_t uart, sedi_uart_9bit_config_t *cfg)
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_read_rx_fifo(IN sedi_uart_t uart, uint16_t *rx_buff,
-			   uint16_t *length_read)
+int sedi_uart_read_rx_fifo(IN sedi_uart_t uart, uint16_t *rx_buff, uint16_t *length_read)
 {
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(rx_buff != NULL, SEDI_DRIVER_ERROR_PARAMETER);
@@ -1300,7 +1251,7 @@ static void sedi_uart_save_context(IN sedi_uart_t uart)
 	regs->lcr |= SEDI_RBFVM(UART, LCR, DLAB, ENABLED);
 	ctx->dlh = regs->ier_dlh;
 	ctx->dll = regs->rbr_thr_dll;
-	regs->lcr &= ~SEDI_RBFVM(UART, LCR, DLAB, ENABLED);;
+	regs->lcr &= ~SEDI_RBFVM(UART, LCR, DLAB, ENABLED);
 
 #if (HAS_UART_RS485_SUPPORT)
 	/* Save registers for RS485 operation. */
@@ -1363,9 +1314,10 @@ static void sedi_uart_restore_context(IN sedi_uart_t uart)
 		 * default config is applied for this register.
 		 * Application will need to restore its own parameters.
 		 */
-		regs->iir_fcr = (SEDI_RBFVM(UART, IIR, FIFOE, ENABLE) | SEDI_RBFVM(UART, IIR, RFIFOR, ENABLE) |
-					SEDI_RBFVM(UART, IIR, XFIFOR, ENABLE) |
-					SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD);
+		regs->iir_fcr = (SEDI_RBFVM(UART, IIR, FIFOE, ENABLE) |
+				 SEDI_RBFVM(UART, IIR, RFIFOR, ENABLE) |
+				 SEDI_RBFVM(UART, IIR, XFIFOR, ENABLE) |
+				 SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD);
 		ctx->context_valid = false;
 	}
 }
@@ -1395,8 +1347,7 @@ bool sedi_uart_is_irq_rx_ready(IN sedi_uart_t uart)
 {
 	uint32_t id = (iir_cache[uart] & SEDI_UART_IIR_IID_MASK);
 
-	return (id == SEDI_UART_IIR_RECV_DATA_AVAIL) ||
-	       (id == SEDI_UART_IIR_CHAR_TIMEOUT);
+	return (id == SEDI_UART_IIR_RECV_DATA_AVAIL) || (id == SEDI_UART_IIR_CHAR_TIMEOUT);
 }
 
 bool sedi_uart_is_irq_pending(IN sedi_uart_t uart)
@@ -1408,8 +1359,9 @@ int sedi_uart_fifo_fill(IN sedi_uart_t uart, IN uint8_t *data, IN uint32_t size)
 {
 	uint32_t i;
 
-	if (is_tx_disabled(uart))
+	if (is_tx_disabled(uart)) {
 		return 0;
+	}
 
 	for (i = 0; ((i < size) && (!is_tx_fifo_full(uart))); i++) {
 		SEDI_UART[uart]->rbr_thr_dll = data[i];
@@ -1417,13 +1369,13 @@ int sedi_uart_fifo_fill(IN sedi_uart_t uart, IN uint8_t *data, IN uint32_t size)
 	return i;
 }
 
-int sedi_uart_fifo_read(IN sedi_uart_t uart, OUT uint8_t *data,
-			IN uint32_t size)
+int sedi_uart_fifo_read(IN sedi_uart_t uart, OUT uint8_t *data, IN uint32_t size)
 {
 	int i;
 
-	if (is_rx_disabled(uart))
+	if (is_rx_disabled(uart)) {
 		return 0;
+	}
 
 	for (i = 0; i < size && sedi_is_rx_data_available(uart); i++) {
 		data[i] = SEDI_UART[uart]->rbr_thr_dll;
@@ -1490,24 +1442,20 @@ int sedi_uart_irq_err_disable(IN sedi_uart_t uart)
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_set_baud_rate(IN sedi_uart_t uart, IN uint32_t baud_rate,
-			    IN uint32_t clk_speed_hz)
+int sedi_uart_set_baud_rate(IN sedi_uart_t uart, IN uint32_t baud_rate, IN uint32_t clk_speed_hz)
 {
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
 	/* Divisor = clock_speed_hz /(16* baudrate) */
 	uint32_t divisor = clk_speed_hz / (baud_rate << 4);
 
-	DBG_CHECK(divisor <= (SEDI_UART_MAX_BAUD_DIVISOR),
-		  SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(divisor <= (SEDI_UART_MAX_BAUD_DIVISOR), SEDI_DRIVER_ERROR_PARAMETER);
 
 	uint32_t dlf = (clk_speed_hz % (baud_rate << 4)) / baud_rate;
 	uint32_t scaled_dlf =
-	    ((clk_speed_hz % (baud_rate << 4)) * SEDI_UART_DLF_SCALAR) /
-	    baud_rate;
+		((clk_speed_hz % (baud_rate << 4)) * SEDI_UART_DLF_SCALAR) / baud_rate;
 
-	dlf = dlf + ((scaled_dlf % SEDI_UART_DLF_SCALAR) >=
-		     (SEDI_UART_DLF_SCALAR / 2));
+	dlf = dlf + ((scaled_dlf % SEDI_UART_DLF_SCALAR) >= (SEDI_UART_DLF_SCALAR / 2));
 
 	sedi_uart_regs_t *const regs = SEDI_UART[uart];
 
@@ -1536,8 +1484,11 @@ int sedi_uart_get_config(IN sedi_uart_t uart, OUT sedi_uart_config_t *cfg)
 	uint32_t fc_setting;
 
 	cfg->line_control = regs->lcr;
-	fc_setting = (regs->mcr & (SEDI_RBFVM(UART, MCR, AFCE, ENABLED) | SEDI_RBFVM(UART, MCR, RTS, ACTIVE)));
-	cfg->hw_fc = (fc_setting == (SEDI_RBFVM(UART, MCR, AFCE, ENABLED) | SEDI_RBFVM(UART, MCR, RTS, ACTIVE)));;
+	fc_setting = (regs->mcr &
+		      (SEDI_RBFVM(UART, MCR, AFCE, ENABLED) | SEDI_RBFVM(UART, MCR, RTS, ACTIVE)));
+	cfg->hw_fc = (fc_setting ==
+		      (SEDI_RBFVM(UART, MCR, AFCE, ENABLED) | SEDI_RBFVM(UART, MCR, RTS, ACTIVE)));
+	;
 	cfg->baud_rate = baud_rate_cache[uart];
 	cfg->clk_speed_hz = clk_speed_cache[uart];
 	return SEDI_DRIVER_OK;
@@ -1622,16 +1573,14 @@ int sedi_set_ln_status_report_mask(IN sedi_uart_t uart, IN uint32_t mask)
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_enable_unsol_rx(IN sedi_uart_t uart,
-			      IN sedi_uart_unsol_rx_t *const unsol_rx)
+int sedi_uart_enable_unsol_rx(IN sedi_uart_t uart, IN sedi_uart_unsol_rx_t *const unsol_rx)
 {
 
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(unsol_rx != NULL, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(unsol_rx->buffer != NULL, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(unsol_rx->size != 0, SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(unsol_rx->unsol_rx_callback != NULL,
-		  SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(unsol_rx->unsol_rx_callback != NULL, SEDI_DRIVER_ERROR_PARAMETER);
 
 	if (is_rx_disabled(uart)) {
 		return SEDI_DRIVER_ERROR_UNSUPPORTED;
@@ -1651,7 +1600,8 @@ int sedi_uart_enable_unsol_rx(IN sedi_uart_t uart,
 	unsol_read_ctxt[uart].enable_unsol_rx = true;
 
 	/* Enable receive data available interrupt */
-	SEDI_UART[uart]->ier_dlh |= SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE);
+	SEDI_UART[uart]->ier_dlh |=
+		SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE);
 	return SEDI_DRIVER_OK;
 }
 
@@ -1667,7 +1617,8 @@ int sedi_uart_disable_unsol_rx(IN sedi_uart_t uart)
 		return SEDI_DRIVER_ERROR_UNSUPPORTED;
 	}
 
-	SEDI_UART[uart]->ier_dlh &= ~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE));
+	SEDI_UART[uart]->ier_dlh &=
+		~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE));
 
 	unsol_read_ctxt[uart].enable_unsol_rx = false;
 	unsol_read_ctxt[uart].unsol_rx = NULL;
@@ -1685,14 +1636,14 @@ int sedi_uart_get_unsol_data(IN sedi_uart_t uart, uint8_t *buffer, int len)
 
 	int i, count = 0, start_idx, end_idx;
 	int read_comp = 0;
-	const sedi_uart_unsol_rx_t *const unsol_rx =
-	    unsol_read_ctxt[uart].unsol_rx;
+	const sedi_uart_unsol_rx_t *const unsol_rx = unsol_read_ctxt[uart].unsol_rx;
 
 	if ((len == 0) || (len > unsol_read_ctxt[uart].curr_len + 1)) {
 		return SEDI_DRIVER_ERROR_PARAMETER;
 	}
 
-	SEDI_UART[uart]->ier_dlh &= ~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE));
+	SEDI_UART[uart]->ier_dlh &=
+		~(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE));
 
 	/* read_idx is the last read location so adding 1 for next valid
 	 * location, similarly write_idx is the last written location thus
@@ -1727,12 +1678,12 @@ int sedi_uart_get_unsol_data(IN sedi_uart_t uart, uint8_t *buffer, int len)
 	}
 
 	/* Update the read idx to last read location. */
-	unsol_read_ctxt[uart].read_idx =
-	    (unsol_read_ctxt[uart].read_idx + len) % unsol_rx->size;
+	unsol_read_ctxt[uart].read_idx = (unsol_read_ctxt[uart].read_idx + len) % unsol_rx->size;
 	unsol_read_ctxt[uart].curr_len = (unsol_read_ctxt[uart].curr_len - len);
 
 	/* Enable receive data available interrupt */
-	SEDI_UART[uart]->ier_dlh |= (SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE));
+	SEDI_UART[uart]->ier_dlh |=
+		(SEDI_RBFVM(UART, IER, ERBFI, ENABLE) | SEDI_RBFVM(UART, IER, ELSI, ENABLE));
 
 	return SEDI_DRIVER_OK;
 }
@@ -1771,6 +1722,7 @@ int sedi_uart_assert_rts(IN sedi_uart_t uart)
 	regs->mcr |= SEDI_RBFVM(UART, MCR, RTS, ACTIVE);
 	return SEDI_DRIVER_OK;
 }
+
 int sedi_uart_de_assert_rts(IN sedi_uart_t uart)
 {
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
@@ -1801,8 +1753,7 @@ int sedi_uart_read_cts(IN sedi_uart_t uart, OUT uint32_t *p_cts)
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_write_vec_async(IN sedi_uart_t uart,
-			      IN sedi_uart_io_vec_xfer_t *const vec_xfer)
+int sedi_uart_write_vec_async(IN sedi_uart_t uart, IN sedi_uart_io_vec_xfer_t *const vec_xfer)
 {
 
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
@@ -1839,8 +1790,7 @@ int sedi_uart_write_vec_async(IN sedi_uart_t uart,
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_read_vec_async(IN sedi_uart_t uart,
-			     IN sedi_uart_io_vec_xfer_t *const vec_xfer)
+int sedi_uart_read_vec_async(IN sedi_uart_t uart, IN sedi_uart_io_vec_xfer_t *const vec_xfer)
 {
 
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
@@ -1878,9 +1828,8 @@ int sedi_uart_read_vec_async(IN sedi_uart_t uart,
 }
 
 /* UART DMA functions. */
-static int sedi_uart_dma_config(IN sedi_dma_t dma, int32_t channel,
-				IN sedi_dma_event_cb_t cb, void *param,
-				dma_operation_type_t op)
+static int sedi_uart_dma_config(IN sedi_dma_t dma, int32_t channel, IN sedi_dma_event_cb_t cb,
+				void *param, dma_operation_type_t op)
 {
 	int32_t ret = 0;
 
@@ -1893,37 +1842,31 @@ static int sedi_uart_dma_config(IN sedi_dma_t dma, int32_t channel,
 	DBG_CHECK(SEDI_DRIVER_OK == ret, SEDI_DRIVER_ERROR);
 
 	if (op == READ) {
-		ret =
-		    sedi_dma_control(dma, channel, SEDI_CONFIG_DMA_BURST_LENGTH,
-				     DMA_BURST_TRANS_LENGTH_1);
+		ret = sedi_dma_control(dma, channel, SEDI_CONFIG_DMA_BURST_LENGTH,
+				       DMA_BURST_TRANS_LENGTH_1);
 	} else if (op == WRITE) {
-		ret =
-		    sedi_dma_control(dma, channel, SEDI_CONFIG_DMA_BURST_LENGTH,
-				     DMA_BURST_TRANS_LENGTH_32);
+		ret = sedi_dma_control(dma, channel, SEDI_CONFIG_DMA_BURST_LENGTH,
+				       DMA_BURST_TRANS_LENGTH_32);
 	} else {
 		return SEDI_DRIVER_ERROR_PARAMETER;
 	}
 
 	DBG_CHECK(SEDI_DRIVER_OK == ret, SEDI_DRIVER_ERROR);
 
-	ret = sedi_dma_control(dma, channel, SEDI_CONFIG_DMA_SR_TRANS_WIDTH,
-			       DMA_TRANS_WIDTH_8);
+	ret = sedi_dma_control(dma, channel, SEDI_CONFIG_DMA_SR_TRANS_WIDTH, DMA_TRANS_WIDTH_8);
 	DBG_CHECK(SEDI_DRIVER_OK == ret, SEDI_DRIVER_ERROR);
 
-	ret = sedi_dma_control(dma, channel, SEDI_CONFIG_DMA_DT_TRANS_WIDTH,
-			       DMA_TRANS_WIDTH_8);
+	ret = sedi_dma_control(dma, channel, SEDI_CONFIG_DMA_DT_TRANS_WIDTH, DMA_TRANS_WIDTH_8);
 	DBG_CHECK(SEDI_DRIVER_OK == ret, SEDI_DRIVER_ERROR);
 
-	ret = sedi_dma_control(dma, channel, SEDI_CONFIG_DMA_HS_POLARITY,
-			       DMA_HS_POLARITY_HIGH);
+	ret = sedi_dma_control(dma, channel, SEDI_CONFIG_DMA_HS_POLARITY, DMA_HS_POLARITY_HIGH);
 
 	DBG_CHECK(0 == ret, SEDI_DRIVER_ERROR);
 
 	return SEDI_DRIVER_OK;
 }
 
-static int sedi_uart_dma_io_async(sedi_uart_t uart,
-				  const sedi_uart_dma_xfer_t *const xfer,
+static int sedi_uart_dma_io_async(sedi_uart_t uart, const sedi_uart_dma_xfer_t *const xfer,
 				  dma_operation_type_t op)
 {
 	int32_t ret;
@@ -1934,9 +1877,8 @@ static int sedi_uart_dma_io_async(sedi_uart_t uart,
 
 	if (op == WRITE) {
 		dma_write_ctxt[uart].dma_xfer = xfer;
-		ret = sedi_uart_dma_config(
-		    xfer->dma_dev, xfer->channel, sedi_dma_event_cb,
-		    (void *)(&dma_write_ctxt[uart]), WRITE);
+		ret = sedi_uart_dma_config(xfer->dma_dev, xfer->channel, sedi_dma_event_cb,
+					   (void *)(&dma_write_ctxt[uart]), WRITE);
 		if (ret != SEDI_DRIVER_OK) {
 			return ret;
 		}
@@ -1946,9 +1888,8 @@ static int sedi_uart_dma_io_async(sedi_uart_t uart,
 		dst = (uint32_t)(&regs->rbr_thr_dll);
 	} else if (op == READ) {
 		dma_read_ctxt[uart].dma_xfer = xfer;
-		ret = sedi_uart_dma_config(
-		    xfer->dma_dev, xfer->channel, sedi_dma_event_cb,
-		    (void *)(&dma_read_ctxt[uart]), READ);
+		ret = sedi_uart_dma_config(xfer->dma_dev, xfer->channel, sedi_dma_event_cb,
+					   (void *)(&dma_read_ctxt[uart]), READ);
 		if (ret != SEDI_DRIVER_OK) {
 			return ret;
 		}
@@ -1961,32 +1902,27 @@ static int sedi_uart_dma_io_async(sedi_uart_t uart,
 		return SEDI_DRIVER_ERROR;
 	}
 
-	ret = sedi_dma_control(xfer->dma_dev, xfer->channel,
-			       SEDI_CONFIG_DMA_HS_DEVICE_ID,
+	ret = sedi_dma_control(xfer->dma_dev, xfer->channel, SEDI_CONFIG_DMA_HS_DEVICE_ID,
 			       uart_dma_hs_id[uart]);
 	DBG_CHECK(0 == ret, SEDI_DRIVER_ERROR);
 
-	ret =
-	    sedi_dma_control(xfer->dma_dev, xfer->channel,
-			     SEDI_CONFIG_DMA_HS_DEVICE_ID_PER_DIR, dma_hs_per);
+	ret = sedi_dma_control(xfer->dma_dev, xfer->channel, SEDI_CONFIG_DMA_HS_DEVICE_ID_PER_DIR,
+			       dma_hs_per);
 	DBG_CHECK(0 == ret, SEDI_DRIVER_ERROR);
 
-	ret = sedi_dma_control(xfer->dma_dev, xfer->channel,
-			       SEDI_CONFIG_DMA_DIRECTION, dma_dir);
+	ret = sedi_dma_control(xfer->dma_dev, xfer->channel, SEDI_CONFIG_DMA_DIRECTION, dma_dir);
 	if (ret != SEDI_DRIVER_OK) {
 		return ret;
 	}
 
 	regs->iir_fcr =
 		(SEDI_RBFVM(UART, IIR, FIFOE, ENABLE) | SEDI_UART_FCR_DEFAULT_TX_RX_THRESHOLD);
-	ret = sedi_dma_start_transfer(xfer->dma_dev, xfer->channel, src, dst,
-				      xfer->len);
+	ret = sedi_dma_start_transfer(xfer->dma_dev, xfer->channel, src, dst, xfer->len);
 	return ret;
 }
 
-static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev,
-				   uint32_t channel, const uint8_t *buff,
-				   uint32_t length, dma_operation_type_t op)
+static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev, uint32_t channel,
+				   const uint8_t *buff, uint32_t length, dma_operation_type_t op)
 {
 	int ret;
 	sedi_uart_regs_t *const regs = SEDI_UART[uart];
@@ -1998,7 +1934,7 @@ static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev,
 		dma_dir = DMA_MEMORY_TO_PERIPHERAL;
 		dma_hs_per = DMA_HS_PER_TX;
 		src = (uint32_t)buff;
-		dst = (uint32_t)(&regs->rbr_thr_dll);;
+		dst = (uint32_t)(&regs->rbr_thr_dll);
 	} else if (op == READ) {
 		dma_dir = DMA_PERIPHERAL_TO_MEMORY;
 		dma_hs_per = DMA_HS_PER_RX;
@@ -2009,8 +1945,7 @@ static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev,
 		return SEDI_DRIVER_ERROR;
 	}
 
-	ret = sedi_uart_dma_config(dma_dev, channel, sedi_dma_poll_dummy_cb,
-				   NULL, op);
+	ret = sedi_uart_dma_config(dma_dev, channel, sedi_dma_poll_dummy_cb, NULL, op);
 	if (ret != SEDI_DRIVER_OK) {
 		return ret;
 	}
@@ -2019,21 +1954,17 @@ static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev,
 
 	DBG_CHECK(0 == ret, SEDI_DRIVER_ERROR);
 
-	ret = sedi_dma_control(
-	    dma_dev, channel, SEDI_CONFIG_DMA_HS_DEVICE_ID_PER_DIR, dma_hs_per);
+	ret = sedi_dma_control(dma_dev, channel, SEDI_CONFIG_DMA_HS_DEVICE_ID_PER_DIR, dma_hs_per);
 	DBG_CHECK(0 == ret, SEDI_DRIVER_ERROR);
 
-	ret = sedi_dma_control(dma_dev, channel, SEDI_CONFIG_DMA_DIRECTION,
-			       dma_dir);
+	ret = sedi_dma_control(dma_dev, channel, SEDI_CONFIG_DMA_DIRECTION, dma_dir);
 	if (ret != SEDI_DRIVER_OK) {
 		return ret;
 	}
 
-	regs->iir_fcr =
-		(SEDI_RBFM(UART, IIR, FIFOE) | SEDI_UART_FCR_DEFAULT_TX_RX_THRESHOLD);
+	regs->iir_fcr = (SEDI_RBFM(UART, IIR, FIFOE) | SEDI_UART_FCR_DEFAULT_TX_RX_THRESHOLD);
 
-	ret =
-	    sedi_dma_start_transfer_polling(dma_dev, channel, src, dst, length);
+	ret = sedi_dma_start_transfer_polling(dma_dev, channel, src, dst, length);
 
 	if (ret != SEDI_DRIVER_OK) {
 		return ret;
@@ -2047,8 +1978,7 @@ static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev,
 	return SEDI_DRIVER_OK;
 }
 
-int sedi_uart_dma_write_async(IN sedi_uart_t uart,
-			      IN sedi_uart_dma_xfer_t *const xfer)
+int sedi_uart_dma_write_async(IN sedi_uart_t uart, IN sedi_uart_dma_xfer_t *const xfer)
 {
 
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
@@ -2092,8 +2022,7 @@ int sedi_uart_dma_write_terminate(IN sedi_uart_t uart)
 	return ret;
 }
 
-int sedi_uart_dma_read_async(IN sedi_uart_t uart,
-			     IN sedi_uart_dma_xfer_t *const xfer)
+int sedi_uart_dma_read_async(IN sedi_uart_t uart, IN sedi_uart_dma_xfer_t *const xfer)
 {
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(xfer != NULL, SEDI_DRIVER_ERROR_PARAMETER);
@@ -2136,9 +2065,8 @@ int sedi_uart_dma_read_terminate(IN sedi_uart_t uart)
 	return ret;
 }
 
-int sedi_uart_dma_write_polled(IN sedi_uart_t uart, IN sedi_dma_t dma_dev,
-			       IN uint32_t channel, IN uint8_t *buff,
-			       IN uint32_t length)
+int sedi_uart_dma_write_polled(IN sedi_uart_t uart, IN sedi_dma_t dma_dev, IN uint32_t channel,
+			       IN uint8_t *buff, IN uint32_t length)
 {
 	int ret;
 
@@ -2149,14 +2077,12 @@ int sedi_uart_dma_write_polled(IN sedi_uart_t uart, IN sedi_dma_t dma_dev,
 		return SEDI_DRIVER_ERROR_UNSUPPORTED;
 	}
 
-	ret = sedi_uart_dma_io_polled(uart, dma_dev, channel, buff, length,
-				      WRITE);
+	ret = sedi_uart_dma_io_polled(uart, dma_dev, channel, buff, length, WRITE);
 	return ret;
 }
 
-int sedi_uart_dma_read_polled(IN sedi_uart_t uart, IN sedi_dma_t dma_dev,
-			      IN uint32_t channel, OUT uint8_t *buff,
-			      IN uint32_t length, OUT uint32_t *status)
+int sedi_uart_dma_read_polled(IN sedi_uart_t uart, IN sedi_dma_t dma_dev, IN uint32_t channel,
+			      OUT uint8_t *buff, IN uint32_t length, OUT uint32_t *status)
 {
 	int ret;
 
@@ -2169,8 +2095,7 @@ int sedi_uart_dma_read_polled(IN sedi_uart_t uart, IN sedi_dma_t dma_dev,
 	}
 	sedi_uart_regs_t *const regs = SEDI_UART[uart];
 
-	ret = sedi_uart_dma_io_polled(uart, dma_dev, channel,
-			buff, length, READ);
+	ret = sedi_uart_dma_io_polled(uart, dma_dev, channel, buff, length, READ);
 	*status = regs->lsr & BSETS_UART_LSR_ERROR;
 	return ret;
 }

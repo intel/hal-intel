@@ -442,7 +442,8 @@ static void i2c_ask_data(sedi_i2c_t i2c_device)
 		return;
 	}
 
-	tx_fifo_space = I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr) - rx_pending;
+	tx_fifo_space = I2C_FIFO_DEPTH - SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr) -
+			rx_pending;
 
 	/* To prevent RX FIFO overflow, need to make sure command number less
 	 * than the space in RX FIFO.
@@ -718,7 +719,8 @@ static void callback_rx_cmd_dma_transfer(const sedi_dma_t dma, const int chan, c
 	if (context->pending) {
 		i2c->data_cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ);
 	} else {
-		i2c->data_cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ) | SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE);
+		i2c->data_cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ) | SEDI_RBFVM(I2C, DATA_CMD,
+				STOP, ENABLE);
 	}
 
 	context->tx_dma_chan = SEDI_I2C_DMA_CHANNEL_UNUSED;
@@ -847,7 +849,8 @@ int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t dma, IN 
 
 	dw_i2c_dma_enable(context->base, 1);
 
-	dw_i2c_irq_config(context->base, BSETS_INTR_ERROR | SEDI_RBFVM(I2C, INTR_MASK, M_STOP_DET, DISABLED));
+	dw_i2c_irq_config(context->base, BSETS_INTR_ERROR | SEDI_RBFVM(I2C, INTR_MASK,
+				M_STOP_DET, DISABLED));
 
 	return SEDI_DRIVER_OK;
 }
@@ -897,7 +900,8 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t dma, IN u
 	context->rx_dma_chan = dma_chan;
 
 	/* First write the command into register */
-	i2c->data_cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ) | SEDI_RBFVM(I2C, DATA_CMD, RESTART, ENABLE);
+	i2c->data_cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ) | SEDI_RBFVM(I2C, DATA_CMD,
+			RESTART, ENABLE);
 
 	/* Clean the cmd */
 	sedi_core_clean_dcache_by_addr((uint32_t *)(&dma_cmd), sizeof(dma_cmd));
@@ -914,7 +918,8 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t dma, IN u
 
 	dw_i2c_dma_enable(context->base, 1);
 
-	dw_i2c_irq_config(context->base, BSETS_INTR_ERROR | SEDI_RBFVM(I2C, INTR_MASK, M_STOP_DET, DISABLED));
+	dw_i2c_irq_config(context->base, BSETS_INTR_ERROR | SEDI_RBFVM(I2C, INTR_MASK,
+				M_STOP_DET, DISABLED));
 
 	return SEDI_DRIVER_OK;
 }
@@ -1222,7 +1227,8 @@ static void i2c_isr_recv(sedi_i2c_t i2c_device)
 
 	/* If need to change watermark */
 	data_remain = context->buf_size - context->buf_index;
-	if ((data_remain <= SEDI_PREG_RBFV_GET(I2C, RX_TL, RX_TL, &i2c->rx_tl)) && (data_remain != 0)) {
+	if ((data_remain <= SEDI_PREG_RBFV_GET(I2C, RX_TL, RX_TL, &i2c->rx_tl)) &&
+			(data_remain != 0)) {
 		SEDI_PREG_RBF_SET(I2C, RX_TL, RX_TL, data_remain - 1, &i2c->rx_tl);
 	}
 }
@@ -1291,7 +1297,8 @@ void sedi_i2c_isr_handler(IN sedi_i2c_t i2c_device)
 	}
 
 	/* For transfer need STOP flag, use STOP as transfer end condition */
-	if ((SEDI_PREG_RBFV_IS_SET(I2C, INTR_STAT, R_STOP_DET, ACTIVE, &stat)) && (context->pending == 0)) {
+	if ((SEDI_PREG_RBFV_IS_SET(I2C, INTR_STAT, R_STOP_DET, ACTIVE, &stat)) &&
+			(context->pending == 0)) {
 		/* Clear stop detect interrupt */
 		val = regs->clr_stop_det;
 		i2c_isr_complete(i2c_device, false);

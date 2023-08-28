@@ -37,7 +37,7 @@ typedef struct {
 /* resource data structure */
 typedef struct {
 	sedi_gpio_regs_t *reg;
-} gpio_resoures_t;
+} gpio_resources_t;
 
 typedef enum {
 	SEDI_GPIO_32BITS_ACCESS,
@@ -57,7 +57,7 @@ static sedi_gpio_capabilities_t driver_capabilities[SEDI_GPIO_NUM] = {
 };
 
 /* gpio instance to source mapping*/
-static gpio_resoures_t resources_map[SEDI_GPIO_NUM] = {
+static gpio_resources_t resources_map[SEDI_GPIO_NUM] = {
 	{ .reg = (sedi_gpio_regs_t *)SEDI_GPIO_0_REG_BASE },
 };
 
