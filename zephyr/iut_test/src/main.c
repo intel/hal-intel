@@ -120,7 +120,7 @@ err_out:
 	return -EPERM;
 }
 
-void main(void)
+int main(void)
 {
 	k_msleep(2000);
 
@@ -147,4 +147,6 @@ void main(void)
 
 		k_sem_give(&sem_trigger);
 	};
+
+	return 0;
 }
