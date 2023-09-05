@@ -647,9 +647,6 @@ static void handle_d0i2(void)
 
 	clear_vnnred_aoncg();
 
-	if (read32(PMU_RST_PREP) & PMU_RST_PREP_AVAIL)
-		handle_reset(ISH_PM_STATE_RESET_PREP);
-
 #ifdef CONFIG_SOC_INTEL_ISH_5_6_0
 	sram_exit_sleep_mode();
 #else
@@ -663,6 +660,9 @@ static void handle_d0i2(void)
 	while (!(read32(PMU_LDO_CTRL) & PMU_LDO_READY_BIT))
 		continue;
 #endif
+
+	if (read32(PMU_RST_PREP) & PMU_RST_PREP_AVAIL)
+		handle_reset(ISH_PM_STATE_RESET_PREP);
 
 	if (aon_share.pg_exit)
 		ish_dma_set_msb(PAGING_CHAN, aon_share.uma_msb,
