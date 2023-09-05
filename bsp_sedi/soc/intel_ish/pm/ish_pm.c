@@ -40,22 +40,22 @@ static sedi_uart_config_t uart0_cfg, uart1_cfg, uart2_cfg;
 static void uart_to_idle(void)
 {
 	sedi_uart_get_config(SEDI_UART_0, &uart0_cfg);
-	write32(SEDI_UART_0_BASE + LCR, 0x80);
-	write32(SEDI_UART_0_BASE + DLL, 0x1);
-	write32(SEDI_UART_0_BASE + DLH, 0x0);
-	write32(SEDI_UART_0_BASE + LCR, 0);
+	write32(SEDI_IREG_BASE(UART, 0) + LCR, 0x80);
+	write32(SEDI_IREG_BASE(UART, 0)  + DLL, 0x1);
+	write32(SEDI_IREG_BASE(UART, 0)  + DLH, 0x0);
+	write32(SEDI_IREG_BASE(UART, 0)  + LCR, 0);
 
 	sedi_uart_get_config(SEDI_UART_0, &uart1_cfg);
-	write32(SEDI_UART_1_BASE + LCR, 0x80);
-	write32(SEDI_UART_1_BASE + DLL, 0x1);
-	write32(SEDI_UART_1_BASE + DLH, 0x0);
-	write32(SEDI_UART_1_BASE + LCR, 0);
+	write32(SEDI_IREG_BASE(UART, 1)  + LCR, 0x80);
+	write32(SEDI_IREG_BASE(UART, 1)  + DLL, 0x1);
+	write32(SEDI_IREG_BASE(UART, 1)  + DLH, 0x0);
+	write32(SEDI_IREG_BASE(UART, 1)  + LCR, 0);
 
 	sedi_uart_get_config(SEDI_UART_0, &uart2_cfg);
-	write32(SEDI_UART_2_BASE + LCR, 0x80);
-	write32(SEDI_UART_2_BASE + DLL, 0x1);
-	write32(SEDI_UART_2_BASE + DLH, 0x0);
-	write32(SEDI_UART_2_BASE + LCR, 0);
+	write32(SEDI_IREG_BASE(UART, 2)  + LCR, 0x80);
+	write32(SEDI_IREG_BASE(UART, 2)  + DLL, 0x1);
+	write32(SEDI_IREG_BASE(UART, 2)  + DLH, 0x0);
+	write32(SEDI_IREG_BASE(UART, 2)  + LCR, 0);
 }
 
 static void uart_port_restore(void)
