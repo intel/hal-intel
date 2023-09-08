@@ -10,3 +10,7 @@ endif()
 if(CONFIG_I2C_SEDI)
   target_sources(app PRIVATE i2c/test_i2c_log.c)
 endif()
+
+if(CONFIG_GPIO_SEDI)
+  target_sources(app PRIVATE gpio/test_gpio.c)
+endif()
