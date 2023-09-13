@@ -80,6 +80,59 @@ typedef enum {
 #define PMU_VNN_REQ_ACK (SEDI_PMU_BASE + 0x40)
 #define PMU_VNN_REQ_ACK_STS BIT(0)
 
+/*!
+ * \enum sedi_devid_t
+ * \brief SEDI device ID table
+ * \ingroup sedi_soc_ish
+ */
+typedef enum {
+	SEDI_DEVID_FIRST = 0,
+	SEDI_DEVID_I2C0 = SEDI_DEVID_FIRST,
+	SEDI_DEVID_I2C1,
+	SEDI_DEVID_I2C2,
+	SEDI_DEVID_UART0,
+	SEDI_DEVID_UART1,
+	SEDI_DEVID_UART2,
+	SEDI_DEVID_GPIO0,
+	SEDI_DEVID_DMA0,
+	SEDI_DEVID_SPI0,
+	SEDI_DEVID_SPI1,
+	SEDI_DEVID_TOP
+} sedi_devid_t;
+/*!
+ * peripheral device id for dma handshake
+ */
+typedef enum {
+	DMA_HWID_I2C0_RX = 0,
+	DMA_HWID_I2C0_TX = 1,
+	DMA_HWID_I2C1_RX = 2,
+	DMA_HWID_I2C1_TX = 3,
+	DMA_HWID_I2C2_RX = 4,
+	DMA_HWID_I2C2_TX = 5,
+	DMA_HWID_UART0_RX = 6,
+	DMA_HWID_UART0_TX = 7,
+	DMA_HWID_UART1_RX = 8,
+	DMA_HWID_UART1_TX = 9,
+	DMA_HWID_UART2_RX = 10,
+	DMA_HWID_UART2_TX = 11,
+	DMA_HWID_SPI0_RX = 12,
+	DMA_HWID_SPI0_TX = 13,
+	DMA_HWID_SPI1_RX = 14,
+	DMA_HWID_SPI1_TX = 15,
+} dma_hs_per_dev_id_t;
+
+/*!
+ * \brief check if a device is owned by SoC itself
+ * \param[in] dev: device id to check
+ * \return true/false
+ * \ingroup sedi_soc_ish
+ */
+static inline bool sedi_dev_is_self_owned(sedi_devid_t dev)
+{
+	(void)dev;
+
+	return true;
+}
 #define PM_VNN_DRIVER_REQ(vnn_id)                                              \
 	do {                                                                   \
 		if ((read32(PMU_VNN_REQ_31_0) & BIT(vnn_id)) == 0) {           \
@@ -107,38 +160,5 @@ typedef enum {
 #define PM_VNN_DRIVER_RESET(vnn_id)                                            \
 	write32(PMU_VNN_REQ_31_0,                                              \
 		read32(PMU_VNN_REQ_31_0) & BIT(vnn_id));
-
-/*!
- * \enum sedi_devid_t
- * \brief SEDI device ID table
- * \ingroup sedi_soc_ish
- */
-typedef enum {
-	SEDI_DEVID_FIRST = 0,
-	SEDI_DEVID_I2C0 = SEDI_DEVID_FIRST,
-	SEDI_DEVID_I2C1,
-	SEDI_DEVID_I2C2,
-	SEDI_DEVID_UART0,
-	SEDI_DEVID_UART1,
-	SEDI_DEVID_UART2,
-	SEDI_DEVID_GPIO0,
-	SEDI_DEVID_DMA0,
-	SEDI_DEVID_SPI0,
-	SEDI_DEVID_SPI1,
-	SEDI_DEVID_TOP
-} sedi_devid_t;
-
-/*!
- * \brief check if a device is owned by SoC itself
- * \param[in] dev: device id to check
- * \return true/false
- * \ingroup sedi_soc_ish
- */
-static inline bool sedi_dev_is_self_owned(sedi_devid_t dev)
-{
-	(void)dev;
-
-	return true;
-}
 
 #endif
