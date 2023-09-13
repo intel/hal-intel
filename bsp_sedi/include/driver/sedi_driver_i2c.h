@@ -195,6 +195,12 @@ extern "C" {
 #define SEDI_I2C_EVENT_BUS_CLEAR (1UL << 8)
 
 /*!
+ * \def SEDI_I2C_EVENT_DMA_ERROR
+ * \brief DMA error detected
+ */
+#define SEDI_I2C_EVENT_DMA_ERROR (1UL << 12)
+
+/*!
  * \}
  */
 
@@ -235,8 +241,8 @@ typedef volatile struct {
 	/**< Bus error detected (cleared for next operation) */
 	uint32_t bus_error : 1;
 	/* Event for I2C transfer */
-	uint32_t event : 9;
-	uint32_t reserved : 17;
+	uint32_t event : 13;
+	uint32_t reserved : 13;
 } sedi_i2c_status_t;
 
 /*!
@@ -374,37 +380,41 @@ int32_t sedi_i2c_master_read_async(IN sedi_i2c_t i2c_device, IN uint32_t addr,
  * \brief Start transmitting data to i2c slave device as master
  * \note DMA function do not support transfer length smaller than 3 bytes.
  * \param[in] i2c_device: i2c device id
- * \param[in] dma: dma device id
- * \param[in] dma_chan: dma channel id
  * \param[in] addr: slave address (7-bit or 10-bit)
  * \param[in] *data: pointer of the buffer with data
  *                   which need write to the slave
  * \param[in] num: number of data bytes to transfer
  * \param[in] pending: i2c data transfer operation is pending
  *                     ('Stop' signal will not be sent)
+ * \param[in] dma_dev: dma device id
+ * \param[in] dma_chan: dma channel id
  * \return  \ref return_status
  */
-int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t dma,
-				  IN uint32_t dma_chan, IN uint32_t addr,
-				  IN uint8_t *data, IN uint32_t num,
-				  IN bool pending);
+int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr,
+	IN uint8_t *data, IN uint32_t num, IN bool pending,
+	IN uint32_t dma_dev, IN uint32_t dma_chan);
 
 /*!
  * \brief Start receiving data from i2c slave device as master
+ * \note DMA function do not support transfer length smaller than 3 bytes.
  * \note As the DW I2C needs 2 channels to do RX DMA operation, need to add
- * another parameter. \param[in] i2c_device: i2c device id \param[in] dma: dma
- * device id \param[in] dma_chan: dma channel id \param[in] addr: slave address
- * (7-bit or 10-bit) \param[in] *data: pointer of the buffer for data from the
- * slave device \param[out] num: number of data bytes to receive \param[in]
- * pending: i2c data transfer operation is pending
+ * 			another parameter.
+ * \param[in] i2c_device: i2c device id
+ * \param[in] addr: slave address(7-bit or 10-bit)
+ * \param[in] *data: pointer of the buffer for data from the slave device
+ * \param[out] num: number of data bytes to receive
+ * \param[in] pending: i2c data transfer operation is pending
  *                     ('Stop' signal will not be sent)
- * DMA function do not support transfer length smaller than 3 bytes.
+ * \param[in] rx_dma_dev: rx dma device id
+ * \param[in] rx_dma_chan: rx dma channel id
+ * \param[in] cmd_dma_dev: cmd dma device id
+ * \param[in] cmd_dma_chan: cmd dma channel id
  * \return  \ref return_status
  */
-int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t dma,
-				 IN uint32_t dma_chan, IN uint32_t cmd_dma_chan,
-				 IN uint32_t addr, OUT uint8_t *data,
-				 IN uint32_t num, IN bool pending);
+int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr,
+	OUT uint8_t *data, IN uint32_t num, IN bool pending,
+	IN uint32_t rx_dma_dev, IN uint32_t rx_dma_chan,
+	IN uint32_t cmd_dma_dev, IN uint32_t cmd_dma_chan);
 
 /*!
  * \brief Send data to i2c slave device as master through polling mode.
