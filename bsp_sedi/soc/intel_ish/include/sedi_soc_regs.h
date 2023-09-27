@@ -137,8 +137,12 @@ typedef enum {
 	SEDI_SPI_NUM
 } sedi_spi_t;
 
-#define SEDI_SPI_0_REG_BASE (0x8000000)
-#define SEDI_SPI_1_REG_BASE (0x8002000)
+SEDI_IREG_BASE_DEFINE(SPI, 0, 0x8000000);
+SEDI_IREG_BASE_DEFINE(SPI, 1, 0x8002000);
+
+/**SPI physical addr for DMA transfer**/
+#define SEDI_SPI_0_REG_DMA 0x8000000
+#define SEDI_SPI_1_REG_DMA 0x8002000
 
 #define SPI_FIFO_DEPTH (64)
 

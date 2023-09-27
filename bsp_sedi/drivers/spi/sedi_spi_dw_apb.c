@@ -4,16 +4,113 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "sedi_spi_dw_apb.h"
 #include "sedi_driver_pm.h"
 #include "sedi_driver_core.h"
+#include "sedi_driver_spi.h"
+#include "sedi_driver_dma.h"
+#include "sedi_spi_regs.h"
+
+#define SEDI_SPI_DRV_VERSION SEDI_DRIVER_VERSION_MAJOR_MINOR(1, 0)
+
+#define REG_INT_ERROR  \
+	(SEDI_RBFVM(SPI, IMR, TXOIM, UNMASKED) | \
+	 SEDI_RBFVM(SPI, IMR, RXUIM, UNMASKED) | \
+	 SEDI_RBFVM(SPI, IMR, RXOIM, UNMASKED))
+#define REG_INT_TX	\
+	(SEDI_RBFVM(SPI, IMR, TXEIM, UNMASKED))
+#define REG_INT_RX	\
+	(SEDI_RBFVM(SPI, IMR, RXFIM, UNMASKED))
+#define REG_INT_NONE (0)
+
+#define SPI_FRAME_SIZE_1_BYTE		(1)
+#define SPI_FRAME_SIZE_2_BYTES		(2)
+#define SPI_RECEIVE_MODE_MAX_SIZE 	(65536)
+#define SPI_DMA_MAX_SIZE		(4096)
+#define SPI_DMA_MAX_SIZE_SHIFT		(12)
+#define SSI_IC_FREQ (sedi_pm_get_lbw_clock())
+
+#define SPI_BITWIDTH_4BITS		(SEDI_RBFV(SPI, CTRLR0, DFS, FRAME_04BITS) + 1)
+#define SPI_BITWIDTH_8BITS 		(SEDI_RBFV(SPI, CTRLR0, DFS, FRAME_08BITS) + 1)
+#define SPI_BITWIDTH_16BITS		(SEDI_RBFV(SPI, CTRLR0, DFS, FRAME_16BITS) + 1)
+
+/* Add easy usage for SSI Clock Divider */
+SEDI_RBFV_DEFINE(SPI, BAUDR, SCKDV, MIN_PRESCALE, 0x2);
+SEDI_RBFV_DEFINE(SPI, BAUDR, SCKDV, DEFAULT_PRESCALE, 0x14);
+
+#ifdef SPI_DW_2_0
+/* ********* SPI SPI_CTRLR0 ***********
+ * SPI Control Register is valid only when SSI_SPI_MODE is either set to
+ * "Dual" or "Quad" or "Octal" mode
+ */
+SEDI_REG_DEFINE(SPI, SPI_CTRLR0, 0xf4, RW, (uint32_t)0x7fb3f, (uint32_t)0x200);
+SEDI_RBF_DEFINE(SPI, SPI_CTRLR0, ADDR_L, 2, 4, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(SPI, SPI_CTRLR0, INST_L, 8, 2, RW, (uint32_t)0x2);
+SEDI_RBF_DEFINE(SPI, SPI_CTRLR0, WAIT_CYCLES, 11, 5, RW, (uint32_t)0x0);
+/* Notice: there are several specific registers offset of RBF for SPI_DW_2_0
+ * List TFT as a example
+ */
+SEDI_RBF_DEFINE(SPI, TXFTLR, TFT, 0, 16, RW, (uint32_t)0x0);
+#endif
+
+struct spi_context {
+	/* hardware config */
+	sedi_spi_regs_t *base;
+	uint32_t dma_handshake;
+	uint32_t rx_handshake;
+
+	/* sedi required */
+	sedi_spi_capabilities_t capability;
+	sedi_spi_status_t status;
+	sedi_spi_event_cb_t cb_event;
+	void *cb_param;
+
+	/* ioctl info */
+	uint8_t frame_size; /* Frame size in byte */
+	uint8_t tx_watermark;
+	uint8_t rx_watermark;
+	uint32_t prescale;
+	uint32_t dummy_data;
+	bool is_lsb;
+	bool is_cs_continuous;
+
+	/* transfer info */
+	uint8_t transfer_mode;
+	uint8_t *data_tx;
+	uint8_t *data_rx;
+	uint32_t tx_data_len;
+	uint32_t rx_data_len;
+	uint32_t data_tx_idx;
+	uint32_t data_rx_idx;
+
+	/* For dma transfer */
+	bool dma_tx_finished;
+	bool dma_rx_finished;
+	uint32_t tx_dma;
+	uint32_t rx_dma;
+	uint8_t tx_channel;
+	uint8_t rx_channel;
+	uint32_t dma_cycles; /* For large data DMA transfer */
+	uint32_t dma_idx; /* For large data DMA transfer */
+	uint32_t last_dma_counts; /* For large data DMA transfer */
+
+	/* For qspi */
+	bool is_quad;
+	const sedi_spi_enhanced_config_t *quad_config;
+};
 
 static const sedi_driver_version_t driver_version = {SEDI_SPI_API_VERSION,
 						     SEDI_SPI_DRV_VERSION};
 
 static sedi_spi_capabilities_t driver_capabilities[SEDI_SPI_NUM] = {0};
 
-static struct spi_context spi_contexts[SEDI_SPI_NUM];
+#define SPI_CONTEXT_INIT(x)                                                                        \
+	{                                                                                          \
+		.base = (sedi_spi_regs_t *)SEDI_SPI_##x##_REG_BASE,                                \
+		.dma_handshake = DMA_HWID_SPI##x##_TX, .dummy_data = 0x00,                         \
+		.rx_handshake = DMA_HWID_SPI##x##_RX                                               \
+	}
+
+static struct spi_context spi_contexts[SEDI_SPI_NUM] = { SPI_CONTEXT_INIT(0), SPI_CONTEXT_INIT(1) };
 
 static const uint8_t bit_reverse_table[] = {
 	0x00, 0x80, 0x40, 0xC0, 0x20, 0xA0, 0x60, 0xE0, 0x10, 0x90, 0x50, 0xD0,
@@ -63,44 +160,53 @@ static void msb_lsb_convert_16bits(uint16_t *val, uint32_t len)
 	}
 }
 
-static inline void lld_spi_enable(spi_reg_t *spi, bool enable)
+static inline void lld_spi_enable(sedi_spi_regs_t *spi, bool enable)
 {
-	uint32_t val = enable ? 1 : 0;
+	uint32_t val = enable ? SEDI_RBFV(SPI, SSIENR, SSI_EN, ENABLED) : SEDI_RBFV(SPI, SSIENR, SSI_EN, DISABLE);
 
-	if (spi->ssienr == val) {
+	if (SEDI_PREG_RBFV_GET(SPI, SSIENR, SSI_EN, &spi->ssienr) == val) {
 		return;
 	}
 	/* prevent pending interrupt */
 	spi->imr = 0;
 
-	spi->ssienr = val;
-	while (spi->ssienr != val)
+	SEDI_PREG_RBF_SET(SPI, SSIENR, SSI_EN, val, &spi->ssienr);
+
+	while (SEDI_PREG_RBFV_GET(SPI, SSIENR, SSI_EN, &spi->ssienr) != val)
 		;
 }
 
-static inline void lld_spi_dma_enable(spi_reg_t *spi, bool enable)
+static inline void lld_spi_dma_enable(sedi_spi_regs_t *spi, bool enable)
 {
-	spi->dmacr = enable ? REG_DMA_ENABLE : 0;
+	if (enable) {
+		SEDI_PREG_RBFV_SET(SPI, DMACR, TDMAE, ENABLED, &spi->dmacr);
+		SEDI_PREG_RBFV_SET(SPI, DMACR, RDMAE, ENABLED, &spi->dmacr);
+	} else {
+		SEDI_PREG_RBFV_SET(SPI, DMACR, TDMAE, DISABLE, &spi->dmacr);
+		SEDI_PREG_RBFV_SET(SPI, DMACR, RDMAE, DISABLE, &spi->dmacr);
+	}
 }
 
-static inline void lld_spi_config_interrupt(spi_reg_t *spi, uint32_t mask)
+static inline void lld_spi_config_interrupt(sedi_spi_regs_t *spi, uint32_t mask)
 {
-	spi->imr = mask;
+	SEDI_PREG_SET(SPI, IMR, mask, &spi->imr);
 }
 
-static inline bool lld_spi_is_busy(spi_reg_t *spi)
+static inline bool lld_spi_is_busy(sedi_spi_regs_t *spi)
 {
-	return ((spi->sr & REG_SR_BUSY) || (!(spi->sr & REG_SR_TX_EMPTY)))
+	return (SEDI_PREG_RBFV_IS_SET(SPI, SR, BUSY, ACTIVE, &spi->sr)) || (SEDI_PREG_RBFV_IS_SET(SPI, SR, TFE, NOT_EMPTY, &spi->sr))
 		   ? true
 		   : false;
 }
 
-static inline bool lld_spi_is_enabled(spi_reg_t *spi)
+static inline bool lld_spi_is_enabled(sedi_spi_regs_t *spi)
 {
-	return spi->ssienr ? true : false;
+	return SEDI_PREG_RBFV_GET(SPI, SSIENR, SSI_EN, &spi->ssienr)
+			? true
+			: false;
 }
 
-static inline uint32_t lld_spi_interrupt_clear(spi_reg_t *spi)
+static inline uint32_t lld_spi_interrupt_clear(sedi_spi_regs_t *spi)
 {
 	uint32_t tmp;
 	uint32_t isr;
@@ -108,93 +214,102 @@ static inline uint32_t lld_spi_interrupt_clear(spi_reg_t *spi)
 	PARAM_UNUSED(tmp);
 
 	isr = spi->isr;
-	tmp = spi->icr;
+	tmp = SEDI_PREG_RBFV_GET(SPI, ICR, ICR, &spi->icr);
 
 	/* Clear all error interrupt by read*/
-	tmp = spi->txoicr;
-	tmp = spi->rxoicr;
-	tmp = spi->rxuicr;
+	tmp = SEDI_PREG_RBFV_GET(SPI, TXOICR, TXOICR, &spi->txoicr);
+	tmp = SEDI_PREG_RBFV_GET(SPI, RXOICR, RXOICR, &spi->rxoicr);
+	tmp = SEDI_PREG_RBFV_GET(SPI, RXUICR, RXUICR, &spi->rxuicr);
 
 	return isr;
+
 }
 
 static int lld_spi_default_config(sedi_spi_t spi_device)
 {
 	struct spi_context *context = &spi_contexts[spi_device];
-	spi_reg_t *spi = context->base;
+	sedi_spi_regs_t *spi = context->base;
 
-	uint32_t ctrl0;
 	uint32_t watermark = SPI_FIFO_DEPTH / 2 - 1;
 
-	uint8_t loopback = false;
-	uint8_t width = SPI_BITWIDTH_8BITS;
-	uint32_t prescale = DEFAULT_PRESCALE;
-	uint8_t cs_mask = 0x1;
-
-	ctrl0 = width - 1;
-	ctrl0 |= loopback ? REG_CTRL0_LOOPBACK : 0;
-	ctrl0 |= (width - 1) << OFFSET_CTRL0_WIDTH;
+	uint8_t loopback = SEDI_RBFV(SPI, CTRLR0, SRL, NORMAL_MODE);
+	/* DFS: Data Frame size only valid when SSI_MAX_XFER_SIZE is configured to
+	 * 16, if SSI_MAX_XFER_SIZE is configured to 32, then writing to this field
+	 * will not have any effect
+	 * DFS_32: only valid when SSI_MAX_XFER_SIZE is configured to 32
+	 */
+	uint8_t width = SEDI_RBFV(SPI, CTRLR0, DFS_32, FRAME_08BITS);
+	uint8_t cs_mask = SEDI_RBFV(SPI, SER, SER, SELECTED);
+	uint32_t prescale = SEDI_RBFV(SPI, BAUDR, SCKDV, DEFAULT_PRESCALE);
 
 	/* Disable SPI first */
 	lld_spi_enable(spi, false);
 
 	/* Set default SPI watermark */
-	spi->txftlr = watermark;
-	spi->rxftlr = watermark;
-	spi->dmatdlr = watermark;
-	spi->dmardlr = watermark;
+	SEDI_PREG_RBF_SET(SPI, TXFTLR, TFT, watermark, &spi->txftlr);
+	SEDI_PREG_RBF_SET(SPI, RXFTLR, RFT, watermark, &spi->rxftlr);
+	SEDI_PREG_RBF_SET(SPI, DMATDLR, DMATDL, watermark, &spi->dmatdlr);
+	SEDI_PREG_RBF_SET(SPI, DMARDLR, DMARDL, watermark, &spi->dmardlr);
 
-	spi->ctrl0 = ctrl0;
-	spi->baudr = prescale;
-	spi->ser = cs_mask;
+	SEDI_PREG_RBF_SET(SPI, CTRLR0, DFS_32, width, &spi->ctrlr0);
+	SEDI_PREG_RBF_SET(SPI, CTRLR0, SRL, loopback, &spi->ctrlr0);
+	SEDI_PREG_RBF_SET(SPI, BAUDR, SCKDV, prescale, &spi->baudr);
+	SEDI_PREG_RBF_SET(SPI, SER, SER, cs_mask, &spi->ser);
 
 	/* Update context default settings */
 	context->tx_watermark = watermark + 1U;
 	context->rx_watermark = watermark + 1U;
-	context->prescale = DEFAULT_PRESCALE;
+	context->prescale = prescale;
 	context->frame_size = 1U;
 	context->is_lsb = false;
 
 	return 0;
+
 }
 
-static inline void lld_spi_config_cpol_cpha(spi_reg_t *spi, int cpol, int cpha)
+static inline void lld_spi_config_cpol_cpha(sedi_spi_regs_t *spi, int cpol, int cpha)
 {
-	spi->ctrl0 &= ~(REG_CTRL0_CPHA | REG_CTRL0_CPOL);
-	spi->ctrl0 |= cpha ? REG_CTRL0_CPHA : 0;
-	spi->ctrl0 |= cpol ? REG_CTRL0_CPOL : 0;
+	cpol = cpol ? SEDI_RBFV(SPI, CTRLR0, SCPOL, SCLK_HIGH) : SEDI_RBFV(SPI, CTRLR0, SCPOL, SCLK_LOW);
+	cpha = cpha ? SEDI_RBFV(SPI, CTRLR0, SCPH, SCPH_START) : SEDI_RBFV(SPI, CTRLR0, SCPH, SCPH_MIDDLE);
+
+	SEDI_PREG_RBF_SET(SPI, CTRLR0, SCPH, cpol, &spi->ctrlr0);
+	SEDI_PREG_RBF_SET(SPI, CTRLR0, SCPOL, cpha, &spi->ctrlr0);
 }
 
-static inline void lld_spi_config_loopback(spi_reg_t *spi, int loopback)
+static inline void lld_spi_config_loopback(sedi_spi_regs_t *spi, int loopback)
 {
-	spi->ctrl0 &= ~REG_CTRL0_LOOPBACK;
-	spi->ctrl0 |= loopback ? REG_CTRL0_LOOPBACK : 0;
+	loopback = loopback ? SEDI_RBFV(SPI, CTRLR0, SRL, TESTING_MODE) : SEDI_RBFV(SPI, CTRLR0, SRL, NORMAL_MODE);
+	SEDI_PREG_RBF_SET(SPI, CTRLR0, SRL, loopback, &spi->ctrlr0);
 }
 
-static inline void lld_spi_config_prescale(spi_reg_t *spi, uint32_t prescale)
+static inline void lld_spi_config_prescale(sedi_spi_regs_t *spi, uint32_t prescale)
 {
-	spi->baudr = prescale;
+	SEDI_PREG_RBF_SET(SPI, BAUDR, SCKDV, prescale, &spi->baudr);
 }
 
-static inline void lld_spi_config_width(spi_reg_t *spi, uint8_t width)
+static inline void lld_spi_config_width(sedi_spi_regs_t *spi, uint8_t width)
 {
-	spi->ctrl0 &= ~MASK_CTRL0_WIDTH;
-	spi->ctrl0 |= (width - 1) << OFFSET_CTRL0_WIDTH;
+	/* DFS: Data Frame size only valid when SSI_MAX_XFER_SIZE is configured to
+	 * 16, if SSI_MAX_XFER_SIZE is configured to 32, then writing to this field
+	 * will not have any effect
+	 * DFS_32: only valid when SSI_MAX_XFER_SIZE is configured to 32
+	 */
+	SEDI_PREG_RBF_SET(SPI, CTRLR0, DFS_32, width - 1, &spi->ctrlr0);
 }
 
-static inline void lld_spi_set_tx_watermark(spi_reg_t *spi, uint32_t watermark)
+static inline void lld_spi_set_tx_watermark(sedi_spi_regs_t *spi, uint32_t watermark)
 {
-	spi->txftlr = watermark - 1;
+	SEDI_PREG_RBF_SET(SPI, TXFTLR, TFT, watermark - 1, &spi->txftlr);
 }
 
-static inline void lld_spi_set_rx_watermark(spi_reg_t *spi, uint32_t watermark)
+static inline void lld_spi_set_rx_watermark(sedi_spi_regs_t *spi, uint32_t watermark)
 {
-	spi->rxftlr = watermark - 1;
+	SEDI_PREG_RBF_SET(SPI, RXFTLR, RFT, watermark - 1, &spi->rxftlr);
 }
 
-static inline void lld_spi_config_cs(spi_reg_t *spi, uint32_t cs_mask)
+static inline void lld_spi_config_cs(sedi_spi_regs_t *spi, uint32_t cs_mask)
 {
-	spi->ser = cs_mask;
+	SEDI_PREG_RBF_SET(SPI, SER, SER, cs_mask, &spi->ser);
 }
 
 static void lld_spi_set_transfer_mode(sedi_spi_t spi_device,
@@ -202,31 +317,28 @@ static void lld_spi_set_transfer_mode(sedi_spi_t spi_device,
 				      OUT uint8_t *data_in)
 {
 	struct spi_context *context = &spi_contexts[spi_device];
-	spi_reg_t *spi = context->base;
-	uint32_t ctrl0 = spi->ctrl0;
+	sedi_spi_regs_t *spi = context->base;
 
-	ctrl0 &= ~SPI_CTRL0_TMOD_MASK;
 	if (data_out == NULL) {
 		/* Set to receive only mode */
-		ctrl0 |= SPI_CTRL0_RECEIVE_MODE;
-		context->transfer_mode = SPI_TRANSFER_MODE_RECEIVE;
+		SEDI_PREG_RBFV_SET(SPI, CTRLR0, TMOD, RX_ONLY, &spi->ctrlr0);
+		context->transfer_mode = SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY);
 	} else if (data_in == NULL) {
-		/* Set to receive only mode */
-		ctrl0 |= SPI_CTRL0_SEND_MODE;
-		context->transfer_mode = SPI_TRANSFER_MODE_SEND;
+		/* Set to transmit only mode */
+		SEDI_PREG_RBFV_SET(SPI, CTRLR0, TMOD, TX_ONLY, &spi->ctrlr0);
+		context->transfer_mode = SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY);
 	} else {
-		ctrl0 |= SPI_CTRL0_BOTH_MODE;
-		context->transfer_mode = SPI_TRANSFER_MODE_BOTH;
+		SEDI_PREG_RBFV_SET(SPI, CTRLR0, TMOD, TX_AND_RX, &spi->ctrlr0);
+		context->transfer_mode = SEDI_RBFV(SPI, CTRLR0, TMOD, TX_AND_RX);
 	}
 
-	spi->ctrl0 = ctrl0;
 }
 
 static int lld_spi_fill_fifo(sedi_spi_t spi_device, uint8_t frame_size,
 			     IN uint8_t *buff, uint32_t count)
 {
 	struct spi_context *context = &spi_contexts[spi_device];
-	spi_reg_t *spi = context->base;
+	sedi_spi_regs_t *spi = context->base;
 	uint32_t size = 0;
 	uint32_t data = 0;
 
@@ -235,13 +347,13 @@ static int lld_spi_fill_fifo(sedi_spi_t spi_device, uint8_t frame_size,
 		const sedi_spi_enhanced_config_t *config = context->quad_config;
 
 		/* Instruction need 1 entry */
-		spi->dr = *(config->inst_buf);
-		spi->dr = *((uint32_t *)(config->addr_buf));
+		spi->dr0 = *(config->inst_buf);
+		spi->dr0 = *((uint32_t *)(config->addr_buf));
 		/* After fill in addr and instruction, no need to keep quad state,
 		just transfer data as standard SPI */
 		context->is_quad = false;
 		context->quad_config = NULL;
-		if (context->transfer_mode == SPI_TRANSFER_MODE_RECEIVE) {
+		if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) {
 			return 0;
 		}
 	}
@@ -272,14 +384,14 @@ static int lld_spi_fill_fifo(sedi_spi_t spi_device, uint8_t frame_size,
 			data = context->dummy_data;
 		}
 		/* Write data */
-		spi->dr = data;
+		SEDI_PREG_RBF_SET(SPI, DR0, DR, data, &spi->dr0);
 		size -= frame_size;
 	}
 
 	return count;
 }
 
-static int lld_spi_receive_fifo(spi_reg_t *spi, uint8_t frame_size,
+static int lld_spi_receive_fifo(sedi_spi_regs_t *spi, uint8_t frame_size,
 				OUT uint8_t *buff, uint32_t count)
 {
 	uint32_t size = spi->rxflr * frame_size;
@@ -291,7 +403,7 @@ static int lld_spi_receive_fifo(spi_reg_t *spi, uint8_t frame_size,
 	count = size;
 	while (size) {
 		/* Get the data in a FIFO entry */
-		data = spi->dr;
+		data = SEDI_PREG_RBFV_GET(SPI, DR0, DR, &spi->dr0);
 		if (buff) {
 			switch (frame_size) {
 			case SPI_FRAME_SIZE_1_BYTE:
@@ -313,13 +425,13 @@ static int lld_spi_receive_fifo(spi_reg_t *spi, uint8_t frame_size,
 	return count;
 }
 
-static inline uint32_t lld_spi_dr_address(spi_reg_t *spi)
+static inline uint32_t lld_spi_dr_address(sedi_spi_regs_t *spi)
 {
 #ifdef SEDI_SPI_USE_DMA
-	uint32_t ret = SEDI_SPI_0_REG_DMA + (uint32_t)&((spi_reg_t *)0)->dr;
+	uint32_t ret = SEDI_SPI_0_REG_DMA + (uint32_t)&((sedi_spi_regs_t *)0)->dr0;
 	return ret;
 #else
-	return (uint32_t)&spi->dr;
+	return (uint32_t)&spi->dr0;
 #endif
 }
 
@@ -332,50 +444,45 @@ static void spi_bit_reverse(uint8_t *val, uint32_t len, uint8_t frame_size)
 	}
 }
 
-static void lld_spi_set_ti_mode(spi_reg_t *spi)
+static void lld_spi_set_ti_mode(sedi_spi_regs_t *spi)
 {
 	if (lld_spi_is_enabled(spi) == true) {
 		lld_spi_enable(spi, false);
 	}
-	spi->ctrl0 &= ~REG_CTRL0_FRF_MASK;
-	spi->ctrl0 |= REG_CTRL0_FRF_TI_SSP;
+	SEDI_PREG_RBFV_SET(SPI, CTRLR0, FRF, TEXAS_SSP, &spi->ctrlr0);
 }
 
-static void lld_spi_set_microwire_mode(spi_reg_t *spi,
+static void lld_spi_set_microwire_mode(sedi_spi_regs_t *spi,
 				       sedi_spi_microwire_config_t *config)
 {
-	uint32_t mwcr;
-
 	if (lld_spi_is_enabled(spi) == true) {
 		lld_spi_enable(spi, false);
 	}
-	spi->ctrl0 &= ~REG_CTRL0_FRF_MASK;
-	spi->ctrl0 |= REG_CTRL0_FRF_MICROWIRE;
+
+	SEDI_PREG_RBFV_SET(SPI, CTRLR0, FRF, NS_MICROWIRE, &spi->ctrlr0);
 
 	/* Configure microwire mode */
-	mwcr = ((config->microwire_handshake << REG_MWCR_MHS_SHIFT) |
-		(config->data_direction_tx << REG_MWCR_MDD_SHIFT) |
-		(config->sequential_mode << REG_MWCR_MWMOD_SHIFT));
-
-	spi->mwcr = mwcr;
+	SEDI_PREG_RBF_SET(SPI, MWCR, MHS, config->microwire_handshake, &spi->mwcr);
+	SEDI_PREG_RBF_SET(SPI, MWCR, MDD, config->data_direction_tx, &spi->mwcr);
+	SEDI_PREG_RBF_SET(SPI, MWCR, MWMOD, config->sequential_mode, &spi->mwcr);
 }
 
-static void lld_spi_set_line_mode(spi_reg_t *spi, spi_line_mode_t mode)
+static void lld_spi_set_line_mode(sedi_spi_regs_t *spi, spi_line_mode_t mode)
 {
-	uint32_t val;
-
+	/* SPI_FRF: SPI Frame Format Bits RO and only valid when SSI_SPI_MODE is
+	 * either set to "Dual" or "Quad" or "Octal" mode, so add #ifdef SPI_DW_2_0
+	 */
+#ifdef SPI_DW_2_0
 	lld_spi_enable(spi, false);
 
-	val = spi->ctrl0;
-	val &= ~SPI_FRAME_FORMAT_MASK;
-	val |= (mode << SPI_FRAME_FORMAT_SHIFT);
-	spi->ctrl0 = val;
+	SEDI_PREG_RBF_SET(SPI, CTRLR0, SPI_FRF, mode, &spi->ctrlr0);
+#endif
 }
 
 #ifdef SPI_DW_2_0
 static void dw_spi_set_start_condition(struct spi_context *context, uint32_t num)
 {
-	spi_reg_t *spi = context->base;
+	sedi_spi_regs_t *spi = context->base;
 	uint32_t start_frame = 0;
 
 	/* Set the send start condition to improve efficiency */
@@ -385,13 +492,12 @@ static void dw_spi_set_start_condition(struct spi_context *context, uint32_t num
 	} else {
 		start_frame = num / (context->frame_size);
 	}
-	/* Clear the bit field */
-	spi->txftlr &= ~SPI_TXFTLR_TXFTHR_MASK;
+
 	/* Compare with FIFO depth */
 	if (start_frame < SPI_FIFO_DEPTH) {
-		spi->txftlr |= ((start_frame - 1) << SPI_TXFTLR_TXFTHR_SHIFT);
+		SEDI_PREG_RBF_SET(SPI, TXFTLR, TFT, start_frame - 1, &spi->txftlr);
 	} else {
-		spi->txftlr |= ((SPI_FIFO_DEPTH - 1) << SPI_TXFTLR_TXFTHR_SHIFT);
+		SEDI_PREG_RBF_SET(SPI, TXFTLR, TFT, SPI_FIFO_DEPTH - 1, &spi->txftlr);
 	}
 }
 
@@ -439,7 +545,7 @@ int32_t sedi_spi_init(IN sedi_spi_t spi_device, IN sedi_spi_event_cb_t cb_event,
 	context->cb_event = cb_event;
 	context->cb_param = param;
 
-	context->base = (spi_reg_t *)base;
+	context->base = (sedi_spi_regs_t *)base;
 
 	return SEDI_DRIVER_OK;
 }
@@ -503,7 +609,7 @@ int32_t sedi_spi_get_status(IN sedi_spi_t spi_device, sedi_spi_status_t *status)
 	DBG_CHECK(NULL != status, SEDI_DRIVER_ERROR_PARAMETER);
 
 	struct spi_context *context = &spi_contexts[spi_device];
-	spi_reg_t *reg = context->base;
+	sedi_spi_regs_t *reg = context->base;
 
 	status->busy = context->status.busy;
 	status->data_lost = context->status.data_lost;
@@ -570,8 +676,8 @@ int32_t sedi_spi_control(IN sedi_spi_t spi_device, IN uint32_t control,
 		break;
 	case SEDI_SPI_IOCTL_SPEED_SET:
 		context->prescale = SSI_IC_FREQ / (uint32_t)arg;
-		if (context->prescale < SSI_PRESCALE_MIN) {
-			context->prescale = SSI_PRESCALE_MIN;
+		if (context->prescale < SEDI_RBFV(SPI, BAUDR, SCKDV, MIN_PRESCALE)) {
+			context->prescale = SEDI_RBFV(SPI, BAUDR, SCKDV, MIN_PRESCALE);
 		}
 		lld_spi_config_prescale(context->base, context->prescale);
 		break;
@@ -761,7 +867,7 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 			len = context->last_dma_counts;
 		}
 		/* According to different transfer mode, do different fill or receive */
-		if (context->transfer_mode == SPI_TRANSFER_MODE_SEND) {
+		if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) {
 			context->data_tx += SPI_DMA_MAX_SIZE;
 			context->dma_tx_finished = false;
 			/* start dma first */
@@ -773,11 +879,11 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 						(uint32_t)(context->data_tx),
 						lld_spi_dr_address(context->base), len);
 
-		} else if (context->transfer_mode == SPI_TRANSFER_MODE_RECEIVE) {
+		} else if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) {
 			context->data_rx += SPI_DMA_MAX_SIZE;
 			context->dma_rx_finished = false;
 			/* Configure rx channel */
-			context->base->ctrl1 = len / context->frame_size - 1;
+			context->base->ctrlr1 = len / context->frame_size - 1;
 			sedi_dma_start_transfer(context->rx_dma, context->rx_channel,
 						lld_spi_dr_address(context->base),
 						(uint32_t)(context->data_rx), len);
@@ -836,7 +942,7 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 	DBG_CHECK(spi_device < SEDI_SPI_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 #ifdef SEDI_SPI_USE_DMA
 	struct spi_context *context = &spi_contexts[spi_device];
-	spi_reg_t *spi = context->base;
+	sedi_spi_regs_t *spi = context->base;
 	int tx_handshake = context->dma_handshake;
 	int rx_handshake = context->rx_handshake;
 	int width = context->frame_size;
@@ -879,7 +985,7 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 	}
 #ifdef SPI_DW_2_0
 	/* Clear the bit field */
-	context->base->txftlr &= ~SPI_TXFTLR_TXFTHR_MASK;
+	SEDI_PREG_RBF_SET(SPI, TXFTLR, TFT, 0, &context->base->txftlr);
 #endif
 
 	/* Decide the transfer mode, send, receive or both */
@@ -887,7 +993,7 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 
 	/* If need to bit reverse tx buffer */
 	if (context->is_lsb == true) {
-		if (context->transfer_mode != SPI_TRANSFER_MODE_RECEIVE) {
+		if (context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) {
 			spi_bit_reverse(context->data_tx, context->tx_data_len,
 					context->frame_size);
 			/* Clean the cache for DMA transfer */
@@ -896,7 +1002,7 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 					context->tx_data_len);
 		}
 #ifdef SEDI_CONFIG_ARCH_X86
-		if (context->transfer_mode != SPI_TRANSFER_MODE_SEND) {
+		if (context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) {
 			sedi_core_inv_clean_dcache_by_addr(
 					(uint32_t *)(context->data_rx),
 					context->rx_data_len);
@@ -905,7 +1011,7 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 	}
 
 	/* According to different transfer mode, do different fill or receive */
-	if (context->transfer_mode == SPI_TRANSFER_MODE_SEND) {
+	if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) {
 		/* start dma first */
 		config_and_enable_dma_channel(
 		    spi_device, tx_dma, tx_handshake, tx_dma_chan, width, burst,
@@ -916,7 +1022,7 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 #ifdef SPI_DW_2_0
 		dw_spi_set_start_condition(context, len);
 #endif
-	} else if (context->transfer_mode == SPI_TRANSFER_MODE_RECEIVE) {
+	} else if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) {
 		/* Send dummy data first */
 		if (context->is_quad == false) {
 			lld_spi_fill_fifo(spi_device, context->frame_size, NULL,
@@ -931,7 +1037,7 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 		/* Set NDF bits for receive only mode */
 		DBG_CHECK((len <= SPI_RECEIVE_MODE_MAX_SIZE),
 			  SEDI_DRIVER_ERROR_PARAMETER);
-		context->base->ctrl1 = len / context->frame_size - 1;
+		context->base->ctrlr1 = len / context->frame_size - 1;
 		context->dma_tx_finished = true;
 		context->tx_channel = 0xFF;
 	} else {
@@ -959,18 +1065,18 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 		const sedi_spi_enhanced_config_t *config = context->quad_config;
 
 		/* Instruction need 1 entry */
-		spi->dr = *(config->inst_buf);
-		spi->dr = *((uint32_t *)(config->addr_buf));
+		SEDI_PREG_RBF_SET(SPI, DR0, DR, *(config->inst_buf), &spi->dr0);
+		SEDI_PREG_RBF_SET(SPI, DR0, DR, *((uint32_t *)(config->addr_buf)), &spi->dr0);
 		/* After fill in addr and instruction, no need to keep quad state,
 		just transfer data as standard SPI */
 		context->is_quad = false;
 		context->quad_config = NULL;
 	}
 
-	if (context->transfer_mode == SPI_TRANSFER_MODE_SEND) {
+	if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) {
 		sedi_dma_start_transfer(tx_dma, tx_dma_chan, (uint32_t)data_out,
 					lld_spi_dr_address(context->base), len);
-	} else if (context->transfer_mode == SPI_TRANSFER_MODE_RECEIVE) {
+	} else if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) {
 		sedi_dma_start_transfer(rx_dma, rx_dma_chan, lld_spi_dr_address(context->base),
 					(uint32_t)data_in, len);
 	} else {
@@ -1011,28 +1117,28 @@ int32_t sedi_spi_poll_transfer(IN sedi_spi_t spi_device, IN uint8_t *data_out,
 	context->data_rx_idx = 0;
 #ifdef SPI_DW_2_0
 	/* Clear the bit field */
-	context->base->txftlr &= ~SPI_TXFTLR_TXFTHR_MASK;
+	SEDI_PREG_RBF_SET(SPI, TXFTLR, TFT, 0, &context->base->txftlr);
 #endif
 
 	/* Decide the transfer mode, send, receive or both */
 	lld_spi_set_transfer_mode(spi_device, data_out, data_in);
 
 	/* First convert tx buffer */
-	if ((context->transfer_mode != SPI_TRANSFER_MODE_RECEIVE) &&
+	if ((context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) &&
 	    (context->is_lsb == true)) {
 		spi_bit_reverse(context->data_tx, context->tx_data_len,
 				context->frame_size);
 	}
 
 	/* According to different transfer mode, do different fill or receive */
-	if (context->transfer_mode == SPI_TRANSFER_MODE_SEND) {
+	if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) {
 		rx_num = 0;
-	} else if (context->transfer_mode == SPI_TRANSFER_MODE_RECEIVE) {
+	} else if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) {
 		tx_num = context->frame_size; /* Shall send at least one data
 						 for receive */
 		DBG_CHECK((num <= SPI_RECEIVE_MODE_MAX_SIZE),
 			  SEDI_DRIVER_ERROR_PARAMETER);
-		context->base->ctrl1 = num / context->frame_size - 1;
+		context->base->ctrlr1 = num / context->frame_size - 1;
 	}
 
 	lld_spi_enable(context->base, true);
@@ -1076,14 +1182,14 @@ int32_t sedi_spi_poll_transfer(IN sedi_spi_t spi_device, IN uint8_t *data_out,
 	context->data_rx_idx = num;
 
 	/* If has rx buffer and need bit reverse */
-	if ((context->transfer_mode != SPI_TRANSFER_MODE_SEND) &&
+	if ((context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) &&
 	    (context->is_lsb == true)) {
 		spi_bit_reverse(context->data_rx, context->rx_data_len,
 				context->frame_size);
 	}
 
 	/* If need to recover tx buffer */
-	if ((context->transfer_mode != SPI_TRANSFER_MODE_RECEIVE) &&
+	if ((context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) &&
 	    (context->is_lsb == true)) {
 		spi_bit_reverse(context->data_tx, context->tx_data_len,
 				context->frame_size);
@@ -1097,7 +1203,7 @@ int32_t sedi_spi_transfer(IN sedi_spi_t spi_device, IN uint8_t *data_out,
 	DBG_CHECK(spi_device < SEDI_SPI_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
 	struct spi_context *context = &spi_contexts[spi_device];
-	spi_reg_t *spi = context->base;
+	sedi_spi_regs_t *spi = context->base;
 	uint32_t send_count = num;
 
 	DBG_CHECK(((num % context->frame_size) == 0),
@@ -1124,9 +1230,8 @@ int32_t sedi_spi_transfer(IN sedi_spi_t spi_device, IN uint8_t *data_out,
 	/* For IRQ mode only, if use multiple buffers, cannot change mode in
 	 * transfer */
 	if ((context->is_cs_continuous == true) && (!context->is_quad)) {
-		spi->ctrl0 &= ~SPI_CTRL0_TMOD_MASK;
-		spi->ctrl0 |= SPI_CTRL0_BOTH_MODE;
-		context->transfer_mode = SPI_TRANSFER_MODE_BOTH;
+		SEDI_PREG_RBFV_SET(SPI, CTRLR0, TMOD, TX_AND_RX, &spi->ctrlr0);
+		context->transfer_mode = SEDI_RBFV(SPI, CTRLR0, TMOD, TX_AND_RX);
 	}
 
 	context->status.busy = 1U;
@@ -1139,24 +1244,24 @@ int32_t sedi_spi_transfer(IN sedi_spi_t spi_device, IN uint8_t *data_out,
 	context->data_rx_idx = 0;
 #ifdef SPI_DW_2_0
 	/* Clear the bit field */
-	spi->txftlr &= ~SPI_TXFTLR_TXFTHR_MASK;
+	SEDI_PREG_RBF_SET(SPI, TXFTLR, TFT, 0, &spi->txftlr);
 #endif
 
 	/* First convert tx buffer */
-	if ((context->transfer_mode != SPI_TRANSFER_MODE_RECEIVE) &&
+	if ((context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) &&
 	    (context->is_lsb == true)) {
 		spi_bit_reverse(context->data_tx, context->tx_data_len,
 				context->frame_size);
 	}
 
 	/* According to different transfer mode, do different fill or receive */
-	if (context->transfer_mode == SPI_TRANSFER_MODE_SEND) {
+	if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) {
 		context->data_rx_idx = num;
-	} else if (context->transfer_mode == SPI_TRANSFER_MODE_RECEIVE) {
+	} else if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) {
 		send_count = context->frame_size;
 		DBG_CHECK((num <= SPI_RECEIVE_MODE_MAX_SIZE),
 			  SEDI_DRIVER_ERROR_PARAMETER);
-		context->base->ctrl1 = num / context->frame_size - 1;
+		context->base->ctrlr1 = num / context->frame_size - 1;
 		/* Write into FIFO needs to enable SPI first */
 		lld_spi_enable(context->base, true);
 		lld_spi_fill_fifo(spi_device, context->frame_size, data_out,
@@ -1165,7 +1270,7 @@ int32_t sedi_spi_transfer(IN sedi_spi_t spi_device, IN uint8_t *data_out,
 	}
 
 #ifdef SPI_DW_2_0
-	if (context->transfer_mode != SPI_TRANSFER_MODE_RECEIVE) {
+	if (context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) {
 		dw_spi_set_start_condition(context, num);
 	}
 #endif
@@ -1182,10 +1287,9 @@ static int32_t spi_enhanced_config(IN sedi_spi_t spi_device,
 			    IN sedi_spi_enhanced_config_t *config)
 {
 	struct spi_context *context = &spi_contexts[spi_device];
-	spi_reg_t *spi = context->base;
-	uint32_t val;
+	sedi_spi_regs_t *spi = context->base;
 
-	if ((spi->ctrl0 & SPI_FRAME_FORMAT_MASK) == 0) {
+	if (SEDI_PREG_RBFV_IS_SET(SPI, CTRLR0, SPI_FRF, STD_SPI_FRF, &spi->ctrlr0)) {
 		/* single mode no need to configure */
 		return 0;
 	}
@@ -1200,14 +1304,13 @@ static int32_t spi_enhanced_config(IN sedi_spi_t spi_device,
 
 	/* Disable spi first to set registers */
 	lld_spi_enable(spi, false);
-
+	/* add SPI_DW_2_0 here as sedi_spi_reg.h osxml has no SPI_CTRL0*/
+#ifdef SPI_DW_2_0
 	/* Config SPI_CTRL0 register */
-	spi->spi_ctrl0 = 0;
-	val = ((config->inst_len << SPI_CTRLR0_INST_L_SHIFT) |
-	      (config->addr_len << SPI_CTRLR0_ADDR_L_SHIFT) |
-	      (config->dummy_cycles << SPI_CTRLR0_WAIT_CYCLE_SHIFT) |
-	      config->mode);
-	spi->spi_ctrl0 = val;
+	SEDI_PREG_RBF_SET(SPI, SPI_CTRLR0, ADDR_L, config->addr_len, &spi->spi_ctrl0);
+	SEDI_PREG_RBF_SET(SPI, SPI_CTRLR0, INST_L, config->inst_len, &spi->spi_ctrl0);
+	SEDI_PREG_RBF_SET(SPI, SPI_CTRLR0, WAIT_CYCLES, config->dummy_cycles, &spi->spi_ctrl0);
+#endif
 
 	return 0;
 }
@@ -1373,14 +1476,14 @@ void spi_isr(IN sedi_spi_t spi_device)
 			;
 
 		/* If need to reverse rx buffer */
-		if ((context->transfer_mode != SPI_TRANSFER_MODE_SEND) &&
+		if ((context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) &&
 		    (context->is_lsb == true)) {
 			context->data_rx -= context->data_rx_idx;
 			spi_bit_reverse(context->data_rx, context->rx_data_len,
 					context->frame_size);
 		}
 		/* If need to recover tx buffer */
-		if ((context->transfer_mode != SPI_TRANSFER_MODE_RECEIVE) &&
+		if ((context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) &&
 		    (context->is_lsb == true)) {
 			context->data_tx -= context->data_tx_idx;
 			spi_bit_reverse(context->data_tx, context->tx_data_len,
