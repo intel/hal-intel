@@ -170,6 +170,30 @@ typedef struct {
 #define PARAM_UNUSED(x) (void)(x)
 
 /*!
+ * \enum sedi_log_level
+ * \brief SEDI logging levels
+ * \ingroup sedi_driver_common
+ */
+enum {
+	SEDI_LOG_LEVEL_ERR = 1,
+	SEDI_LOG_LEVEL_WRN = 2,
+	SEDI_LOG_LEVEL_INF = 3,
+	SEDI_LOG_LEVEL_DBG = 4,
+};
+
+/*!
+ * \function sedi_log
+ * \brief SEDI logging function
+ * \ingroup sedi_driver_common
+ */
+void sedi_log(int level, const char *fmt, ...);
+
+#define SEDI_LOG_ERR(...) sedi_log(SEDI_LOG_LEVEL_ERR, __VA_ARGS__)
+#define SEDI_LOG_WRN(...) sedi_log(SEDI_LOG_LEVEL_WRN, __VA_ARGS__)
+#define SEDI_LOG_INF(...) sedi_log(SEDI_LOG_LEVEL_INF, __VA_ARGS__)
+#define SEDI_LOG_DBG(...) sedi_log(SEDI_LOG_LEVEL_DBG, __VA_ARGS__)
+
+/*!
  * \def DBG_CHECK
  * \brief Check error and return for debug mode.
  */
