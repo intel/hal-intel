@@ -10,6 +10,12 @@
 /* counter for vnn_req/vnn_dereq per vnn_id */
 static uint8_t vnn_req_counter[VNN_ID_TOP];
 
+void __attribute__((weak)) sedi_log(int level, const char *fmt, ...)
+{
+	PARAM_UNUSED(level);
+	PARAM_UNUSED(fmt);
+}
+
 /* weak PM functions used by SEDI drivers when SEDI PM driver is not enabled */
 
 void __attribute__((weak)) sedi_pm_set_device_power(IN sedi_devid_t id,
