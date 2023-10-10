@@ -99,6 +99,7 @@ typedef enum {
 	SEDI_DEVID_SPI1,
 	SEDI_DEVID_TOP
 } sedi_devid_t;
+
 /*!
  * peripheral device id for dma handshake
  */
@@ -133,32 +134,36 @@ static inline bool sedi_dev_is_self_owned(sedi_devid_t dev)
 
 	return true;
 }
-#define PM_VNN_DRIVER_REQ(vnn_id)                                              \
-	do {                                                                   \
-		if ((read32(PMU_VNN_REQ_31_0) & BIT(vnn_id)) == 0) {           \
-			write32(PMU_VNN_REQ_31_0, BIT(vnn_id));                \
-			while (                                                \
-			    !(read32(PMU_VNN_REQ_ACK) & PMU_VNN_REQ_ACK_STS))  \
-				;                                              \
-		}                                                              \
-	} while (0)
 
-#define PM_VNN_DRIVER_DEREQ(vnn_id)                                            \
-	do {                                                                   \
-		if ((read32(PMU_VNN_REQ_31_0) & BIT(vnn_id)) != 0) {           \
-			write32(PMU_VNN_REQ_31_0, BIT(vnn_id));                \
-			write32(PMU_VNN_REQ_ACK, read32(PMU_VNN_REQ_ACK));     \
-		}                                                              \
-	} while (0)
+/*!
+ * \brief Request VNN for a device
+ * \param[in] vnn_id: device id
+ * \return void
+ * \ingroup sedi_soc_ish
+ */
+void PM_VNN_DRIVER_REQ(vnn_id_t vnn_id);
 
-#define PM_VNN_ALL_RESET()                                                     \
-	do {                                                                   \
-		write32(PMU_VNN_REQ_31_0, read32(PMU_VNN_REQ_31_0));           \
-		write32(PMU_VNN_REQ_ACK, read32(PMU_VNN_REQ_ACK));             \
-	} while (0)
+/*!
+ * \brief De-request VNN for a device
+ * \param[in] vnn_id: device id
+ * \return void
+ * \ingroup sedi_soc_ish
+ */
+void PM_VNN_DRIVER_DEREQ(vnn_id_t vnn_id);
 
-#define PM_VNN_DRIVER_RESET(vnn_id)                                            \
-	write32(PMU_VNN_REQ_31_0,                                              \
-		read32(PMU_VNN_REQ_31_0) & BIT(vnn_id));
+/*!
+ * \brief Reset VNN for all devices
+ * \return void
+ * \ingroup sedi_soc_ish
+ */
+void PM_VNN_ALL_RESET(void);
+
+/*!
+ * \brief Reset VNN for a device
+ * \param[in] vnn_id: device id
+ * \return void
+ * \ingroup sedi_soc_ish
+ */
+void PM_VNN_DRIVER_RESET(vnn_id_t vnn_id);
 
 #endif
