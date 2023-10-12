@@ -4,9 +4,34 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "sedi_ipc.h"
-#include "sedi_soc_regs.h"
+#include "sedi_driver_core.h"
 #include <sedi_driver_common.h>
+#include <sedi_ipc_regs.h>
+#include <sedi_driver_ipc.h>
+
+#define SEDI_IPC_API_VERSION 0
+/* driver version */
+#define SEDI_IPC_DRIVER_VERSION SEDI_DRIVER_VERSION_MAJOR_MINOR(0, 1)
+
+#define IPC_REG_SB_LOCAL2PMC_DRBL 0x1804
+#define IPC_REG_SB_LOCAL2PMC_MSG 0x1808
+#define IPC_REG_SB_PMC2LOCAL_DRBL_MIRROR 0x1888
+#define IPC_REG_SB_PMC2LOCAL_DRBL_MIRROR 0x1888
+
+#define IPC_REG_SB_LOCAL2CSE_CSR 0x3c
+#define IPC_REG_SB_LOCAL2CSE_DRBL 0x0
+#define IPC_REG_SB_LOCAL2CSE_MSG 0x40
+#define IPC_REG_SB_CSE2LOCAL_DRBL_MIRROR 0x4
+
+#define IPC_REG_SB_LOCAL2CNVI_CSR 0x698
+#define IPC_REG_SB_LOCAL2CNVI_DRBL 0x690
+#define IPC_REG_SB_LOCAL2CNVI_MSG 0x7600
+#define IPC_REG_SB_CNVI2LOCAL_DRBL_MIRROR 0x694
+
+#define IPC_REG_SB_LOCAL2BT_CSR 0x698
+#define IPC_REG_SB_LOCAL2BT_DRBL 0x690
+#define IPC_REG_SB_LOCAL2BT_MSG 0x7600
+#define IPC_REG_SB_BT2LOCAL_DRBL_MIRROR 0x694
 
 #ifdef SEDI_SB_SUPPORT
 #define SEDI_SIDEBAND_PMC SEDI_SIDEBAND_0
@@ -33,7 +58,7 @@ typedef struct {
 
 /* ipc resource information */
 typedef struct {
-	ipc_reg_t *reg_base_addr;
+	sedi_ipc_regs_t *reg_base_addr;
 	vnn_id_t read_vnn;
 	vnn_id_t write_vnn;
 	sideband_param_t *sb;
@@ -69,26 +94,26 @@ static sideband_param_t cse_sb = { .dev = SEDI_SIDEBAND_CSE,
 
 static const ipc_resource_t ipc_resource[SEDI_IPC_NUM] = {
 #ifdef SEDI_SB_SUPPORT
-	{ .reg_base_addr = (ipc_reg_t *)IPC_HOST_BASE,
+	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_HOST),
 	  .read_vnn = VNN_ID_IPC_HOST_R,
 	  .write_vnn = VNN_ID_IPC_HOST_W,
 	  .sb = NULL },
-	{ .reg_base_addr = (ipc_reg_t *)IPC_CSME_BASE,
+	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_CSME),
 	  .read_vnn = VNN_ID_IPC_CSE_R,
 	  .write_vnn = VNN_ID_IPC_CSE_W,
 	  .sb = &cse_sb },
-	{ .reg_base_addr = (ipc_reg_t *)IPC_PMC_BASE,
+	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_PMC),
 	  .read_vnn = VNN_ID_IPC_PMC_R,
 	  .write_vnn = VNN_ID_IPC_PMC_W,
 	  .sb = &pmc_sb },
 #else
-	{ .reg_base_addr = (ipc_reg_t *)IPC_HOST_BASE,
+	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_HOST),
 	  .read_vnn = VNN_ID_IPC_HOST_R,
 	  .write_vnn = VNN_ID_IPC_HOST_W },
-	{ .reg_base_addr = (ipc_reg_t *)IPC_CSME_BASE,
+	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_CSME),
 	  .read_vnn = VNN_ID_IPC_CSE_R,
 	  .write_vnn = VNN_ID_IPC_CSE_W },
-	{ .reg_base_addr = (ipc_reg_t *)IPC_PMC_BASE,
+	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_PMC),
 	  .read_vnn = VNN_ID_IPC_PMC_R,
 	  .write_vnn = VNN_ID_IPC_PMC_W },
 #endif
@@ -126,7 +151,7 @@ int32_t sedi_ipc_get_capabilities(IN sedi_ipc_t ipc_device, INOUT sedi_ipc_capab
 int32_t sedi_ipc_init(IN sedi_ipc_t ipc_device, IN sedi_ipc_event_cb_t cb, INOUT void *param)
 {
 	DBG_CHECK(ipc_device < SEDI_IPC_NUM, SEDI_DRIVER_ERROR_PARAMETER);
-	volatile ipc_reg_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
 	vnn_id_t write_vnn = ipc_resource[ipc_device].write_vnn;
 
 	ipc_contexts[ipc_device].initialized = false;
@@ -143,22 +168,26 @@ int32_t sedi_ipc_init(IN sedi_ipc_t ipc_device, IN sedi_ipc_event_cb_t cb, INOUT
 		sedi_sideband_init(sb->dev);
 	}
 #endif
-	if ((regs->drbl_out & BIT(IPC_BUSY_BIT)) != 0) {
-		regs->pimr_out &= ~BIT(IPC_INT_MASK_OUT_BIT);
+	if (SEDI_PREG_RBFV_IS_SET(IPC, ISH2AGENT_DOORBELL_AGENT, BUSY, 1,
+				&regs->ish2agent_doorbell_agent)) {
 		PM_VNN_DRIVER_REQ(write_vnn);
-		regs->drbl_out = 0;
+		SEDI_PREG_RBFV_SET(IPC, ISH2AGENT_DOORBELL_AGENT, BUSY, 0, &regs->ish2agent_doorbell_agent);
 		PM_VNN_DRIVER_DEREQ(write_vnn);
 	}
 	ipc_contexts[ipc_device].initialized = true;
 
-	if (regs->ipc_busy_clear_peer2local) {
+	if (SEDI_PREG_RBFV_IS_SET(IPC, ISH_IPC_BUSY_CLEAR_AGENT,
+				ISH2AGENT_BUSY_CLEAR, 1,
+				&regs->ish_ipc_busy_clear_agent)) {
 		/*set 1 to clear this interrupt*/
-		regs->ipc_busy_clear_peer2local = 1;
+		SEDI_PREG_RBFV_SET(IPC, ISH_IPC_BUSY_CLEAR_AGENT,
+				ISH2AGENT_BUSY_CLEAR, 1, &regs->ish_ipc_busy_clear_agent);
 	}
 	/* Enable Msg in, busyClean and out Interrupt */
-	regs->pimr_in |= (BIT(IPC_INT_MASK_IN_BIT) | BIT(IPC_INT_MASK_BC_BIT));
-	regs->pimr_out |= BIT(IPC_INT_MASK_OUT_BIT);
-	regs->channel_intr_mask = 0;
+	SEDI_PREG_RBFV_SET(IPC, PIMR_AGENT2ISH, AGENT2ISH_DB, 1, &regs->pimr_agent2ish);
+	SEDI_PREG_RBFV_SET(IPC, PIMR_AGENT2ISH, ISH2AGENT_BC, 1, &regs->pimr_agent2ish);
+	SEDI_PREG_RBFV_SET(IPC, PIMR_ISH2AGENT, ISH2AGENT_DB, 1, &regs->pimr_ish2agent);
+	SEDI_PREG_RBFV_SET(IPC, CIM_AGENT, CH_INTR_MASK, 0, &regs->cim_agent);
 
 	return SEDI_DRIVER_OK;
 }
@@ -166,11 +195,11 @@ int32_t sedi_ipc_init(IN sedi_ipc_t ipc_device, IN sedi_ipc_event_cb_t cb, INOUT
 int32_t sedi_ipc_uninit(IN sedi_ipc_t ipc_device)
 {
 	DBG_CHECK(ipc_device < SEDI_IPC_NUM, SEDI_DRIVER_ERROR_PARAMETER);
-	volatile ipc_reg_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
 
 	/* disable Msg in, busyClean and out Interrupt  */
-	regs->pimr_in &= ~(BIT(IPC_INT_MASK_IN_BIT) | BIT(IPC_INT_MASK_BC_BIT));
-	regs->pimr_out &= ~BIT(IPC_INT_MASK_OUT_BIT);
+	SEDI_PREG_RBFV_SET(IPC, PIMR_AGENT2ISH, AGENT2ISH_DB, 0, &regs->pimr_agent2ish);
+	SEDI_PREG_RBFV_SET(IPC, PIMR_AGENT2ISH, ISH2AGENT_BC, 0, &regs->pimr_agent2ish);
 
 	ipc_contexts[ipc_device].cb_event = NULL;
 	ipc_contexts[ipc_device].initialized = false;
@@ -212,7 +241,7 @@ int32_t sedi_ipc_write_msg(IN sedi_ipc_t ipc_device, IN uint8_t *msg, IN int32_t
 		return ret;
 	}
 
-	volatile ipc_reg_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
 	sideband_param_t *sb = ipc_resource[ipc_device].sb;
 
 	DBG_CHECK((size <= IPC_DATA_LEN_MAX) && (size >= 0), SEDI_DRIVER_ERROR_PARAMETER);
@@ -229,14 +258,14 @@ int32_t sedi_ipc_write_msg(IN sedi_ipc_t ipc_device, IN uint8_t *msg, IN int32_t
 	} else {
 		/* write data in 32-bit*/
 		for (i = 0; i < (size >> 2); i++) {
-			*(regs->msgs_out + i) = *((uint32_t *)msg + i);
+			regs->ish2agent_msg_agent[i] = *((uint32_t *)msg + i);
 		}
 		/* write data in 8-bit for the rest*/
 		if (size % sizeof(uint32_t)) {
 			for (i = ((size >> 2) << 2); i < size; i++) {
 				tail += msg[i] << ((i % 4) << 3);
 			}
-			*(regs->msgs_out + (size >> 2)) = tail;
+			regs->ish2agent_msg_agent[size >> 2] = tail;
 		}
 	}
 	return SEDI_DRIVER_OK;
@@ -253,10 +282,10 @@ int32_t sedi_ipc_write_dbl(IN sedi_ipc_t ipc_device, IN uint32_t doorbell)
 
 	vnn_id_t write_vnn = ipc_resource[ipc_device].write_vnn;
 	sideband_param_t *sb = ipc_resource[ipc_device].sb;
-	volatile ipc_reg_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
 
 	if (sb) {
-		regs->drbl_out = doorbell;
+		regs->ish2agent_doorbell_agent = doorbell;
 #ifdef SEDI_SB_SUPPORT
 		sedi_sideband_send(sb->dev, sb->port, SEDI_SIDEBAND_ACTION_WRITE,
 				   sb->drbl_peer_addr, doorbell);
@@ -264,8 +293,8 @@ int32_t sedi_ipc_write_dbl(IN sedi_ipc_t ipc_device, IN uint32_t doorbell)
 	} else {
 		/* IPC to HOST */
 		PM_VNN_DRIVER_REQ(write_vnn);
-		regs->drbl_out = doorbell;
-		if (!(doorbell & BIT(IPC_BUSY_BIT))) {
+		regs->ish2agent_doorbell_agent = doorbell;
+		if (SEDI_PREG_RBFV_IS_SET(IPC, ISH2AGENT_DOORBELL_AGENT, BUSY, 0, (uint32_t *)&doorbell)) {
 			PM_VNN_DRIVER_DEREQ(write_vnn);
 		}
 	}
@@ -322,19 +351,19 @@ int32_t sedi_ipc_read_msg(IN sedi_ipc_t ipc_device, OUT uint8_t *msg, IN int32_t
 		return ret;
 	}
 
-	volatile ipc_reg_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
 
 	DBG_CHECK((size <= IPC_DATA_LEN_MAX) && (size >= 0), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(msg != NULL, SEDI_DRIVER_ERROR_PARAMETER);
 
 	/* read data in 32-bit*/
 	for (i = 0; i < (size >> 2); i++) {
-		*((uint32_t *)msg + i) = *(regs->msgs_in + i);
+		*((uint32_t *)msg + i) = regs->agent2ish_msg_agent[i];
 	}
 
 	/* read data in 8-bit for the rest*/
 	if (size % sizeof(uint32_t)) {
-		tail = *(regs->msgs_in + (size >> 2));
+		tail = regs->agent2ish_msg_agent[size >> 2];
 	}
 	for (i = ((size >> 2) << 2); i < size; i++) {
 		msg[i] = *((uint8_t *)&tail + i % sizeof(uint32_t));
@@ -351,8 +380,8 @@ int32_t sedi_ipc_read_dbl(IN sedi_ipc_t ipc_device, OUT uint32_t *doorbell)
 		return ret;
 	}
 
-	volatile ipc_reg_t *regs = ipc_resource[ipc_device].reg_base_addr;
-	*doorbell = regs->drbl_in;
+	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	*doorbell = regs->agent2ish_doorbell_agent;
 	return SEDI_DRIVER_OK;
 }
 
@@ -367,14 +396,14 @@ int32_t sedi_ipc_send_ack_drbl(IN sedi_ipc_t ipc_device, IN uint32_t ack)
 
 	sideband_param_t *sb = ipc_resource[ipc_device].sb;
 
-	if (ack & BIT(IPC_BUSY_BIT)) {
+	if (SEDI_PREG_RBFV_IS_SET(IPC, ISH2AGENT_DOORBELL_AGENT, BUSY, 1, (uint32_t *)&ack)) {
 		return SEDI_DRIVER_ERROR_PARAMETER;
 	}
 
-	volatile ipc_reg_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
 	vnn_id_t read_vnn = ipc_resource[ipc_device].read_vnn;
 
-	regs->drbl_in = ack;
+	regs->agent2ish_doorbell_agent = ack;
 	if (sb) {
 #ifdef SEDI_SB_SUPPORT
 		/* the peer is PMC or CSE */
@@ -385,7 +414,7 @@ int32_t sedi_ipc_send_ack_drbl(IN sedi_ipc_t ipc_device, IN uint32_t ack)
 		/* the peer is host */
 		PM_VNN_DRIVER_DEREQ(read_vnn);
 	}
-	regs->pimr_in |= BIT(IPC_INT_MASK_IN_BIT);
+	SEDI_PREG_RBFV_SET(IPC, PIMR_AGENT2ISH, AGENT2ISH_DB, 1, &regs->pimr_agent2ish);
 	return SEDI_DRIVER_OK;
 }
 
@@ -399,9 +428,9 @@ int32_t sedi_ipc_read_ack_drbl(IN sedi_ipc_t ipc_device, OUT uint32_t *ack)
 	}
 
 	DBG_CHECK(ack != NULL, ret);
-	volatile ipc_reg_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
 
-	*ack = regs->drbl_out;
+	*ack = regs->ish2agent_doorbell_agent;
 
 	return SEDI_DRIVER_OK;
 }
@@ -416,21 +445,21 @@ int32_t sedi_ipc_send_ack_msg(IN sedi_ipc_t ipc_device, IN uint8_t *msg, IN int3
 		return ret;
 	}
 
-	volatile ipc_reg_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
 
 	DBG_CHECK((size <= IPC_DATA_LEN_MAX) && (size >= 0), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(msg != NULL, SEDI_DRIVER_ERROR_PARAMETER);
 
 	/* write data in 32-bit*/
 	for (i = 0; i < (size >> 2); i++) {
-		*(regs->msgs_in + i) = *((uint32_t *)msg + i);
+		regs->agent2ish_msg_agent[i] = *((uint32_t *)msg + i);
 	}
 	/* write data in 8-bit for the rest*/
 	if (size % sizeof(uint32_t)) {
 		for (i = ((size >> 2) << 2); i < size; i++) {
 			tail += msg[i] << ((i % 4) << 3);
 		}
-		*(regs->msgs_in + (size >> 2)) = tail;
+		regs->agent2ish_msg_agent[size >> 2] = tail;
 	}
 	return SEDI_DRIVER_OK;
 }
@@ -445,7 +474,7 @@ int32_t sedi_ipc_read_ack_msg(IN sedi_ipc_t ipc_device, OUT uint8_t *msg, IN int
 		return ret;
 	}
 
-	volatile ipc_reg_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
 
 	DBG_CHECK((size <= IPC_DATA_LEN_MAX) && (size >= 0), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(msg != NULL, SEDI_DRIVER_ERROR_PARAMETER);
@@ -453,11 +482,11 @@ int32_t sedi_ipc_read_ack_msg(IN sedi_ipc_t ipc_device, OUT uint8_t *msg, IN int
 	if (ipc_device == SEDI_IPC_HOST) {
 		/* read data in 32-bit*/
 		for (i = 0; i < (size >> 2); i++) {
-			*((uint32_t *)msg + i) = *(regs->msgs_out + i);
+			*((uint32_t *)msg + i) = regs->ish2agent_msg_agent[i];
 		}
 		/* read data in 8-bit for the rest*/
 		if (size % sizeof(uint32_t)) {
-			tail = *(regs->msgs_out + (size >> 2));
+			tail = regs->ish2agent_msg_agent[size >> 2];
 		}
 		for (i = ((size >> 2) << 2); i < size; i++) {
 			msg[i] = *((uint8_t *)&tail + i % sizeof(uint32_t));
@@ -482,7 +511,7 @@ int32_t sedi_ipc_read_ack_msg(IN sedi_ipc_t ipc_device, OUT uint8_t *msg, IN int
 void sedi_ipc_isr(IN sedi_ipc_t ipc_device)
 {
 	int ret;
-	volatile ipc_reg_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
 
 	ret = check_ipc_available(ipc_device);
 	if (ret != SEDI_DRIVER_OK) {
@@ -490,8 +519,10 @@ void sedi_ipc_isr(IN sedi_ipc_t ipc_device)
 	}
 
 	/* check whether it is an inbound interrupt*/
-	if ((regs->pisr_in & BIT(IPC_INT_STAT_BIT)) && (regs->pimr_in & BIT(IPC_INT_MASK_IN_BIT))) {
-		regs->pimr_in &= ~BIT(IPC_INT_MASK_IN_BIT);
+	if (SEDI_PREG_RBFV_IS_SET(IPC, PISR_AGENT2ISH, AGENT2ISH_DB, 1, &regs->pisr_agent2ish) &&
+		SEDI_PREG_RBFV_IS_SET(IPC, PIMR_AGENT2ISH, AGENT2ISH_DB, 1, &regs->pimr_agent2ish)) {
+		/* mask interrupts before ack */
+		SEDI_PREG_RBFV_SET(IPC, PIMR_AGENT2ISH, AGENT2ISH_DB, 0, &regs->pimr_agent2ish);
 		if (ipc_device == SEDI_IPC_HOST) {
 			PM_VNN_DRIVER_REQ(ipc_resource[ipc_device].read_vnn);
 		}
@@ -503,9 +534,11 @@ void sedi_ipc_isr(IN sedi_ipc_t ipc_device)
 	}
 
 	/* check whether it is an outbound interrupt*/
-	if (regs->ipc_busy_clear_peer2local) {
+	if (SEDI_PREG_RBFV_IS_SET(IPC, ISH_IPC_BUSY_CLEAR_AGENT, ISH2AGENT_BUSY_CLEAR, 1,
+				&regs->ish_ipc_busy_clear_agent)) {
 		/*set 1 to clear this interrupt*/
-		regs->ipc_busy_clear_peer2local = 1;
+		SEDI_PREG_RBFV_SET(IPC, ISH_IPC_BUSY_CLEAR_AGENT, ISH2AGENT_BUSY_CLEAR, 1,
+				&regs->ish_ipc_busy_clear_agent);
 		if ((ipc_contexts[ipc_device].initialized == true) &&
 		    (ipc_contexts[ipc_device].cb_event)) {
 			ipc_contexts[ipc_device].out_msg_count++;
@@ -517,30 +550,15 @@ void sedi_ipc_isr(IN sedi_ipc_t ipc_device)
 		}
 	}
 
-	/* check whether it is cse interrupt */
-	if ((ipc_device == SEDI_IPC_CSME) && (regs->csr != 0)) {
-		ipc_contexts[ipc_device].csr_saved = regs->csr;
+	/* check whether it is a csr interrupt */
+	if ((ipc_device != SEDI_IPC_HOST) && (regs->agent2ish_csr_agent != 0)) {
+		ipc_contexts[ipc_device].csr_saved = regs->agent2ish_csr_agent;
 		/* write back to clear the interrupt */
-		regs->csr = ipc_contexts[ipc_device].csr_saved;
+		regs->agent2ish_csr_agent = ipc_contexts[ipc_device].csr_saved;
 		if ((ipc_contexts[ipc_device].initialized == true) &&
 		    (ipc_contexts[ipc_device].cb_event)) {
 			ipc_contexts[ipc_device].cb_event(ipc_device, SEDI_IPC_EVENT_CSR_ACK,
 							  ipc_contexts[ipc_device].usr_params);
 		}
 	}
-#if SEDI_S0Ix_SUPPORT
-	uint32_t host_sts;
-	/* check whether it is interrupt indicating the S0ix */
-	if (ipc_device == SEDI_IPC_HOST) {
-		host_sts = read32(IPC_HOST_BASE + IPC_D0I3C_REG);
-		if (host_sts & BIT(IPC_D0I3C_INT_BIT)) {
-			write32(IPC_HOST_BASE + IPC_D0I3C_REG, host_sts);
-			if (host_sts & BIT(IPC_D0I3C_STATUS_BIT)) {
-				pm_set_s0ix_event(1);
-			} else {
-				pm_set_s0ix_event(0);
-			}
-		}
-	}
-#endif
 }
