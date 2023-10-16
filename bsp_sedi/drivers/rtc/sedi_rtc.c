@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023 - 2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -8,14 +8,6 @@
 
 /* driver version */
 #define SEDI_RTC_DRIVER_VERSION SEDI_DRIVER_VERSION_MAJOR_MINOR(0, 1)
-
-#ifndef SEDI_RTC_TICKS_PER_SECOND
-#define SEDI_RTC_TICKS_PER_SECOND 32768
-#endif
-
-#ifndef USECS_PER_SEC
-#define USECS_PER_SEC 1000000
-#endif
 
 /* driver version */
 static const sedi_driver_version_t driver_version = { SEDI_RTC_API_VERSION,
@@ -28,7 +20,7 @@ static const sedi_rtc_capabilities_t driver_capabilities = { .support_alarm = 0,
 
 static inline uint64_t sedi_rtc_to_us(uint64_t rtc_ticks)
 {
-	return (rtc_ticks * USECS_PER_SEC) / SEDI_RTC_TICKS_PER_SECOND;
+	return SEDI_RTC_TICKS2US(rtc_ticks);
 }
 
 sedi_driver_version_t sedi_rtc_get_version(void)

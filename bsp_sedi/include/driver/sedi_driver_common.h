@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023 - 2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -395,4 +395,42 @@ static inline void write64(uint32_t addr, IN uint64_t val)
 #define CLEAR_REG_BIT(address, cmask)                                         \
 	write32(address, read32(address) & ~(cmask))
 
+uint64_t sedi_rtc_get_us(void);
+
+#define __SEDI_POLL_WAIT(_cond, _ms, _mute)                                                        \
+	({                                                                                         \
+		int ret = SEDI_DRIVER_OK;                                                          \
+		uint64_t us_start;                                                                 \
+		us_start = sedi_rtc_get_us();                                                      \
+		while (_cond) {                                                                    \
+			uint64_t us_cur;                                                           \
+			us_cur = sedi_rtc_get_us();                                                \
+			if (((int64_t)(us_cur - us_start) > ((_ms) * 1000)) && (_cond)) {          \
+				if (!(_mute)) {                                                    \
+					SEDI_LOG_ERR("SEDI poll %d ms timeout at %s : %d\n", (_ms),\
+						     __func__, __LINE__);                          \
+				}                                                                  \
+				ret = SEDI_DRIVER_ERROR_TIMEOUT;                                   \
+				break;                                                             \
+			}                                                                          \
+		}                                                                                  \
+		ret;                                                                               \
+	})
+
+/*!
+ * \function SEDI_POLL_WAIT
+ * \brief SEDI helper function to poll wait ((_cond) == true) at most (_ms) milliseconds.
+ * \return SEDI_DRIVER_OK or SEDI_DRIVER_ERROR_TIMEOUT
+ * \ingroup sedi_driver_common
+ */
+#define SEDI_POLL_WAIT(_cond, _ms) __SEDI_POLL_WAIT(_cond, _ms, false)
+
+/*!
+ * \function SEDI_POLL_WAIT_MUTE
+ * \brief SEDI helper function to poll wait ((_cond) == true) at most (_ms) milliseconds, and don't
+ *	print error log when timeout happens to avoid potential recursive logging.
+ * \return SEDI_DRIVER_OK or SEDI_DRIVER_ERROR_TIMEOUT
+ * \ingroup sedi_driver_common
+ */
+#define SEDI_POLL_WAIT_MUTE(_cond, _ms) __SEDI_POLL_WAIT(_cond, _ms, true)
 #endif /* _SEDI_DRIVER_COMMON_H_*/

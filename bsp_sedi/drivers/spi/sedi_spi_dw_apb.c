@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023 - 2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -51,6 +51,8 @@ SEDI_RBF_DEFINE(SPI, SPI_CTRLR0, WAIT_CYCLES, 11, 5, RW, (uint32_t)0x0);
  */
 SEDI_RBF_DEFINE(SPI, TXFTLR, TFT, 0, 16, RW, (uint32_t)0x0);
 #endif
+
+#define SEDI_SPI_POLL_WAIT(_cond) SEDI_POLL_WAIT((_cond), 100)
 
 struct spi_context {
 	/* hardware config */
@@ -173,8 +175,7 @@ static inline void lld_spi_enable(sedi_spi_regs_t *spi, bool enable)
 
 	SEDI_PREG_RBF_SET(SPI, SSIENR, SSI_EN, val, &spi->ssienr);
 
-	while (SEDI_PREG_RBFV_GET(SPI, SSIENR, SSI_EN, &spi->ssienr) != val)
-		;
+	SEDI_SPI_POLL_WAIT(SEDI_PREG_RBFV_GET(SPI, SSIENR, SSI_EN, &spi->ssienr) != val);
 }
 
 static inline void lld_spi_dma_enable(sedi_spi_regs_t *spi, bool enable)
@@ -835,9 +836,7 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 				context->tx_data_len);
 		}
 		/* Waiting for TX FIFO empty */
-		while (lld_spi_is_busy(context->base)) {
-			;
-		}
+		SEDI_SPI_POLL_WAIT(lld_spi_is_busy(context->base));
 	} else if (chan == context->rx_channel) {
 		context->dma_rx_finished = true;
 		context->data_rx_idx = context->rx_data_len;
@@ -1175,8 +1174,7 @@ int32_t sedi_spi_poll_transfer(IN sedi_spi_t spi_device, IN uint8_t *data_out,
 	}
 
 	/* Waiting for SPI idle */
-	while (lld_spi_is_busy(context->base))
-		;
+	SEDI_SPI_POLL_WAIT(lld_spi_is_busy(context->base));
 	lld_spi_enable(context->base, false);
 
 	context->status.busy = 0U;
@@ -1474,8 +1472,7 @@ void spi_isr(IN sedi_spi_t spi_device)
 		end = true;
 		event = SEDI_SPI_EVENT_COMPLETE;
 		/* Wait for Data in FIFO send out while not continuous */
-		while (lld_spi_is_busy(context->base))
-			;
+		SEDI_SPI_POLL_WAIT(lld_spi_is_busy(context->base));
 
 		/* If need to reverse rx buffer */
 		if ((context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) &&
