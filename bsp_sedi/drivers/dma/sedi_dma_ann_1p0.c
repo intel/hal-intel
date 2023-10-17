@@ -88,7 +88,7 @@ typedef struct {
 static dma_context_t dma_context[SEDI_DMA_NUM] = { 0 };
 
 static const dma_resources_t resources[SEDI_DMA_NUM] = {
-	{ .regs = (dma_ann_1p0_regs_t *)SEDI_DMA_0_REG_BASE },
+	{ .regs = (dma_ann_1p0_regs_t *)SEDI_IREG_BASE(DMA, 0) },
 };
 
 sedi_driver_version_t sedi_dma_get_version(void)

@@ -58,7 +58,7 @@ static sedi_gpio_capabilities_t driver_capabilities[SEDI_GPIO_NUM] = {
 
 /* gpio instance to source mapping*/
 static gpio_resources_t resources_map[SEDI_GPIO_NUM] = {
-	{ .reg = (sedi_gpio_regs_t *)SEDI_GPIO_0_REG_BASE },
+	{ .reg = (sedi_gpio_regs_t *)SEDI_IREG_BASE(GPIO, 0) },
 };
 
 /* gpio context array */

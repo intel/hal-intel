@@ -126,7 +126,7 @@ static uint32_t regval_speed[I2C_SPEED_MAX] = {
 
 #define I2C_CONTEXT_INIT(x)                                                                        \
 	{                                                                                          \
-		.base = SEDI_I2C_##x##_REG_BASE, .speed = I2C_SPEED_FAST,                          \
+		.base = SEDI_IREG_BASE(I2C, x), .speed = I2C_SPEED_FAST,                           \
 		.tx_dma_handshake = DMA_HWID_I2C##x##_TX, .rx_dma_handshake = DMA_HWID_I2C##x##_RX,\
 		.tx_memory_type = DMA_SRAM_MEM, .rx_memory_type = DMA_SRAM_MEM                     \
 	}
