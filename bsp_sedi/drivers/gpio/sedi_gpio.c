@@ -69,7 +69,7 @@ static int32_t gpio_set_power(IN sedi_gpio_t gpio_device, IN sedi_power_state_t 
 	sedi_devid_t devid = SEDI_DEVID_GPIO0 + gpio_device;
 	int32_t ret = SEDI_DRIVER_OK;
 
-	SEDI_ASSERT(gpio_device < SEDI_GPIO_NUM);
+	DBG_CHECK(gpio_device < SEDI_GPIO_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
 	switch (state) {
 	case SEDI_POWER_FULL:
@@ -207,7 +207,7 @@ int32_t sedi_gpio_get_capabilities(IN sedi_gpio_t gpio_device, OUT sedi_gpio_cap
 
 int32_t sedi_gpio_init(IN sedi_gpio_t gpio_device, IN sedi_gpio_event_cb_t cb, INOUT void *param)
 {
-	SEDI_ASSERT(gpio_device < SEDI_GPIO_NUM);
+	DBG_CHECK(gpio_device < SEDI_GPIO_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
 	if (!sedi_dev_is_self_owned(SEDI_DEVID_GPIO0 + gpio_device)) {
 		return SEDI_DRIVER_ERROR_NO_DEV;
@@ -231,7 +231,7 @@ int32_t sedi_gpio_init(IN sedi_gpio_t gpio_device, IN sedi_gpio_event_cb_t cb, I
 
 int32_t sedi_gpio_uninit(IN sedi_gpio_t gpio_device)
 {
-	SEDI_ASSERT(gpio_device < SEDI_GPIO_NUM);
+	DBG_CHECK(gpio_device < SEDI_GPIO_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
 	gpio_context_t *context = &(gpio_context[gpio_device]);
 	uint8_t i;
@@ -252,7 +252,7 @@ int32_t sedi_gpio_uninit(IN sedi_gpio_t gpio_device)
 
 int32_t sedi_gpio_set_power(IN sedi_gpio_t gpio_device, IN sedi_power_state_t state)
 {
-	SEDI_ASSERT(gpio_device < SEDI_GPIO_NUM);
+	DBG_CHECK(gpio_device < SEDI_GPIO_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
 	return gpio_set_power(gpio_device, state);
 }

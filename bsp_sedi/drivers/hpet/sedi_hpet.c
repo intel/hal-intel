@@ -280,10 +280,10 @@ void sedi_hpet_timer_int_handler(IN sedi_hpet_t timer_id)
 int32_t sedi_hpet_config_timer(IN sedi_hpet_t timer_id, IN uint64_t microseconds,
 			       IN hpet_callback_t callback, IN void *param, IN bool one_shot)
 {
-	SEDI_ASSERT(timer_id < SEDI_HPET_SOC_TIMER_NUM);
+	DBG_CHECK(timer_id < SEDI_HPET_SOC_TIMER_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
 	/* Check if timer is being used */
-	SEDI_ASSERT(bsp_timers[timer_id].valid == 0);
+	DBG_CHECK(bsp_timers[timer_id].valid == 0, SEDI_DRIVER_ERROR_BUSY);
 
 	/* Just save here, will use when starting the timer */
 	bsp_timers[timer_id].valid = 1;
@@ -303,7 +303,7 @@ int32_t sedi_hpet_config_timer(IN sedi_hpet_t timer_id, IN uint64_t microseconds
 
 int32_t sedi_hpet_kill_timer(IN sedi_hpet_t timer_id)
 {
-	SEDI_ASSERT(timer_id < SEDI_HPET_SOC_TIMER_NUM);
+	DBG_CHECK(timer_id < SEDI_HPET_SOC_TIMER_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
 	/* Disable interrupt */
 	sedi_hpet_disable_interrupt(timer_id);
@@ -318,7 +318,7 @@ int32_t sedi_hpet_kill_timer(IN sedi_hpet_t timer_id)
 
 int32_t sedi_hpet_start_timer(IN sedi_hpet_t timer_id)
 {
-	SEDI_ASSERT(timer_id < SEDI_HPET_SOC_TIMER_NUM);
+	DBG_CHECK(timer_id < SEDI_HPET_SOC_TIMER_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
 	/* Enable interrupt */
 	sedi_hpet_enable_interrupt(timer_id);
