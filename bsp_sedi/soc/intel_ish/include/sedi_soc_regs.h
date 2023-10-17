@@ -38,7 +38,7 @@ typedef enum {
 	SEDI_DMA_NUM
 } sedi_dma_t;
 
-#define SEDI_DMA_0_REG_BASE (0x10100000)
+SEDI_IREG_BASE_DEFINE(DMA, 0, 0x10100000);
 
 /****** i2c *****/
 /*!
@@ -69,7 +69,7 @@ typedef enum { SEDI_GPIO_0 = 0, SEDI_GPIO_NUM } sedi_gpio_t;
 #define ISH_PIN_NUM 36
 #define SEDI_GPIO_SOC_PORT_NUM (2U)
 
-#define SEDI_GPIO_0_REG_BASE (0x00100000)
+SEDI_IREG_BASE_DEFINE(GPIO, 0, 0x00100000);
 
 
 typedef enum {
@@ -85,7 +85,7 @@ typedef enum {
 
 typedef enum { SEDI_WATCHDOG_0 = 0, SEDI_WATCHDOG_NUM } sedi_watchdog_t;
 
-#define SEDI_WATCHDOG_0_REG_BASE 0x4900000
+SEDI_REG_BASE_DEFINE(WDT, 0x4900000);
 
 /****** HPET *****/
 SEDI_REG_BASE_DEFINE(HPET, 0x04700000);

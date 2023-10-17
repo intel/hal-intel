@@ -18,7 +18,7 @@
 #if DEBUG_GPIO
 static void dump_gpio_regs(void)
 {
-	uint32_t regs = SEDI_GPIO_0_REG_BASE;
+	uint32_t regs = SEDI_IREG_BASE(GPIO, 0);
 
 	iut_print("GPLR register is 0x%x\n", read32(regs + 0x4));
 	iut_print("GPDR register is 0x%x\n", read32(regs + 0x1C));

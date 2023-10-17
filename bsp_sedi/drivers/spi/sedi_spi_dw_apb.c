@@ -105,7 +105,7 @@ static sedi_spi_capabilities_t driver_capabilities[SEDI_SPI_NUM] = {0};
 
 #define SPI_CONTEXT_INIT(x)                                                                        \
 	{                                                                                          \
-		.base = (sedi_spi_regs_t *)SEDI_SPI_##x##_REG_BASE,                                \
+		.base = (sedi_spi_regs_t *)SEDI_IREG_BASE(SPI, x),                                 \
 		.dma_handshake = DMA_HWID_SPI##x##_TX, .dummy_data = 0x00,                         \
 		.rx_handshake = DMA_HWID_SPI##x##_RX                                               \
 	}
@@ -1507,15 +1507,3 @@ void spi_isr(IN sedi_spi_t spi_device)
 		}
 	}
 }
-
-SEDI_ISR_DECLARE(sedi_spi_0_isr)
-{
-	spi_isr(SEDI_SPI_0);
-}
-
-#ifdef SEDI_SPI_1_REG_BASE
-SEDI_ISR_DECLARE(sedi_spi_1_isr)
-{
-	spi_isr(SEDI_SPI_1);
-}
-#endif

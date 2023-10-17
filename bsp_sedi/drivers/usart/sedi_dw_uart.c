@@ -113,9 +113,9 @@ typedef struct {
 
 static sedi_uart_context_t uart_context[SEDI_UART_NUM];
 
-static sedi_uart_regs_t *sedi_uart[SEDI_UART_NUM] = {(sedi_uart_regs_t *)SEDI_UART_0_REG_BASE,
-						     (sedi_uart_regs_t *)SEDI_UART_1_REG_BASE,
-						     (sedi_uart_regs_t *)SEDI_UART_2_REG_BASE};
+static sedi_uart_regs_t *sedi_uart[SEDI_UART_NUM] = {(sedi_uart_regs_t *)SEDI_IREG_BASE(UART, 0),
+						     (sedi_uart_regs_t *)SEDI_IREG_BASE(UART, 1),
+						     (sedi_uart_regs_t *)SEDI_IREG_BASE(UART, 2)};
 
 #define SEDI_UART sedi_uart
 
