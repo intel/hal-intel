@@ -1449,8 +1449,6 @@ int sedi_uart_set_baud_rate(IN sedi_uart_t uart, IN uint32_t baud_rate, IN uint3
 	/* Divisor = clock_speed_hz /(16* baudrate) */
 	uint32_t divisor = clk_speed_hz / (baud_rate << 4);
 
-	DBG_CHECK(divisor <= (SEDI_UART_MAX_BAUD_DIVISOR), SEDI_DRIVER_ERROR_PARAMETER);
-
 	uint32_t dlf = (clk_speed_hz % (baud_rate << 4)) / baud_rate;
 	uint32_t scaled_dlf =
 		((clk_speed_hz % (baud_rate << 4)) * SEDI_UART_DLF_SCALAR) / baud_rate;

@@ -197,10 +197,12 @@ void sedi_log(int level, const char *fmt, ...);
  * \def DBG_CHECK
  * \brief Check error and return for debug mode.
  */
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG
 #define DBG_CHECK(condition, error)                                            \
 	do {                                                                   \
 		if (!(condition)) {                                            \
+			SEDI_LOG_ERR("SEDI DBG_CHECK error %d @%s:%d:(%s)\n",  \
+				error, __FUNCTION__, __LINE__, #condition);    \
 			return error;                                          \
 		}                                                              \
 	} while (0)
@@ -212,14 +214,14 @@ void sedi_log(int level, const char *fmt, ...);
  * \def SEDI_ASSERT
  * \brief Assert function for debug mode.
  */
-#ifdef DEBUG
+#ifdef CONFIG_DEBUG
+void sedi_assert_halt(void);
 #define SEDI_ASSERT(condition)                                                 \
 	do {                                                                   \
 		if (!(condition)) {                                            \
-			/* TODO: Add log printf while c lib included */        \
-			while (1) {                                            \
-				;                                              \
-			}                                                      \
+			SEDI_LOG_ERR("SEDI ASSERT @%s:%d:(%s)\n",              \
+					__FUNCTION__, __LINE__, #condition);   \
+			sedi_assert_halt();                                    \
 		}                                                              \
 	} while (0)
 #else

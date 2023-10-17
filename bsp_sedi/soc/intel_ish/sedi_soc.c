@@ -16,6 +16,13 @@ void __attribute__((weak)) sedi_log(int level, const char *fmt, ...)
 	PARAM_UNUSED(fmt);
 }
 
+#ifdef CONFIG_DEBUG
+void __attribute__((weak)) sedi_assert_halt(void)
+{
+	while(1);
+}
+#endif
+
 /* weak PM functions used by SEDI drivers when SEDI PM driver is not enabled */
 
 void __attribute__((weak)) sedi_pm_set_device_power(IN sedi_devid_t id,
@@ -39,6 +46,7 @@ void PM_VNN_DRIVER_REQ(vnn_id_t vnn_id)
 	if (vnn_req_counter[vnn_id] != 0)
 		goto out;
 
+	SEDI_ASSERT((read32(PMU_VNN_REQ_31_0) & BIT(vnn_id)) == 0);
 	write32(PMU_VNN_REQ_31_0, BIT(vnn_id));
 	while (!(read32(PMU_VNN_REQ_ACK) & PMU_VNN_REQ_ACK_STS))
 		;
