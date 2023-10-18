@@ -347,8 +347,8 @@ static int lld_spi_fill_fifo(sedi_spi_t spi_device, uint8_t frame_size,
 		const sedi_spi_enhanced_config_t *config = context->quad_config;
 
 		/* Instruction need 1 entry */
-		spi->dr0 = *(config->inst_buf);
-		spi->dr0 = *((uint32_t *)(config->addr_buf));
+		SEDI_PREG_SET(SPI, DR0, *(config->inst_buf), &spi->dr0);
+		SEDI_PREG_SET(SPI, DR0, *((uint32_t *)(config->addr_buf)), &spi->dr0);
 		/* After fill in addr and instruction, no need to keep quad state,
 		just transfer data as standard SPI */
 		context->is_quad = false;
@@ -384,7 +384,7 @@ static int lld_spi_fill_fifo(sedi_spi_t spi_device, uint8_t frame_size,
 			data = context->dummy_data;
 		}
 		/* Write data */
-		SEDI_PREG_RBF_SET(SPI, DR0, DR, data, &spi->dr0);
+		SEDI_PREG_SET(SPI, DR0, data, &spi->dr0);
 		size -= frame_size;
 	}
 
@@ -403,7 +403,7 @@ static int lld_spi_receive_fifo(sedi_spi_regs_t *spi, uint8_t frame_size,
 	count = size;
 	while (size) {
 		/* Get the data in a FIFO entry */
-		data = SEDI_PREG_RBFV_GET(SPI, DR0, DR, &spi->dr0);
+		data = SEDI_PREG_GET(SPI, DR0, &spi->dr0);
 		if (buff) {
 			switch (frame_size) {
 			case SPI_FRAME_SIZE_1_BYTE:
@@ -1065,8 +1065,8 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 		const sedi_spi_enhanced_config_t *config = context->quad_config;
 
 		/* Instruction need 1 entry */
-		SEDI_PREG_RBF_SET(SPI, DR0, DR, *(config->inst_buf), &spi->dr0);
-		SEDI_PREG_RBF_SET(SPI, DR0, DR, *((uint32_t *)(config->addr_buf)), &spi->dr0);
+		SEDI_PREG_SET(SPI, DR0, *(config->inst_buf), &spi->dr0);
+		SEDI_PREG_SET(SPI, DR0, *((uint32_t *)(config->addr_buf)), &spi->dr0);
 		/* After fill in addr and instruction, no need to keep quad state,
 		just transfer data as standard SPI */
 		context->is_quad = false;
