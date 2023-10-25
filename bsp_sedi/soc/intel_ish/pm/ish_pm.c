@@ -162,7 +162,7 @@ static uint32_t add_gdt_entry(uint32_t desc_lo, uint32_t desc_up)
 
 static void init_aon_task(void)
 {
-	uint32_t desc_lo, desc_up;
+	uint32_t desc_lo, desc_up, main_tss_index;
 	struct ish_aon_share *aon_share = pm_ctx.aon_share;
 	struct tss_entry *aon_tss = aon_share->aon_tss;
 
@@ -181,7 +181,7 @@ static void init_aon_task(void)
 			GDT_DESC_TSS_LIMIT, GDT_DESC_TSS_FLAGS);
 	desc_up = GEN_GDT_DESC_UP((uint32_t)&main_tss,
 			GDT_DESC_TSS_LIMIT, GDT_DESC_TSS_FLAGS);
-	add_gdt_entry(desc_lo, desc_up);
+	main_tss_index = add_gdt_entry(desc_lo, desc_up);
 
 	desc_lo = GEN_GDT_DESC_LO((uint32_t)aon_tss,
 			GDT_DESC_TSS_LIMIT, GDT_DESC_TSS_FLAGS);
@@ -196,10 +196,12 @@ static void init_aon_task(void)
 	aon_tss->ldt_seg_selector = add_gdt_entry(desc_lo, desc_up);
 
 	__asm__ volatile("lgdt _gdt;\n"
-			 "push %eax;\n"
-			 "movw $0x18, %ax;\n"
-			 "ltr %ax;\n"
-			 "pop %eax;");
+			 "push %%eax;\n"
+			 "movw %0, %%ax;\n"
+			 "ltr %%ax;\n"
+			 "pop %%eax;\n"
+			 :
+			 : "r"((uint16_t)main_tss_index));
 
 	aon_share->main_fw_ro_addr = (uint32_t)&__text_region_start;
 	aon_share->main_fw_ro_size = (uint32_t)&__rodata_region_end -
