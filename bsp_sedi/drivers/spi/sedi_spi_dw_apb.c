@@ -253,6 +253,7 @@ static int lld_spi_default_config(sedi_spi_t spi_device)
 
 	SEDI_PREG_RBF_SET(SPI, CTRLR0, DFS_32, width, &spi->ctrlr0);
 	SEDI_PREG_RBF_SET(SPI, CTRLR0, SRL, loopback, &spi->ctrlr0);
+	SEDI_PREG_RBF_SET(SPI, CTRLR0, SSTE, 0, &spi->ctrlr0);
 	SEDI_PREG_RBF_SET(SPI, BAUDR, SCKDV, prescale, &spi->baudr);
 	SEDI_PREG_RBF_SET(SPI, SER, SER, cs_mask, &spi->ser);
 
