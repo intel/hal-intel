@@ -9,18 +9,25 @@
 
 #define SEDI_CONFIG_ARCH_X86	(1)
 
-#define SEDI_MHZ_TO_HZ(mhz) ((mhz) * 1000000)
-
-#ifndef ISH_CONFIG_CLK_FREQUENCY_MHZ
-#ifdef CONFIG_ISH_PLATFORM_FPGA
-#define ISH_CONFIG_CLK_FREQUENCY_MHZ (20)
-#else
-#define ISH_CONFIG_CLK_FREQUENCY_MHZ (100)
+#if defined(CONFIG_ISH_PLATFORM_FPGA)
+/* ISH SoC clock is lower on FPGA than Silicon */
+#define SEDI_SOC_CLK_DIVISOR (5)
 #endif
+
+#ifndef SEDI_SOC_CLK_DIVISOR
+#define SEDI_SOC_CLK_DIVISOR (1)
 #endif
 
 #ifndef ISH_CONFIG_HBW_CLK_DIVIDER
 #define ISH_CONFIG_HBW_CLK_DIVIDER (1)
+#endif
+
+#define SEDI_RTC_TICKS_PER_SECOND (32768 / SEDI_SOC_CLK_DIVISOR)
+
+#define SEDI_MHZ_TO_HZ(mhz) ((mhz) * 1000000)
+
+#ifndef ISH_CONFIG_CLK_FREQUENCY_MHZ
+#define ISH_CONFIG_CLK_FREQUENCY_MHZ (100 / SEDI_SOC_CLK_DIVISOR)
 #endif
 
 /*!
