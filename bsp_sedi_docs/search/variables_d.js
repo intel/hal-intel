@@ -1,31 +1,4 @@
 var searchData=
 [
-  ['sar_5ferr_5fhigh_940',['sar_err_high',['../structdma__chann__misc__reg__t.html#a0c1c8c79d413954b88eaa6b47ee5237e',1,'dma_chann_misc_reg_t']]],
-  ['sar_5ferr_5flow_941',['sar_err_low',['../structdma__chann__misc__reg__t.html#ac68a1de5f25b07bf1b00e24ac2e4efab',1,'dma_chann_misc_reg_t']]],
-  ['sar_5fhigh_942',['sar_high',['../structdma__chan__reg__t.html#ab34d4ed5e88768ae3d932b51810e1604',1,'dma_chan_reg_t']]],
-  ['sar_5flow_943',['sar_low',['../structdma__chan__reg__t.html#a64aff380e72099c677477cc4c18b3008',1,'dma_chan_reg_t']]],
-  ['scr_944',['scr',['../structsedi__uart__context__t.html#afcdeedf221cf24e4cdf61274b5bfe065',1,'sedi_uart_context_t']]],
-  ['seconds_945',['seconds',['../structsedi__rtc__time__t.html#a8d39e88a9b11e3073a662414a99e1f45',1,'sedi_rtc_time_t']]],
-  ['sequential_5fmode_946',['sequential_mode',['../structsedi__spi__microwire__config__t.html#a7773beeb5e2461c1b1bd25ec002dfdef',1,'sedi_spi_microwire_config_t']]],
-  ['src_5faddr_947',['src_addr',['../structdma__linked__list__item.html#a47f362e172c5ddf3a3272aa1a6f43bd5',1,'dma_linked_list_item']]],
-  ['src_5fstat_5faddr_5fhigh_948',['src_stat_addr_high',['../structdma__chan__reg__t.html#ac850870a3498faa25d027c36f19c46e5',1,'dma_chan_reg_t']]],
-  ['src_5fstat_5faddr_5flow_949',['src_stat_addr_low',['../structdma__chan__reg__t.html#a9f49a95aaa269c5f895dd5c057a5f38e',1,'dma_chan_reg_t']]],
-  ['src_5fstat_5fhigh_950',['src_stat_high',['../structdma__chan__reg__t.html#a6686b0091357ffa79fca78ce2491711b',1,'dma_chan_reg_t']]],
-  ['src_5fstat_5flow_951',['src_stat_low',['../structdma__chan__reg__t.html#a68265350287471d79792d32be6d11438',1,'dma_chan_reg_t']]],
-  ['status_5fblock_5fhigh_952',['status_block_high',['../structdma__int__reg__t.html#ad6d5b64f771deb1cf41ccfd8a0856693',1,'dma_int_reg_t']]],
-  ['status_5fblock_5flow_953',['status_block_low',['../structdma__int__reg__t.html#aaa6313f6a067fed4d49172f3af04551a',1,'dma_int_reg_t']]],
-  ['status_5fdst_5ftrans_5fhigh_954',['status_dst_trans_high',['../structdma__int__reg__t.html#ad80e9f95b03c6777f1eb459748be1383',1,'dma_int_reg_t']]],
-  ['status_5fdst_5ftrans_5flow_955',['status_dst_trans_low',['../structdma__int__reg__t.html#a9a21d0c7af8eac86b37b4121bb3cf09e',1,'dma_int_reg_t']]],
-  ['status_5ferr_5fhigh_956',['status_err_high',['../structdma__int__reg__t.html#a03435cdb075b9d7aa1bbf2bfb614ef10',1,'dma_int_reg_t']]],
-  ['status_5ferr_5flow_957',['status_err_low',['../structdma__int__reg__t.html#ac5570198e4d2e4a37b81304f225b4f4e',1,'dma_int_reg_t']]],
-  ['status_5fint_5fhigh_958',['status_int_high',['../structdma__int__reg__t.html#ad688f1f01b164dd3bebc057b0fe7afd5',1,'dma_int_reg_t']]],
-  ['status_5fint_5flow_959',['status_int_low',['../structdma__int__reg__t.html#a11f2c36717cde729f0ec9000f18c8ee1',1,'dma_int_reg_t']]],
-  ['status_5fsrc_5ftrans_5fhigh_960',['status_src_trans_high',['../structdma__int__reg__t.html#a44ce49f392bb807b69e63a0abe38a63e',1,'dma_int_reg_t']]],
-  ['status_5fsrc_5ftrans_5flow_961',['status_src_trans_low',['../structdma__int__reg__t.html#a2b3a1e179aa8cb1942ecf0bffc97190d',1,'dma_int_reg_t']]],
-  ['status_5ftfr_5fhigh_962',['status_tfr_high',['../structdma__int__reg__t.html#a9c3c0a30cb3c59b80788098402427f80',1,'dma_int_reg_t']]],
-  ['status_5ftfr_5flow_963',['status_tfr_low',['../structdma__int__reg__t.html#a7347f141adf96342c2284527b845fd36',1,'dma_int_reg_t']]],
-  ['support_5falarm_964',['support_alarm',['../structsedi__rtc__capabilities__t.html#ac4e97f9015b17debd32c3340f6955009',1,'sedi_rtc_capabilities_t']]],
-  ['support_5fcallback_965',['support_callback',['../structsedi__rtc__capabilities__t.html#ae1e8cc389ff93429c06a850e5ee0e72d',1,'sedi_rtc_capabilities_t']]],
-  ['support_5fpins_5fmap_966',['support_pins_map',['../structsedi__gpio__capabilities__t.html#afebc47e240a1e862db4ea3c5a1e9dbf7',1,'sedi_gpio_capabilities_t']]],
-  ['support_5ftimestamp_967',['support_timestamp',['../structsedi__gpio__capabilities__t.html#a61cc6a86f8796c3764824d4fbea63607',1,'sedi_gpio_capabilities_t']]]
+  ['transfer_5fmode_957',['transfer_mode',['../group__uart__function__calls.html#ga3f04dbb5eff29650a90fab843c4ac702',1,'sedi_uart_rs485_config_t']]]
 ];

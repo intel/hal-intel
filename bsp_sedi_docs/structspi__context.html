@@ -73,19 +73,19 @@ Collaboration diagram for spi_context:</div>
 <div class="dyncontent">
 <div class="center"><img src="structspi__context__coll__graph.png" border="0" usemap="#aspi__context_coll__map" alt="Collaboration graph"/></div>
 <map name="aspi__context_coll__map" id="aspi__context_coll__map">
-<area shape="rect" title=" " alt="" coords="305,95,403,121"/>
-<area shape="rect" href="structsedi__spi__status__t.html" title="SPI Status, be used if callback has not been registered." alt="" coords="5,5,140,32"/>
-<area shape="rect" href="structsedi__spi__capabilities__t.html" title="SPI Capabilities, the hardware feature." alt="" coords="164,5,333,32"/>
-<area shape="rect" href="structsedi__spi__enhanced__config__t.html" title="Transfer in enhanced mode (dual/quad/octal) configure." alt="" coords="358,5,561,32"/>
-<area shape="rect" href="structspi__registers.html" title=" " alt="" coords="585,5,691,32"/>
+<area shape="rect" title=" " alt="" coords="339,81,436,108"/>
+<area shape="rect" href="structsedi__spi__status__t.html" title="SPI Status, be used if callback has not been registered." alt="" coords="39,5,174,32"/>
+<area shape="rect" href="structsedi__spi__regs__t.html" title=" " alt="" coords="45,56,168,83"/>
+<area shape="rect" href="structsedi__spi__capabilities__t.html" title="SPI Capabilities, the hardware feature." alt="" coords="22,107,191,133"/>
+<area shape="rect" href="structsedi__spi__enhanced__config__t.html" title="Transfer in enhanced mode (dual/quad/octal) configure." alt="" coords="5,157,208,184"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a1e49604b5cb60ae1c16da8474728f3e7"><td class="memItemLeft" align="right" valign="top"><a id="a1e49604b5cb60ae1c16da8474728f3e7"></a>
-<a class="el" href="structspi__registers.html">spi_reg_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>base</b></td></tr>
-<tr class="separator:a1e49604b5cb60ae1c16da8474728f3e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad83d6a2ee933cab3581a11f512f503b8"><td class="memItemLeft" align="right" valign="top"><a id="ad83d6a2ee933cab3581a11f512f503b8"></a>
+<a class="el" href="structsedi__spi__regs__t.html">sedi_spi_regs_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>base</b></td></tr>
+<tr class="separator:ad83d6a2ee933cab3581a11f512f503b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a907bd7c17f48d8f15a807dc526de458e"><td class="memItemLeft" align="right" valign="top"><a id="a907bd7c17f48d8f15a807dc526de458e"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>dma_handshake</b></td></tr>
 <tr class="separator:a907bd7c17f48d8f15a807dc526de458e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,9 +125,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_lsb</b></td></tr>
 <tr class="memitem:a471a235ff28cfaea4b7883b883c51ff8"><td class="memItemLeft" align="right" valign="top"><a id="a471a235ff28cfaea4b7883b883c51ff8"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>is_cs_continuous</b></td></tr>
 <tr class="separator:a471a235ff28cfaea4b7883b883c51ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04f35f69a619fb6d7d46f6069fa17390"><td class="memItemLeft" align="right" valign="top"><a id="a04f35f69a619fb6d7d46f6069fa17390"></a>
-spi_transfer_mode_t&#160;</td><td class="memItemRight" valign="bottom"><b>transfer_mode</b></td></tr>
-<tr class="separator:a04f35f69a619fb6d7d46f6069fa17390"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5521810e5e4de70759c584f02fc383f1"><td class="memItemLeft" align="right" valign="top"><a id="a5521810e5e4de70759c584f02fc383f1"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>transfer_mode</b></td></tr>
+<tr class="separator:a5521810e5e4de70759c584f02fc383f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a729e0ab0941664da8b4d51a49fa45f90"><td class="memItemLeft" align="right" valign="top"><a id="a729e0ab0941664da8b4d51a49fa45f90"></a>
 uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><b>data_tx</b></td></tr>
 <tr class="separator:a729e0ab0941664da8b4d51a49fa45f90"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -181,7 +181,7 @@ const <a class="el" href="structsedi__spi__enhanced__config__t.html">sedi_spi_en
 <tr class="separator:a21555ed5b64cc48fb3b532cabfefb071"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>bsp_sedi/drivers/spi/<a class="el" href="sedi__spi__dw__apb_8h_source.html">sedi_spi_dw_apb.h</a></li>
+<li>bsp_sedi/drivers/spi/sedi_spi_dw_apb.c</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

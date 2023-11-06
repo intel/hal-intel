@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['transfer_5fmode_968',['transfer_mode',['../group__uart__function__calls.html#ga3f04dbb5eff29650a90fab843c4ac702',1,'sedi_uart_rs485_config_t']]]
+  ['year_958',['year',['../structsedi__rtc__time__t.html#a53dc7f23808f268cdabf5f1b191cbac6',1,'sedi_rtc_time_t']]]
 ];

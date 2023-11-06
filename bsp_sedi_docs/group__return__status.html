@@ -62,7 +62,8 @@ $(function() {
 
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a>  </div>
+<a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle">
 <div class="title">Return Status Codes<div class="ingroups"><a class="el" href="group__sedi__driver__common.html">Common</a></div></div>  </div>
 </div><!--header-->
@@ -134,6 +135,18 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__return__status.html#ga3bd25714458f7647c877bc9f2947e385">PARAM_UNUSED</a>(x)&#160;&#160;&#160;(void)(x)</td></tr>
 <tr class="memdesc:ga3bd25714458f7647c877bc9f2947e385"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter Not Used. <br /></td></tr>
 <tr class="separator:ga3bd25714458f7647c877bc9f2947e385"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga498f1ce0b599deae4b6fac05bdf5f4c2"><td class="memItemLeft" align="right" valign="top"><a id="ga498f1ce0b599deae4b6fac05bdf5f4c2"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SEDI_LOG_ERR</b>(...)&#160;&#160;&#160;<a class="el" href="group__sedi__driver__common.html#ga78b973fba3428cb6f9879b705523eeaa">sedi_log</a>(SEDI_LOG_LEVEL_ERR, __VA_ARGS__)</td></tr>
+<tr class="separator:ga498f1ce0b599deae4b6fac05bdf5f4c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf1336360c25d79cf56468b218264734f"><td class="memItemLeft" align="right" valign="top"><a id="gaf1336360c25d79cf56468b218264734f"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SEDI_LOG_WRN</b>(...)&#160;&#160;&#160;<a class="el" href="group__sedi__driver__common.html#ga78b973fba3428cb6f9879b705523eeaa">sedi_log</a>(SEDI_LOG_LEVEL_WRN, __VA_ARGS__)</td></tr>
+<tr class="separator:gaf1336360c25d79cf56468b218264734f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga17c1fa34b3b4ab67c3c5235509127232"><td class="memItemLeft" align="right" valign="top"><a id="ga17c1fa34b3b4ab67c3c5235509127232"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SEDI_LOG_INF</b>(...)&#160;&#160;&#160;<a class="el" href="group__sedi__driver__common.html#ga78b973fba3428cb6f9879b705523eeaa">sedi_log</a>(SEDI_LOG_LEVEL_INF, __VA_ARGS__)</td></tr>
+<tr class="separator:ga17c1fa34b3b4ab67c3c5235509127232"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga500ff3616844325c9786f1d793efc810"><td class="memItemLeft" align="right" valign="top"><a id="ga500ff3616844325c9786f1d793efc810"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>SEDI_LOG_DBG</b>(...)&#160;&#160;&#160;<a class="el" href="group__sedi__driver__common.html#ga78b973fba3428cb6f9879b705523eeaa">sedi_log</a>(SEDI_LOG_LEVEL_DBG, __VA_ARGS__)</td></tr>
+<tr class="separator:ga500ff3616844325c9786f1d793efc810"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga630be2b122e79926e29f99fd600694e1"><td class="memItemLeft" align="right" valign="top"><a id="ga630be2b122e79926e29f99fd600694e1"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__return__status.html#ga630be2b122e79926e29f99fd600694e1">DBG_CHECK</a>(condition,  error)</td></tr>
 <tr class="memdesc:ga630be2b122e79926e29f99fd600694e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check error and return for debug mode. <br /></td></tr>
@@ -159,6 +172,15 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__return__status.html#ga640295226a119338f25e3b4bbd66897c">GET_BITS</a>(reg_name,  start,  width)&#160;&#160;&#160;	((reg_name) &amp; (((1&lt;&lt;(width)) - 1) &lt;&lt; (start)))</td></tr>
 <tr class="memdesc:ga640295226a119338f25e3b4bbd66897c"><td class="mdescLeft">&#160;</td><td class="mdescRight">SEDI get value from certain bit. <br /></td></tr>
 <tr class="separator:ga640295226a119338f25e3b4bbd66897c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:gadf764cbdea00d65edcd07bb9953ad2b7"><td class="memItemLeft" align="right" valign="top"><a id="gadf764cbdea00d65edcd07bb9953ad2b7"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <b>SEDI_LOG_LEVEL_ERR</b> = 1
+, <b>SEDI_LOG_LEVEL_WRN</b> = 2
+, <b>SEDI_LOG_LEVEL_INF</b> = 3
+, <b>SEDI_LOG_LEVEL_DBG</b> = 4
+ }</td></tr>
+<tr class="separator:gadf764cbdea00d65edcd07bb9953ad2b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Macro Definition Documentation</h2>

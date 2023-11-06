@@ -1,5 +1,5 @@
 <map id="ipc_resource_t" name="ipc_resource_t">
 <area shape="rect" id="node1" title=" " alt="" coords="87,95,203,121"/>
-<area shape="rect" id="node2" href="$structsideband__param__t.html" title=" " alt="" coords="5,5,148,32"/>
-<area shape="rect" id="node3" href="$structipc__reg__t.html" title=" " alt="" coords="172,5,253,32"/>
+<area shape="rect" id="node2" href="$structsedi__ipc__regs__t.html" title=" " alt="" coords="5,5,128,32"/>
+<area shape="rect" id="node3" href="$structsideband__param__t.html" title=" " alt="" coords="153,5,295,32"/>
 </map>

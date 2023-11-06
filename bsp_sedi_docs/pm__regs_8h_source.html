@@ -193,7 +193,7 @@ $(function() {
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="comment">/* MISC registers */</span></div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="preprocessor">#define MISC_REG_BASE           SEDI_MISC_BASE</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">#define DMA_REG_BASE            SEDI_DMA_0_REG_BASE</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="preprocessor">#define DMA_REG_BASE            SEDI_IREG_BASE(DMA, 0)</span></div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="preprocessor">#define DMA_MISC_OFFSET         0x1000</span></div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="preprocessor">#define DMA_MISC_BASE           (DMA_REG_BASE + DMA_MISC_OFFSET)</span></div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="preprocessor">#define MISC_CHID_CFG_REG       (DMA_MISC_BASE + 0x400)</span></div>
@@ -243,7 +243,7 @@ $(function() {
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="preprocessor">#define DEST_BURST_SIZE         3</span></div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="comment">/* GPIO Registers */</span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="preprocessor">#define ISH_GPIO_BASE           SEDI_GPIO_0_REG_BASE</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="preprocessor">#define ISH_GPIO_BASE           SEDI_IREG_BASE(GPIO, 0)</span></div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="preprocessor">#define ISH_GPIO_GCCR           (ISH_GPIO_BASE + 0x000)</span></div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="preprocessor">#define ISH_GPIO_GPLR           (ISH_GPIO_BASE + 0x004)</span></div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="preprocessor">#define ISH_GPIO_GPDR           (ISH_GPIO_BASE + 0x01C)</span></div>
@@ -268,16 +268,16 @@ $(function() {
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="preprocessor">#define ISH_SRAM_CTRL_BANK_STATUS   (ISH_SRAM_CTRL_BASE + 0x2c)</span></div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="comment">/* WDT (Watchdog Timer) Registers */</span></div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="preprocessor">#define ISH_WDT_BASE            SEDI_WATCHDOG_0_REG_BASE</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="preprocessor">#define ISH_WDT_BASE            SEDI_REG_BASE(WDT)</span></div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="preprocessor">#define WDT_CONTROL         (ISH_WDT_BASE + 0x0)</span></div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="preprocessor">#define WDT_RELOAD          (ISH_WDT_BASE + 0x4)</span></div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="preprocessor">#define WDT_VALUES          (ISH_WDT_BASE + 0x8)</span></div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="preprocessor">#define WDT_CONTROL_ENABLE_BIT      BIT(17)</span></div>
 <div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="preprocessor">#define ISH_RST_REG         (IPC_HOST_BASE + 0x10000 + 0x44)</span></div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="preprocessor">#define IPC_PIMR_CIM_SEC        (IPC_HOST_BASE + 0x10000 + 0x10)</span></div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="preprocessor">#define IPC_UMA_RANGE_LOWER_1       (IPC_HOST_BASE + 0x384)</span></div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="preprocessor">#define IPC_ISH2HOST_DOORBELL_ADDR  (IPC_HOST_BASE + 0x54)</span></div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="preprocessor">#define ISH_RST_REG         (SEDI_REG_BASE(IPC_HOST) + 0x10000 + 0x44)</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="preprocessor">#define IPC_PIMR_CIM_SEC        (SEDI_REG_BASE(IPC_HOST) + 0x10000 + 0x10)</span></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="preprocessor">#define IPC_UMA_RANGE_LOWER_1       (SEDI_REG_BASE(IPC_HOST) + 0x384)</span></div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="preprocessor">#define IPC_ISH2HOST_DOORBELL_ADDR  (SEDI_REG_BASE(IPC_HOST) + 0x54)</span></div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="preprocessor">#define LAPIC_SPUR          (SEDI_LAPIC_BASE + 0x00F0)</span></div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="preprocessor">#define LAPIC_EOI           (SEDI_LAPIC_BASE + 0x00B0)</span></div>
