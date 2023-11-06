@@ -471,7 +471,7 @@ static void i2c_ask_data(sedi_i2c_t i2c_device)
 		if ((size == 1) && last_data && (!(context->pending))) {
 			data |= SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE);
 			/*  Disable tx empty interrupt */
-			i2c->intr_mask &= ~SEDI_RBFVM(I2C, INTR_MASK, M_TX_EMPTY, ENABLED);
+			i2c->intr_mask &= ~SEDI_RBFVM(I2C, INTR_MASK, M_TX_EMPTY, DISABLED);
 		}
 
 		i2c->data_cmd = data;
@@ -896,6 +896,8 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, OUT
 int32_t sedi_i2c_master_write_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, IN uint8_t *data,
 				    IN uint32_t num, IN bool pending)
 {
+	uint32_t irq = BSETS_INTR_SEND;
+
 	DBG_CHECK(i2c_device < SEDI_I2C_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(0 != (addr & SEDI_RBFM(I2C, TAR, IC_TAR)), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(NULL != data, SEDI_DRIVER_ERROR_PARAMETER);
@@ -937,8 +939,10 @@ int32_t sedi_i2c_master_write_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, 
 
 	/* FIFO fill */
 	i2c_send(i2c_device);
+	if (context->buf_index == num && !pending)
+		irq &= ~SEDI_RBFVM(I2C, INTR_MASK, M_TX_EMPTY, DISABLED);
 
-	dw_i2c_irq_config(context->base, BSETS_INTR_SEND);
+	dw_i2c_irq_config(context->base, irq);
 
 	return SEDI_DRIVER_OK;
 }
@@ -946,6 +950,8 @@ int32_t sedi_i2c_master_write_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, 
 int32_t sedi_i2c_master_read_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, OUT uint8_t *data,
 				   IN uint32_t num, IN bool pending)
 {
+	uint32_t irq = BSETS_INTR_RECV;
+
 	DBG_CHECK(i2c_device < SEDI_I2C_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(0 != (addr & SEDI_RBFM(I2C, TAR, IC_TAR)), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(NULL != data, SEDI_DRIVER_ERROR_PARAMETER);
@@ -988,8 +994,10 @@ int32_t sedi_i2c_master_read_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, O
 
 	/* FIFO fill */
 	i2c_ask_data(i2c_device);
+	if (context->rx_cmd_index == num && !pending)
+		irq &= ~SEDI_RBFVM(I2C, INTR_MASK, M_TX_EMPTY, DISABLED);
 
-	dw_i2c_irq_config(context->base, BSETS_INTR_RECV);
+	dw_i2c_irq_config(context->base, irq);
 
 	return SEDI_DRIVER_OK;
 }
