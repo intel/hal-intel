@@ -40,6 +40,13 @@ void sedi_pm_set_device_power(IN sedi_devid_t id, IN sedi_power_state_t state);
 sedi_power_state_t sedi_pm_get_device_power(IN sedi_devid_t id);
 
 /*!
+ * \brief Notify host suspend state change to SEDI PM
+ * \param[in] suspend: host goes into/out of suspend state
+ * \return void
+ */
+void sedi_pm_host_suspend(uint32_t suspend);
+
+/*!
  * \}
  */
 
