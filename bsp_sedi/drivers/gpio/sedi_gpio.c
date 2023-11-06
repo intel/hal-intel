@@ -340,7 +340,7 @@ sedi_gpio_pin_state_t sedi_gpio_read_pin(IN sedi_gpio_t gpio_device, IN uint32_t
 
 	uint32_t pin_val = ((pin_bit & reg->gplr[port]) == pin_bit);
 
-	return (pin_val ? SEDI_GPIO_STATE_HIGH : SEDI_GPIO_STATE_LOW);
+	return pin_val ? SEDI_GPIO_STATE_HIGH : SEDI_GPIO_STATE_LOW;
 }
 
 uint8_t sedi_gpio_read_pin_8bits(IN sedi_gpio_t gpio_device, IN uint8_t group)

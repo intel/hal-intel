@@ -398,7 +398,7 @@ int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr,
  * \brief Start receiving data from i2c slave device as master
  * \note DMA function do not support transfer length smaller than 3 bytes.
  * \note As the DW I2C needs 2 channels to do RX DMA operation, need to add
- * 			another parameter.
+ *			another parameter.
  * \param[in] i2c_device: i2c device id
  * \param[in] addr: slave address(7-bit or 10-bit)
  * \param[in] *data: pointer of the buffer for data from the slave device

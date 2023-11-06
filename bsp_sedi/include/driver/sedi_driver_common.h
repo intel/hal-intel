@@ -202,7 +202,7 @@ void sedi_log(int level, const char *fmt, ...);
 	do {                                                                   \
 		if (!(condition)) {                                            \
 			SEDI_LOG_ERR("SEDI DBG_CHECK error %d @%s:%d:(%s)\n",  \
-				error, __FUNCTION__, __LINE__, #condition);    \
+				error, __func__, __LINE__, #condition);    \
 			return error;                                          \
 		}                                                              \
 	} while (0)
@@ -220,7 +220,7 @@ void sedi_assert_halt(void);
 	do {                                                                   \
 		if (!(condition)) {                                            \
 			SEDI_LOG_ERR("SEDI ASSERT @%s:%d:(%s)\n",              \
-					__FUNCTION__, __LINE__, #condition);   \
+					__func__, __LINE__, #condition);   \
 			sedi_assert_halt();                                    \
 		}                                                              \
 	} while (0)

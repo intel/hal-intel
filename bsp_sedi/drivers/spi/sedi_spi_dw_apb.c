@@ -22,16 +22,16 @@
 	(SEDI_RBFVM(SPI, IMR, RXFIM, UNMASKED))
 #define REG_INT_NONE (0)
 
-#define SPI_FRAME_SIZE_1_BYTE		(1)
-#define SPI_FRAME_SIZE_2_BYTES		(2)
-#define SPI_RECEIVE_MODE_MAX_SIZE 	(65536)
-#define SPI_DMA_MAX_SIZE		(4096)
-#define SPI_DMA_MAX_SIZE_SHIFT		(12)
-#define SSI_IC_FREQ (sedi_pm_get_lbw_clock())
+#define SPI_FRAME_SIZE_1_BYTE     (1)
+#define SPI_FRAME_SIZE_2_BYTES    (2)
+#define SPI_RECEIVE_MODE_MAX_SIZE (65536)
+#define SPI_DMA_MAX_SIZE          (4096)
+#define SPI_DMA_MAX_SIZE_SHIFT    (12)
+#define SSI_IC_FREQ               (sedi_pm_get_lbw_clock())
 
-#define SPI_BITWIDTH_4BITS		(SEDI_RBFV(SPI, CTRLR0, DFS, FRAME_04BITS) + 1)
-#define SPI_BITWIDTH_8BITS 		(SEDI_RBFV(SPI, CTRLR0, DFS, FRAME_08BITS) + 1)
-#define SPI_BITWIDTH_16BITS		(SEDI_RBFV(SPI, CTRLR0, DFS, FRAME_16BITS) + 1)
+#define SPI_BITWIDTH_4BITS  (SEDI_RBFV(SPI, CTRLR0, DFS, FRAME_04BITS) + 1)
+#define SPI_BITWIDTH_8BITS  (SEDI_RBFV(SPI, CTRLR0, DFS, FRAME_08BITS) + 1)
+#define SPI_BITWIDTH_16BITS (SEDI_RBFV(SPI, CTRLR0, DFS, FRAME_16BITS) + 1)
 
 /* Add easy usage for SSI Clock Divider */
 SEDI_RBFV_DEFINE(SPI, BAUDR, SCKDV, MIN_PRESCALE, 0x2);
@@ -162,7 +162,8 @@ static void msb_lsb_convert_16bits(uint16_t *val, uint32_t len)
 
 static inline void lld_spi_enable(sedi_spi_regs_t *spi, bool enable)
 {
-	uint32_t val = enable ? SEDI_RBFV(SPI, SSIENR, SSI_EN, ENABLED) : SEDI_RBFV(SPI, SSIENR, SSI_EN, DISABLE);
+	uint32_t val = enable ? SEDI_RBFV(SPI, SSIENR, SSI_EN, ENABLED) :
+			SEDI_RBFV(SPI, SSIENR, SSI_EN, DISABLE);
 
 	if (SEDI_PREG_RBFV_GET(SPI, SSIENR, SSI_EN, &spi->ssienr) == val) {
 		return;
@@ -194,16 +195,13 @@ static inline void lld_spi_config_interrupt(sedi_spi_regs_t *spi, uint32_t mask)
 
 static inline bool lld_spi_is_busy(sedi_spi_regs_t *spi)
 {
-	return (SEDI_PREG_RBFV_IS_SET(SPI, SR, BUSY, ACTIVE, &spi->sr)) || (SEDI_PREG_RBFV_IS_SET(SPI, SR, TFE, NOT_EMPTY, &spi->sr))
-		   ? true
-		   : false;
+	return (SEDI_PREG_RBFV_IS_SET(SPI, SR, BUSY, ACTIVE, &spi->sr)) ||
+			(SEDI_PREG_RBFV_IS_SET(SPI, SR, TFE, NOT_EMPTY, &spi->sr)) ? true : false;
 }
 
 static inline bool lld_spi_is_enabled(sedi_spi_regs_t *spi)
 {
-	return SEDI_PREG_RBFV_GET(SPI, SSIENR, SSI_EN, &spi->ssienr)
-			? true
-			: false;
+	return SEDI_PREG_RBFV_GET(SPI, SSIENR, SSI_EN, &spi->ssienr) ? true : false;
 }
 
 static inline uint32_t lld_spi_interrupt_clear(sedi_spi_regs_t *spi)
@@ -270,8 +268,10 @@ static int lld_spi_default_config(sedi_spi_t spi_device)
 
 static inline void lld_spi_config_cpol_cpha(sedi_spi_regs_t *spi, int cpol, int cpha)
 {
-	cpol = cpol ? SEDI_RBFV(SPI, CTRLR0, SCPOL, SCLK_HIGH) : SEDI_RBFV(SPI, CTRLR0, SCPOL, SCLK_LOW);
-	cpha = cpha ? SEDI_RBFV(SPI, CTRLR0, SCPH, SCPH_START) : SEDI_RBFV(SPI, CTRLR0, SCPH, SCPH_MIDDLE);
+	cpol = cpol ? SEDI_RBFV(SPI, CTRLR0, SCPOL, SCLK_HIGH) :
+			SEDI_RBFV(SPI, CTRLR0, SCPOL, SCLK_LOW);
+	cpha = cpha ? SEDI_RBFV(SPI, CTRLR0, SCPH, SCPH_START) :
+			SEDI_RBFV(SPI, CTRLR0, SCPH, SCPH_MIDDLE);
 
 	SEDI_PREG_RBF_SET(SPI, CTRLR0, SCPH, cpol, &spi->ctrlr0);
 	SEDI_PREG_RBF_SET(SPI, CTRLR0, SCPOL, cpha, &spi->ctrlr0);
@@ -279,7 +279,8 @@ static inline void lld_spi_config_cpol_cpha(sedi_spi_regs_t *spi, int cpol, int 
 
 static inline void lld_spi_config_loopback(sedi_spi_regs_t *spi, int loopback)
 {
-	loopback = loopback ? SEDI_RBFV(SPI, CTRLR0, SRL, TESTING_MODE) : SEDI_RBFV(SPI, CTRLR0, SRL, NORMAL_MODE);
+	loopback = loopback ? SEDI_RBFV(SPI, CTRLR0, SRL, TESTING_MODE) :
+			SEDI_RBFV(SPI, CTRLR0, SRL, NORMAL_MODE);
 	SEDI_PREG_RBF_SET(SPI, CTRLR0, SRL, loopback, &spi->ctrlr0);
 }
 

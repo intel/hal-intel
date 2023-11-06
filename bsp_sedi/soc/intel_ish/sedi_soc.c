@@ -19,14 +19,14 @@ void __attribute__((weak)) sedi_log(int level, const char *fmt, ...)
 #ifdef CONFIG_DEBUG
 void __attribute__((weak)) sedi_assert_halt(void)
 {
-	while(1);
+	while (1)
+		;
 }
 #endif
 
 /* weak PM functions used by SEDI drivers when SEDI PM driver is not enabled */
 
-void __attribute__((weak)) sedi_pm_set_device_power(IN sedi_devid_t id,
-		IN sedi_power_state_t state)
+void __attribute__((weak)) sedi_pm_set_device_power(IN sedi_devid_t id, IN sedi_power_state_t state)
 {
 	PARAM_UNUSED(id);
 	PARAM_UNUSED(state);
@@ -43,8 +43,9 @@ void PM_VNN_DRIVER_REQ(vnn_id_t vnn_id)
 {
 	unsigned int key = sedi_core_irq_lock();
 
-	if (vnn_req_counter[vnn_id] != 0)
+	if (vnn_req_counter[vnn_id] != 0) {
 		goto out;
+	}
 
 	SEDI_ASSERT((read32(PMU_VNN_REQ_31_0) & BIT(vnn_id)) == 0);
 	write32(PMU_VNN_REQ_31_0, BIT(vnn_id));
@@ -59,11 +60,13 @@ void PM_VNN_DRIVER_DEREQ(vnn_id_t vnn_id)
 {
 	unsigned int key = sedi_core_irq_lock();
 
-	if (vnn_req_counter[vnn_id] == 0)
+	if (vnn_req_counter[vnn_id] == 0) {
 		goto out;
+	}
 	vnn_req_counter[vnn_id]--;
-	if (vnn_req_counter[vnn_id] != 0)
+	if (vnn_req_counter[vnn_id] != 0) {
 		goto out;
+	}
 
 	write32(PMU_VNN_REQ_31_0, BIT(vnn_id));
 	write32(PMU_VNN_REQ_ACK, read32(PMU_VNN_REQ_ACK));
@@ -78,8 +81,9 @@ void PM_VNN_ALL_RESET(void)
 	write32(PMU_VNN_REQ_31_0, read32(PMU_VNN_REQ_31_0));
 	write32(PMU_VNN_REQ_ACK, read32(PMU_VNN_REQ_ACK));
 
-	for (int i = 0; i < VNN_ID_TOP; i++)
+	for (int i = 0; i < VNN_ID_TOP; i++) {
 		vnn_req_counter[i] = 0;
+	}
 
 	sedi_core_irq_unlock(key);
 }
