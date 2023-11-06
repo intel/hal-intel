@@ -681,7 +681,8 @@ static void callback_tx_dma_transfer(const sedi_dma_t dma, const int chan, const
 		/* If need STOP, last data sent by interrupt */
 		while (SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr) == I2C_FIFO_DEPTH) {
 		}
-		i2c->data_cmd = context->buf[context->buf_size - 1] | SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE);
+		i2c->data_cmd = context->buf[context->buf_size - 1] |
+				SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE);
 	}
 }
 
@@ -825,7 +826,8 @@ int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, IN
 	context->tx_dma_dev = dma_dev;
 	context->tx_dma_chan = dma_chan;
 
-	dw_i2c_irq_config(context->base, BSETS_INTR_ERROR | SEDI_RBFVM(I2C, INTR_MASK, M_STOP_DET, DISABLED));
+	dw_i2c_irq_config(context->base,
+			BSETS_INTR_ERROR | SEDI_RBFVM(I2C, INTR_MASK, M_STOP_DET, DISABLED));
 
 	dw_i2c_dma_enable(context->base, 1);
 
@@ -872,10 +874,12 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, OUT
 	context->tx_dma_dev = cmd_dma_dev;
 	context->tx_dma_chan = cmd_dma_chan;
 
-	dw_i2c_irq_config(context->base, BSETS_INTR_ERROR | SEDI_RBFVM(I2C, INTR_MASK, M_STOP_DET, DISABLED));
+	dw_i2c_irq_config(context->base,
+			BSETS_INTR_ERROR | SEDI_RBFVM(I2C, INTR_MASK, M_STOP_DET, DISABLED));
 
 	/* First write the command into register and clean cache */
-	i2c->data_cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ) | SEDI_RBFVM(I2C, DATA_CMD, RESTART, ENABLE);
+	i2c->data_cmd = SEDI_RBFVM(I2C, DATA_CMD, CMD, READ) |
+			SEDI_RBFVM(I2C, DATA_CMD, RESTART, ENABLE);
 	sedi_core_clean_dcache_by_addr((uint32_t *)(&dma_cmd), sizeof(dma_cmd));
 
 	dw_i2c_dma_enable(context->base, 1);

@@ -171,7 +171,8 @@ int32_t sedi_ipc_init(IN sedi_ipc_t ipc_device, IN sedi_ipc_event_cb_t cb, INOUT
 	if (SEDI_PREG_RBFV_IS_SET(IPC, ISH2AGENT_DOORBELL_AGENT, BUSY, 1,
 				&regs->ish2agent_doorbell_agent)) {
 		PM_VNN_DRIVER_REQ(write_vnn);
-		SEDI_PREG_RBFV_SET(IPC, ISH2AGENT_DOORBELL_AGENT, BUSY, 0, &regs->ish2agent_doorbell_agent);
+		SEDI_PREG_RBFV_SET(IPC, ISH2AGENT_DOORBELL_AGENT, BUSY, 0,
+				&regs->ish2agent_doorbell_agent);
 		PM_VNN_DRIVER_DEREQ(write_vnn);
 	}
 	ipc_contexts[ipc_device].initialized = true;
@@ -294,7 +295,8 @@ int32_t sedi_ipc_write_dbl(IN sedi_ipc_t ipc_device, IN uint32_t doorbell)
 		/* IPC to HOST */
 		PM_VNN_DRIVER_REQ(write_vnn);
 		regs->ish2agent_doorbell_agent = doorbell;
-		if (SEDI_PREG_RBFV_IS_SET(IPC, ISH2AGENT_DOORBELL_AGENT, BUSY, 0, (uint32_t *)&doorbell)) {
+		if (SEDI_PREG_RBFV_IS_SET(IPC, ISH2AGENT_DOORBELL_AGENT, BUSY, 0,
+					(uint32_t *)&doorbell)) {
 			PM_VNN_DRIVER_DEREQ(write_vnn);
 		}
 	}
@@ -520,7 +522,8 @@ void sedi_ipc_isr(IN sedi_ipc_t ipc_device)
 
 	/* check whether it is an inbound interrupt*/
 	if (SEDI_PREG_RBFV_IS_SET(IPC, PISR_AGENT2ISH, AGENT2ISH_DB, 1, &regs->pisr_agent2ish) &&
-		SEDI_PREG_RBFV_IS_SET(IPC, PIMR_AGENT2ISH, AGENT2ISH_DB, 1, &regs->pimr_agent2ish)) {
+			SEDI_PREG_RBFV_IS_SET(IPC, PIMR_AGENT2ISH, AGENT2ISH_DB, 1,
+				&regs->pimr_agent2ish)) {
 		/* mask interrupts before ack */
 		SEDI_PREG_RBFV_SET(IPC, PIMR_AGENT2ISH, AGENT2ISH_DB, 0, &regs->pimr_agent2ish);
 		if (ipc_device == SEDI_IPC_HOST) {
