@@ -56,7 +56,7 @@ SHELL_STATIC_SUBCMD_SET_CREATE(sub_iut,
 
 SHELL_CMD_REGISTER(iut, &sub_iut, "IUT commands", NULL);
 
-#ifdef CONFIG_PM
+#ifdef _CONFIG_PM
 static const struct shell_uart *sh_uart;
 
 void iut_shell_suspend(void)
