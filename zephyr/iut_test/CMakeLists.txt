@@ -9,6 +9,7 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(iut_test)
 
 zephyr_linker_sources(RODATA custom-sections.ld)
+zephyr_cc_option(-Werror)
 
 target_include_directories(app PRIVATE ./include)
 
