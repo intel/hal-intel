@@ -166,6 +166,11 @@ uint64_t sedi_hpet_get_main_counter(void)
 	return ((uint64_t)highBits << 32) | lowBits;
 }
 
+uint64_t sedi_hpet_get_us(void)
+{
+	return HPET_CYCLE_TO_US(sedi_hpet_get_main_counter());
+}
+
 void sedi_hpet_enable_interrupt(IN sedi_hpet_t timer_id)
 {
 	switch (timer_id) {
