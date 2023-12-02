@@ -119,6 +119,8 @@ void sedi_hpet_set_main_counter(uint64_t value);
  */
 uint64_t sedi_hpet_get_main_counter(void);
 
+uint64_t sedi_hpet_get_us(void);
+
 /*!
  * \brief Enable the timer's interrupt.
  * \param[in] timer_id: Timer ID to enable interrupt.
