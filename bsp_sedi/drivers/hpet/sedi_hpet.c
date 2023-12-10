@@ -221,6 +221,9 @@ int32_t sedi_hpet_init(uint32_t clk_divisor, uint32_t min_delay)
 	 * Initial state of HPET is unknown, so put it back in a reset-like
 	 * state (i.e. set main counter to 0 and disable interrupts)
 	 */
+	 sedi_hpet_update_comparator(HPET_0, (uint64_t)-1);
+	 sedi_hpet_update_comparator(HPET_1, (uint64_t)-1);
+	 sedi_hpet_update_comparator(HPET_2, (uint64_t)-1);
 	SEDI_REG_RBFV_SET(HPET, GCFG_LOW, EN, 0);
 	SEDI_REG_SET(HPET, GIS_LOW, SEDI_REG_GET(HPET, GIS_LOW));
 	SEDI_REG_SET(HPET, MCV, (uint64_t)0x0);
@@ -312,6 +315,7 @@ int32_t sedi_hpet_kill_timer(IN sedi_hpet_t timer_id)
 
 	/* Disable interrupt */
 	sedi_hpet_disable_interrupt(timer_id);
+	sedi_hpet_set_int_status(BIT(timer_id));
 
 	/* Set comparator all bits as 1 */
 	sedi_hpet_update_comparator(timer_id, (uint64_t)-1);
