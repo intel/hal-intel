@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023 - 2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -604,7 +604,6 @@ int32_t sedi_i2c_init(IN sedi_i2c_t i2c_device,
 	/* i2c default configuration */
 	context->speed = I2C_SPEED_STANDARD;
 	context->clk_info = &(context->bus_info.std_clk);
-	dw_i2c_config_speed(context->base, context->speed, context->clk_info);
 
 	/* read command for rx dma */
 	dma_cmd[0] = (SEDI_RBFVM(I2C, DATA_CMD, CMD, READ) |
