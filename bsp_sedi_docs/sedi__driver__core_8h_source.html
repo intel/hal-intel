@@ -91,7 +91,7 @@ $(function() {
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">int</span> sedi_core_inv_clean_dcache_by_addr(uint32_t *addr, int32_t dsize)</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;{</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="group__return__status.html#ga630be2b122e79926e29f99fd600694e1">DBG_CHECK</a>((!addr || dsize &lt;= 0), <a class="code" href="group__return__status.html#gae18ab52a769bf3949534e141ae108dd0">SEDI_DRIVER_ERROR</a>);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="group__return__status.html#ga630be2b122e79926e29f99fd600694e1">DBG_CHECK</a>((addr &amp;&amp; dsize &gt; 0), <a class="code" href="group__return__status.html#ga32a568565b4b73fc5548634308af2003">SEDI_DRIVER_ERROR_PARAMETER</a>);</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    uint32_t start = (uint32_t)addr;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    uint32_t end = start + dsize;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
@@ -180,9 +180,9 @@ $(function() {
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;}</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="agroup__return__status_html_ga32a568565b4b73fc5548634308af2003"><div class="ttname"><a href="group__return__status.html#ga32a568565b4b73fc5548634308af2003">SEDI_DRIVER_ERROR_PARAMETER</a></div><div class="ttdeci">#define SEDI_DRIVER_ERROR_PARAMETER</div><div class="ttdoc">Parameter error.</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:122</div></div>
 <div class="ttc" id="agroup__return__status_html_ga630be2b122e79926e29f99fd600694e1"><div class="ttname"><a href="group__return__status.html#ga630be2b122e79926e29f99fd600694e1">DBG_CHECK</a></div><div class="ttdeci">#define DBG_CHECK(condition, error)</div><div class="ttdoc">Check error and return for debug mode.</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:210</div></div>
 <div class="ttc" id="agroup__return__status_html_gade39305ad79dd59713fb458101f834f4"><div class="ttname"><a href="group__return__status.html#gade39305ad79dd59713fb458101f834f4">SEDI_DRIVER_OK</a></div><div class="ttdeci">#define SEDI_DRIVER_OK</div><div class="ttdoc">Operation succeeded.</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:92</div></div>
-<div class="ttc" id="agroup__return__status_html_gae18ab52a769bf3949534e141ae108dd0"><div class="ttname"><a href="group__return__status.html#gae18ab52a769bf3949534e141ae108dd0">SEDI_DRIVER_ERROR</a></div><div class="ttdeci">#define SEDI_DRIVER_ERROR</div><div class="ttdoc">Unspecified error.</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:98</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
