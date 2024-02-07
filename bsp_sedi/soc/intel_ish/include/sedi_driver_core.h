@@ -30,7 +30,7 @@ static inline void sedi_core_inv_clean_dcache(void)
  */
 static inline int sedi_core_inv_clean_dcache_by_addr(uint32_t *addr, int32_t dsize)
 {
-	DBG_CHECK((!addr || dsize <= 0), SEDI_DRIVER_ERROR);
+	DBG_CHECK((addr && dsize > 0), SEDI_DRIVER_ERROR_PARAMETER);
 	uint32_t start = (uint32_t)addr;
 	uint32_t end = start + dsize;
 
