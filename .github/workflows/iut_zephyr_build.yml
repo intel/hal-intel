@@ -6,6 +6,8 @@ on:
   schedule:
     - cron: '0 20 * * 2,6'
 
+permissions: read-all
+
 jobs:
   iut_zephyr_build:
     runs-on: ubuntu-22.04

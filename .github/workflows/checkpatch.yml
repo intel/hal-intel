@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions: read-all
+
 jobs:
   checkpatch:
     runs-on: ubuntu-22.04
