@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023 - 2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -43,17 +43,14 @@ void PM_VNN_DRIVER_REQ(vnn_id_t vnn_id)
 {
 	unsigned int key = sedi_core_irq_lock();
 
-	if (vnn_req_counter[vnn_id] != 0) {
-		goto out;
-	}
+	if (!vnn_req_counter[vnn_id])
+		write32(PMU_VNN_REQ_31_0, BIT(vnn_id));
+	++vnn_req_counter[vnn_id];
 
-	SEDI_ASSERT((read32(PMU_VNN_REQ_31_0) & BIT(vnn_id)) == 0);
-	write32(PMU_VNN_REQ_31_0, BIT(vnn_id));
+	sedi_core_irq_unlock(key);
+
 	while (!(read32(PMU_VNN_REQ_ACK) & PMU_VNN_REQ_ACK_STS))
 		;
-out:
-	vnn_req_counter[vnn_id]++;
-	sedi_core_irq_unlock(key);
 }
 
 void PM_VNN_DRIVER_DEREQ(vnn_id_t vnn_id)
