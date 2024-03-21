@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -79,6 +79,52 @@ static void pg_exit_restore_hw(void)
 	write32(CCU_BCG_SPI, 0);
 	write32(CCU_BCG_UART, 0);
 	write32(CCU_BCG_GPIO, 0);
+}
+
+/**
+ * ISH PMU does not support both-edge interrupt triggered gpio configuration.
+ * If both edges are configured, then the ISH can't stay in low power mode
+ * because it will exit immediately.
+ *
+ * To keep LPM fucntions intact and still support both edge configuration,
+ * the alternative way is:
+ * Before entering LPM, scan all gpio pins which are configured to be
+ * triggered by both-edge, and temporarily set each gpio pin to the single
+ * edge expected to be triggered next time, that is, opposite to its value.
+ * After exiting LPM, then restore the both-edge trigger configuration.
+ **/
+static uint32_t convert_both_edge_gpio_to_single_edge(void)
+{
+	uint32_t both_edge_pins = 0;
+	int i = 0;
+
+	/*
+	 * scan GPIO GFER, GRER and GIMR registers to find the both edge
+	 * interrupt trigger mode enabled pins.
+	 */
+	for (i = 0; i < 32; i++) {
+		if (read32(ISH_GPIO_GIMR) & BIT(i) && read32(ISH_GPIO_GRER) & BIT(i) &&
+		    read32(ISH_GPIO_GFER & BIT(i))) {
+			/* Record the pin so we can restore it later */
+			both_edge_pins |= BIT(i);
+
+			if (read32(ISH_GPIO_GPLR) & BIT(i)) {
+				/* pin is high, just keep falling edge mode */
+				write32(ISH_GPIO_GRER, read32(ISH_GPIO_GRER) & ~BIT(i));
+			} else {
+				/* pin is low, just keep rising edge mode */
+				write32(ISH_GPIO_GFER, read32(ISH_GPIO_GFER) & ~BIT(i));
+			}
+		}
+	}
+
+	return both_edge_pins;
+}
+
+static void restore_both_edge_gpio_config(uint32_t both_edge_pin_map)
+{
+	write32(ISH_GPIO_GRER, read32(ISH_GPIO_GRER) | both_edge_pin_map);
+	write32(ISH_GPIO_GFER, read32(ISH_GPIO_GFER) | both_edge_pin_map);
 }
 
 /* power management internal context data structure */
@@ -322,6 +368,7 @@ static void enter_d0i1(void)
 	uint64_t ioapic_state;
 #endif
 	uint64_t t0, t1;
+	uint32_t both_edge_gpio_pins;
 
 #ifndef CONFIG_SOC_INTEL_ISH_5_6_0
 	ioapic_state = sedi_core_get_irq_map();
@@ -332,6 +379,8 @@ static void enter_d0i1(void)
 
 	t0 = sedi_rtc_get_us();
 	pm_ctx.aon_share->pm_state = ISH_PM_STATE_D0I1;
+
+	both_edge_gpio_pins = convert_both_edge_gpio_to_single_edge();
 
 #ifndef CONFIG_SOC_INTEL_ISH_5_6_0
 	/* enable Trunk Clock Gating (TCG) of ISH */
@@ -350,6 +399,8 @@ static void enter_d0i1(void)
 	write32(CCU_BCG_MIA, read32(CCU_BCG_MIA) & (~CCU_BCG_BIT_MIA));
 #endif
 
+	restore_both_edge_gpio_config(both_edge_gpio_pins);
+
 	pm_ctx.aon_share->pm_state = ISH_PM_STATE_D0;
 	t1 = sedi_rtc_get_us();
 	log_pm_stat(&pm_stats.d0i1, t0, t1);
@@ -365,6 +416,7 @@ static void enter_d0i2(void)
 {
 	uint64_t ioapic_state;
 	uint64_t t0, t1;
+	uint32_t both_edge_gpio_pins;
 
 	ioapic_state = sedi_core_get_irq_map();
 	pm_disable_irqs(ioapic_state);
@@ -373,6 +425,8 @@ static void enter_d0i2(void)
 
 	t0 = sedi_rtc_get_us();
 	pm_ctx.aon_share->pm_state = ISH_PM_STATE_D0I2;
+
+	both_edge_gpio_pins = convert_both_edge_gpio_to_single_edge();
 
 	/* enable Trunk Clock Gating (TCG) of ISH */
 	write32(CCU_TCG_EN, 1);
@@ -397,6 +451,8 @@ static void enter_d0i2(void)
 	pm_ctx.aon_share->pm_state = ISH_PM_STATE_D0;
 	log_pm_stat(&pm_stats.d0i2, t0, t1);
 
+	restore_both_edge_gpio_config(both_edge_gpio_pins);
+
 	if (pm_ctx.aon_share->pg_exit)
 		log_pm_stat(&pm_stats.pg, t0, t1);
 
@@ -409,6 +465,7 @@ static void enter_d0i3(void)
 {
 	uint64_t ioapic_state;
 	uint64_t t0, t1;
+	uint32_t both_edge_gpio_pins;
 
 	ioapic_state = sedi_core_get_irq_map();
 	pm_disable_irqs(ioapic_state);
@@ -417,6 +474,8 @@ static void enter_d0i3(void)
 
 	t0 = sedi_rtc_get_us();
 	pm_ctx.aon_share->pm_state = ISH_PM_STATE_D0I3;
+
+	both_edge_gpio_pins = convert_both_edge_gpio_to_single_edge();
 
 	/* enable Trunk Clock Gating (TCG) of ISH */
 	write32(CCU_TCG_EN, 1);
@@ -436,6 +495,8 @@ static void enter_d0i3(void)
 
 	/* disable Trunk Clock Gating (TCG) of ISH */
 	write32(CCU_TCG_EN, 0);
+
+	restore_both_edge_gpio_config(both_edge_gpio_pins);
 
 	t1 = sedi_rtc_get_us();
 	pm_ctx.aon_share->pm_state = ISH_PM_STATE_D0;
