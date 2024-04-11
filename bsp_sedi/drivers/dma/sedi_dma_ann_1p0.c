@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -113,20 +113,26 @@ int sedi_dma_get_capabilities(IN sedi_dma_t dma_device,
 
 static inline void dma_vnn_req(sedi_dma_t dma_device, int channel_id)
 {
+	unsigned int key = sedi_core_irq_lock();
+
 	if (dma_context[dma_device].vnn_status == 0) {
 		PM_VNN_DRIVER_REQ(VNN_ID_DMA0 + dma_device);
 	}
 	dma_context[dma_device].vnn_status |= BIT(channel_id);
+	sedi_core_irq_unlock(key);
 }
 
 static inline void dma_vnn_dereq(sedi_dma_t dma_device, int channel_id)
 {
+	unsigned int key = sedi_core_irq_lock();
+
 	if (dma_context[dma_device].vnn_status & (BIT(channel_id))) {
 		dma_context[dma_device].vnn_status &= (~BIT(channel_id));
+		if (dma_context[dma_device].vnn_status == 0) {
+			PM_VNN_DRIVER_DEREQ(VNN_ID_DMA0 + dma_device);
+		}
 	}
-	if (dma_context[dma_device].vnn_status == 0) {
-		PM_VNN_DRIVER_DEREQ(VNN_ID_DMA0 + dma_device);
-	}
+	sedi_core_irq_unlock(key);
 }
 
 static void dma_set_default_channel_config(OUT channel_config_t *config)
