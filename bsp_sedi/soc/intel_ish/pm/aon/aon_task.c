@@ -523,8 +523,7 @@ static int is_ipapg_allowed(void)
 
 	if (((power_ctrl_enabled & PMU_PCE_PG_ALLOWED) || system_power_state) &&
 	    (((sw_power_req & PMU_SW_PG_REQ_B_VAL) == 0) ||
-	     ((power_ctrl_enabled & PMU_PCE_PMCRE) == 0)) &&
-	    ((power_ctrl_wake & PMU_PMC_PG_WAKE_VAL) == 0))
+	     ((power_ctrl_enabled & PMU_PCE_PMCRE) == 0)))
 		return 1;
 	else
 		return 0;
