@@ -71,7 +71,7 @@ static int test_dma_m2m(int argc, char **argv)
 	dma_cfg.dest_burst_length = blen;
 	dma_cfg.dma_callback = test_done;
 	dma_cfg.complete_callback_en = 1;
-	dma_cfg.error_callback_en = 1;
+	dma_cfg.error_callback_dis = 1;
 	dma_cfg.block_count = 1;
 	dma_cfg.head_block = &dma_block_cfg;
 
