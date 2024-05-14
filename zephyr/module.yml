@@ -1,3 +1,4 @@
 name: hal_intel
 build:
   cmake: zephyr
+  kconfig: zephyr/Kconfig
