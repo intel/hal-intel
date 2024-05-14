@@ -1,0 +1,12 @@
+# Kconfig - Intel HAL Zephyr configuration options
+#
+# Copyright (c) 2024 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+menu "Intel HAL Zephyr Configuration"
+
+rsource "subsys/logging/backends/Kconfig.i2c"
+
+endmenu

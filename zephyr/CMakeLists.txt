@@ -39,4 +39,5 @@ if(CONFIG_INTEL_HAL)
       zephyr_library_sources(${BSP_SEDI_SOC_DIR}/sedi_soc.c)
   endif()
 
+  add_subdirectory(subsys/logging/backends)
 endif()

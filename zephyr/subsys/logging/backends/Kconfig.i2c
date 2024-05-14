@@ -1,0 +1,40 @@
+#
+# Copyright (c) 2024 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+if LOG
+
+config LOG_BACKEND_I2C
+	bool "Enable I2C log backend"
+	depends on I2C_SEDI
+	select LOG_OUTPUT
+	help
+	  When enabled, backend will use I2C for logging.
+
+if LOG_BACKEND_I2C
+
+config LOG_BACKEND_I2C_AUTOSTART
+	bool "Automatically start I2C backend"
+	default y
+	help
+	  When enabled automatically start the I2C logging backend on
+	  application start. When disabled, the application needs to start
+	  the backend manually using log_backend_enable().
+
+backend = I2C
+backend-str = i2c
+source "subsys/logging/Kconfig.template.log_format_config"
+
+config LOG_I2C_MAX_MSG_LEN
+	int "Maximum message length"
+	default 256
+
+config LOG_I2C_DEV_ADDR
+	hex "I2C address of I2C log device"
+	default 0x5E
+
+endif # LOG_BACKEND_I2C
+
+endif # LOG
