@@ -1,0 +1,5 @@
+/ {
+	chosen {
+		zephyr.log-i2c=&i2c0;
+	};
+};
