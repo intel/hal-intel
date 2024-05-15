@@ -40,6 +40,10 @@ typedef enum {
 
 SEDI_IREG_BASE_DEFINE(DMA, 0, 0x10100000);
 
+/**DMA block TS**/
+#define SEDI_DMA_PERIPH_MAX_SIZE 4096
+#define SEDI_DMA_PERIPH_MAX_SIZE_SHIFT 12
+
 /****** i2c *****/
 /*!
  * \struct sedi_i2c

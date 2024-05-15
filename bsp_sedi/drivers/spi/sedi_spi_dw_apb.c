@@ -25,8 +25,6 @@
 #define SPI_FRAME_SIZE_1_BYTE     (1)
 #define SPI_FRAME_SIZE_2_BYTES    (2)
 #define SPI_RECEIVE_MODE_MAX_SIZE (65536)
-#define SPI_DMA_MAX_SIZE          (4096)
-#define SPI_DMA_MAX_SIZE_SHIFT    (12)
 #define SSI_IC_FREQ               (sedi_pm_get_lbw_clock())
 
 #define SPI_BITWIDTH_4BITS  (SEDI_RBFV(SPI, CTRLR0, DFS, FRAME_04BITS) + 1)
@@ -808,7 +806,7 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 	sedi_spi_t spi_device = (sedi_spi_t)param;
 
 	struct spi_context *context = &spi_contexts[spi_device];
-	uint32_t len = SPI_DMA_MAX_SIZE;
+	uint32_t len = SEDI_DMA_PERIPH_MAX_SIZE;
 
 	/* release the dma resource */
 	sedi_dma_set_power(dma, chan, SEDI_POWER_OFF);
@@ -869,7 +867,7 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 		}
 		/* According to different transfer mode, do different fill or receive */
 		if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) {
-			context->data_tx += SPI_DMA_MAX_SIZE;
+			context->data_tx += SEDI_DMA_PERIPH_MAX_SIZE;
 			context->dma_tx_finished = false;
 			/* start dma first */
 			config_and_enable_dma_channel(spi_device, context->tx_dma,
@@ -881,7 +879,7 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 						lld_spi_dr_address(context->base), len);
 
 		} else if (context->transfer_mode == SEDI_RBFV(SPI, CTRLR0, TMOD, RX_ONLY)) {
-			context->data_rx += SPI_DMA_MAX_SIZE;
+			context->data_rx += SEDI_DMA_PERIPH_MAX_SIZE;
 			context->dma_rx_finished = false;
 			/* Configure rx channel */
 			context->base->ctrlr1 = len / context->frame_size - 1;
@@ -894,8 +892,8 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 						      (uint32_t)(context->data_rx), len, false);
 
 		} else {
-			context->data_tx += SPI_DMA_MAX_SIZE;
-			context->data_rx += SPI_DMA_MAX_SIZE;
+			context->data_tx += SEDI_DMA_PERIPH_MAX_SIZE;
+			context->data_rx += SEDI_DMA_PERIPH_MAX_SIZE;
 			context->dma_tx_finished = false;
 			context->dma_rx_finished = false;
 			/* Enable both channel to do transfer */
@@ -972,17 +970,17 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 	context->data_tx = (uint8_t *)data_out;
 	context->data_rx = data_in;
 	/* DMA BLOCK TS only 4096, for large data more than 4K, use multiple transfer  */
-	context->last_dma_counts = (num & (SPI_DMA_MAX_SIZE - 1));
+	context->last_dma_counts = (num & (SEDI_DMA_PERIPH_MAX_SIZE - 1));
 	if (context->last_dma_counts == 0) {
-		context->dma_cycles = num >> SPI_DMA_MAX_SIZE_SHIFT;
-		context->last_dma_counts = SPI_DMA_MAX_SIZE;
+		context->dma_cycles = num >> SEDI_DMA_PERIPH_MAX_SIZE_SHIFT;
+		context->last_dma_counts = SEDI_DMA_PERIPH_MAX_SIZE;
 	} else {
-		context->dma_cycles = (num >> SPI_DMA_MAX_SIZE_SHIFT) + 1;
+		context->dma_cycles = (num >> SEDI_DMA_PERIPH_MAX_SIZE_SHIFT) + 1;
 	}
 	context->dma_idx = context->dma_cycles;
 
 	if (context->dma_cycles > 1) {
-		len = SPI_DMA_MAX_SIZE;
+		len = SEDI_DMA_PERIPH_MAX_SIZE;
 	}
 #ifdef SPI_DW_2_0
 	/* Clear the bit field */
