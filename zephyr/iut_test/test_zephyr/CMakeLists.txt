@@ -14,3 +14,5 @@ endif()
 if(CONFIG_GPIO_SEDI)
   target_sources(app PRIVATE gpio/test_gpio.c)
 endif()
+
+target_sources(app PRIVATE x86/test_fatal.c)
