@@ -16,3 +16,4 @@ if(CONFIG_GPIO_SEDI)
 endif()
 
 target_sources(app PRIVATE x86/test_fatal.c)
+target_sources(app PRIVATE timer/test_sys_clock.c)
