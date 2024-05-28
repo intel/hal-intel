@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -164,7 +164,7 @@
  */
 
 #define SEDI_IREG_PTR(_comp, _instance, _reg)                                                      \
-	(volatile(SEDI_REGT(_comp, _reg) *)(SEDI_IREG_BASE(_comp, _instance) +                     \
+	((volatile SEDI_REGT(_comp, _reg) *)(SEDI_IREG_BASE(_comp, _instance) +                     \
 					    SEDI_REGO(_comp, _reg)))
 
 #define SEDI_REG_PTR(_comp, _reg)                                                                  \
