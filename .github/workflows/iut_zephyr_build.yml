@@ -30,7 +30,7 @@ jobs:
           west init
 
       - name: Checkout Intel HAL
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: modules/hal/intel
 
