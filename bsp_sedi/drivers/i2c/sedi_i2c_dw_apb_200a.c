@@ -105,19 +105,14 @@ static uint32_t regval_speed[I2C_SPEED_MAX] = {
  * For example, standard mode is 100KHz, 10000ns per period, 5000ns for
  * SCL low & high level.
  */
-#define I2C_SS_SCL_HIGH 4000
-#define I2C_SS_SCL_LOW 4700
-#define I2C_FS_SCL_HIGH 600
-#define I2C_FS_SCL_LOW 1300
+#define I2C_SS_SCL_HIGH 4500
+#define I2C_SS_SCL_LOW 5100
+#define I2C_FS_SCL_HIGH 690
+#define I2C_FS_SCL_LOW 1650
 #define I2C_FSP_SCL_HIGH 300
-#define I2C_FSP_SCL_LOW 600
-#ifndef I2C_SCL_400PF
-#define I2C_HS_SCL_HIGH 70
-#define I2C_HS_SCL_LOW 590
-#else
-#define I2C_HS_SCL_HIGH 160
-#define I2C_HS_SCL_LOW 320
-#endif
+#define I2C_FSP_SCL_LOW 500
+#define I2C_HS_SCL_HIGH 300
+#define I2C_HS_SCL_LOW 500
 
 #define I2C_CONTEXT_INIT(x)                                                                        \
 	{                                                                                          \
