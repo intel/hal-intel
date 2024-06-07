@@ -127,6 +127,12 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__driver__common.html#ga62766f3ea8784d1db62df989f8f33d2d">INOUT</a></td></tr>
 <tr class="memdesc:ga62766f3ea8784d1db62df989f8f33d2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Input/Output parameter indicator. <br /></td></tr>
 <tr class="separator:ga62766f3ea8784d1db62df989f8f33d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9d5c8e9cb8e16f4a0412cc42919ab431"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__driver__common.html#ga9d5c8e9cb8e16f4a0412cc42919ab431">SEDI_POLL_WAIT</a>(_cond,  _ms)&#160;&#160;&#160;__SEDI_POLL_WAIT(_cond, _ms, false)</td></tr>
+<tr class="memdesc:ga9d5c8e9cb8e16f4a0412cc42919ab431"><td class="mdescLeft">&#160;</td><td class="mdescRight">SEDI helper function to poll wait ((_cond) == true) at most (_ms) milliseconds.  <a href="group__sedi__driver__common.html#ga9d5c8e9cb8e16f4a0412cc42919ab431">More...</a><br /></td></tr>
+<tr class="separator:ga9d5c8e9cb8e16f4a0412cc42919ab431"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafe212bb60fde0c2e8c4119691745e223"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__driver__common.html#gafe212bb60fde0c2e8c4119691745e223">SEDI_POLL_WAIT_MUTE</a>(_cond,  _ms)&#160;&#160;&#160;__SEDI_POLL_WAIT(_cond, _ms, true)</td></tr>
+<tr class="memdesc:gafe212bb60fde0c2e8c4119691745e223"><td class="mdescLeft">&#160;</td><td class="mdescRight">SEDI helper function to poll wait ((_cond) == true) at most (_ms) milliseconds, and don't print error log when timeout happens to avoid potential recursive logging.  <a href="group__sedi__driver__common.html#gafe212bb60fde0c2e8c4119691745e223">More...</a><br /></td></tr>
+<tr class="separator:gafe212bb60fde0c2e8c4119691745e223"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -135,6 +141,69 @@ Functions</h2></td></tr>
 <tr class="separator:ga78b973fba3428cb6f9879b705523eeaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ga9d5c8e9cb8e16f4a0412cc42919ab431"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga9d5c8e9cb8e16f4a0412cc42919ab431">&#9670;&nbsp;</a></span>SEDI_POLL_WAIT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SEDI_POLL_WAIT</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_cond, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_ms&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;__SEDI_POLL_WAIT(_cond, _ms, false)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>SEDI helper function to poll wait ((_cond) == true) at most (_ms) milliseconds. </p>
+<p>\function SEDI_POLL_WAIT </p><dl class="section return"><dt>Returns</dt><dd>SEDI_DRIVER_OK or SEDI_DRIVER_ERROR_TIMEOUT </dd></dl>
+
+</div>
+</div>
+<a id="gafe212bb60fde0c2e8c4119691745e223"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafe212bb60fde0c2e8c4119691745e223">&#9670;&nbsp;</a></span>SEDI_POLL_WAIT_MUTE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define SEDI_POLL_WAIT_MUTE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_cond, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">_ms&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;__SEDI_POLL_WAIT(_cond, _ms, true)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>SEDI helper function to poll wait ((_cond) == true) at most (_ms) milliseconds, and don't print error log when timeout happens to avoid potential recursive logging. </p>
+<p>\function SEDI_POLL_WAIT_MUTE </p><dl class="section return"><dt>Returns</dt><dd>SEDI_DRIVER_OK or SEDI_DRIVER_ERROR_TIMEOUT </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga78b973fba3428cb6f9879b705523eeaa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga78b973fba3428cb6f9879b705523eeaa">&#9670;&nbsp;</a></span>sedi_log()</h2>
