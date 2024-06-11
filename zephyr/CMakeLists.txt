@@ -22,7 +22,7 @@ if(CONFIG_INTEL_HAL)
     zephyr_library_sources(${BSP_SEDI_SRC}/drivers/dma/sedi_dma_ann_1p0.c)
   endif()
   zephyr_library_sources_ifdef(CONFIG_IPM_SEDI ${BSP_SEDI_SRC}/drivers/ipc/sedi_ipc.c)
-  zephyr_library_sources_ifdef(CONFIG_HPET_TIMER ${BSP_SEDI_SRC}/drivers/hpet/sedi_hpet.c)
+  zephyr_library_sources(${BSP_SEDI_SRC}/drivers/hpet/sedi_hpet.c)
 
   if(DEFINED CONFIG_SOC_FAMILY_INTEL_ISH)
       zephyr_library_sources_ifdef(CONFIG_PM ${BSP_SEDI_SRC}/soc/intel_ish/pm/ish_pm.c)
