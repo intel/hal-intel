@@ -388,16 +388,34 @@ static void sram_power(int on)
 
 /**
  * check SRAM bank i power gated status in PMU_SRAM_PG_EN register
+ * 2 bits for one bank on ISH5.8, 1 bit on ISH5.4
  * 1: power gated 0: not power gated
  */
-#define BANK_PG_STATUS(i)	(read32(PMU_SRAM_PG_EN) & (0x1 << (i)))
+#ifndef CONFIG_SOC_INTEL_ISH_5_8_0
+/* SRAM needs time to warm up after power on */
+#define SRAM_WARM_UP_DELAY_CNT		10
+#define SRAM_PG_BITS(i) (1 << i)
+#else
+/* SRAM needs time to warm up after power on */
+#define SRAM_WARM_UP_DELAY_CNT		2000
+#define SRAM_PG_BITS(i) (0x3 << (2 * i))
+/**
+ * check SRAM bank i power status in PMU_SRAM_PWR_STATUS register
+ * one bank has two tiles, 2 bits for one bank
+ * 1: ready for operation 0: not ready for operation
+ */
+#define BANK_PWR_STATUS(i) (read32(PMU_SRAM_PWR_STATUS) & SRAM_PG_BITS(i))
+#endif
+
+#define BANK_PG_STATUS(i)	(read32(PMU_SRAM_PG_EN) & SRAM_PG_BITS(i))
 
 /* enable power gate of a SRAM bank */
-#define BANK_PG_ENABLE(i)	(write32(PMU_SRAM_PG_EN, (read32(PMU_SRAM_PG_EN) | (0x1 << (i)))))
+#define BANK_PG_ENABLE(i) \
+	(write32(PMU_SRAM_PG_EN, (read32(PMU_SRAM_PG_EN) | SRAM_PG_BITS(i))))
 
 /* disable power gate of a SRAM bank */
-#define BANK_PG_DISABLE(i)                                                     \
-	(write32(PMU_SRAM_PG_EN, (read32(PMU_SRAM_PG_EN) & (~(0x1 << (i))))))
+#define BANK_PG_DISABLE(i) \
+	(write32(PMU_SRAM_PG_EN, (read32(PMU_SRAM_PG_EN) & (~SRAM_PG_BITS(i)))))
 
 /**
  * check SRAM bank i disabled status in ISH_SRAM_CTRL_CSFGR register
@@ -414,9 +432,6 @@ static void sram_power(int on)
 #define BANK_DISABLE(i)                                                        \
 	(write32(ISH_SRAM_CTRL_CSFGR,                                          \
 		 (read32(ISH_SRAM_CTRL_CSFGR) | (0x1 << ((i) + 4)))))
-
-/* SRAM needs time to warm up after power on */
-#define SRAM_WARM_UP_DELAY_CNT		10
 
 static void sram_power(int on)
 {
@@ -437,11 +452,15 @@ static void sram_power(int on)
 
 	for (i = 0; i < SRAM_POWER_OFF_BANKS; i++) {
 
-		if (on && (BANK_PG_STATUS(i))) {
+		if (on) {
 
 			/* power on and enable a bank */
 			BANK_PG_DISABLE(i);
 
+#ifdef CONFIG_SOC_INTEL_ISH_5_8_0
+			while (!BANK_PWR_STATUS(i))
+				;
+#endif
 			delay(SRAM_WARM_UP_DELAY_CNT);
 
 			/* erase a bank */
@@ -455,6 +474,12 @@ static void sram_power(int on)
 		} else {
 			/* disable and power off a bank */
 			BANK_PG_ENABLE(i);
+
+#ifdef CONFIG_SOC_INTEL_ISH_5_8_0
+			while (BANK_PWR_STATUS(i))
+				;
+#endif
+			delay(SRAM_WARM_UP_DELAY_CNT);
 		}
 
 		/**
