@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -134,6 +134,81 @@
 #define MISC_ISH_RTC_COUNTER1		(MISC_REG_BASE + 0x74)
 
 /* DMA registers */
+#ifdef CONFIG_SOC_INTEL_ISH_5_8_0
+/* DMA controller global interface */
+#define DMAC_CFG_REG (DMA_REG_BASE + 0x10)
+#define DMAC_CFG_EN BIT(0)
+#define DMAC_CFG_INT_EN BIT(1)
+#define DMAC_CHEN_REG (DMA_REG_BASE + 0x18)
+#define DMAC_CHEN_CH_BITS(chan) ((0x1 << (chan)) | (0x1 << (8 + (chan))))
+#define DMAC_INT_CLR_REG (DMA_REG_BASE + 0x38)
+#define DMAC_INTSTS_EN_REG (DMA_REG_BASE + 0x40)
+#define DMAC_INTSIG_EN_REG (DMA_REG_BASE + 0x48)
+#define DMAC_INT_STAT_REG (DMA_REG_BASE + 0x50)
+#define DMAC_RESET_REG (DMA_REG_BASE + 0x58)
+
+#define DMA_CH_SAR_REG(ch) (DMA_REG_BASE + (ch + 1) * 0x100 + 0x0)
+#define DMA_CH_DAR_REG(ch) (DMA_REG_BASE + (ch + 1) * 0x100 + 0x8)
+#define DMA_CH_BLOCK_TS_REG(ch) (DMA_REG_BASE + (ch + 1) * 0x100 + 0x10)
+#define DMA_CH_CTRL_REG(ch) (DMA_REG_BASE + (ch + 1) * 0x100 + 0x18)
+#define DMA_CH_CFG2_REG(ch) (DMA_REG_BASE + (ch + 1) * 0x100 + 0x20)
+#define DMA_CH_LLP_REG(ch) (DMA_REG_BASE + (ch + 1) * 0x100 + 0x28)
+#define DMA_CH_INT_EN_REG(ch) (DMA_REG_BASE + (ch + 1) * 0x100 + 0x80)
+#define DMA_CH_INT_STS_REG(ch) (DMA_REG_BASE + (ch + 1) * 0x100 + 0x88)
+#define DMA_CH_INT_CLR_REG(ch) (DMA_REG_BASE + (ch + 1) * 0x100 + 0x98)
+
+#define DMA_INT_XFER_DONE BIT(1)
+#define DMA_INT_SRC_DECERR BIT(5)
+#define DMA_INT_DST_DECERR BIT(6)
+#define DMA_INT_SRC_SLVERR BIT(7)
+#define DMA_INT_DST_SLVERR BIT(8)
+#define DMA_INT_CH_DISABLE BIT(30)
+#define DMA_INT_CH_ABORT BIT(31)
+
+#define DMA_INT_ERR_L \
+	(DMA_INT_SRC_SLVERR | DMA_INT_DST_SLVERR \
+	 | DMA_INT_SRC_DECERR | DMA_INT_DST_DECERR)
+
+#define DMA_INT_STOP (DMA_INT_CH_ABORT | DMA_INT_CH_DISABLE | DMA_INT_XFER_DONE)
+
+#define DMA_CH_INT_EN_VAL ((uint64_t)(DMA_INT_STOP | DMA_INT_ERR_L))
+
+#define DMA_MAX_BLOCK_TS (4096)
+#define DMA_SRC_MSIZE (3)
+#define DMA_SRC_MSIZE_OFF (14)
+#define DMA_DST_MSIZE (3)
+#define DMA_DST_MSIZE_OFF (18)
+#define DMA_SRC_TR_WIDTH (3)
+#define DMA_DST_TR_WIDTH (3)
+#define DMA_MAX_BLOCK_SIZE (DMA_MAX_BLOCK_TS << DMA_SRC_TR_WIDTH)
+
+#define AR_CACHE_OFF 22
+#define AR_CACHE_VAL 0
+#define AW_CACHE_OFF 26
+#define AW_CACHE_VAL 3
+#define NONPOSTED_LASTWRITE_EN (1 << 30)
+
+#define DMA_CH_CTRL_VAL \
+	((DMA_DST_MSIZE << DMA_DST_MSIZE_OFF) \
+	 | (DMA_SRC_MSIZE << DMA_SRC_MSIZE_OFF) \
+	 | (DMA_SRC_TR_WIDTH << 8) | (DMA_DST_TR_WIDTH << 11) \
+	 | (AR_CACHE_VAL << AR_CACHE_OFF) | (AW_CACHE_VAL << AW_CACHE_OFF) \
+	 | NONPOSTED_LASTWRITE_EN)
+
+/* 3 outstanding request for SRAM */
+#define DMA_OSR_LMT_SRAM 2
+/* 16 outstanding request for DRAM */
+#define DMA_OSR_LMT_DRAM 0xF
+
+#define DMA_CFG_DST_OSR_LMT_OFF 27
+#define DMA_CFG_SRC_OSR_LMT_OFF 23
+
+#define DMA_CFG_DST_OSR_LMT(val) ((val) << DMA_CFG_DST_OSR_LMT_OFF)
+#define DMA_CFG_SRC_OSR_LMT(val) ((val) << DMA_CFG_SRC_OSR_LMT_OFF)
+
+#define DMA_CFG_H_VAL(dst, src) \
+	(DMA_CFG_DST_OSR_LMT(dst) | DMA_CFG_SRC_OSR_LMT(src))
+#else
 #define DMA_CH_REGS_SIZE		0x58
 #define DMA_CLR_BLOCK_REG		(DMA_REG_BASE + 0x340)
 #define DMA_CLR_ERR_REG			(DMA_REG_BASE + 0x358)
@@ -170,6 +245,7 @@
 #define SRC_BURST_SIZE			3
 #define DEST_TR_WIDTH			2
 #define DEST_BURST_SIZE			3
+#endif
 
 /* GPIO Registers */
 #define ISH_GPIO_BASE			SEDI_IREG_BASE(GPIO, 0)

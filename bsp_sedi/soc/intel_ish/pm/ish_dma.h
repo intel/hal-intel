@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -22,6 +22,8 @@
 #define DST_IS_DRAM BIT(0)
 #define SRC_IS_DRAM BIT(1)
 #define NON_SNOOP BIT(2)
+#define RD_NON_SNOOP BIT(8)
+#define WR_NON_SNOOP BIT(9)
 
 /* ISH5 and on */
 #define RS0 0x0
@@ -59,7 +61,7 @@ void ish_dma_init(void);
  * @param mode          Transfer mode
  * @return DMA_RC_OK, or non-zero if error.
  */
-int ish_dma_copy(uint32_t chan, uint32_t dst, uint32_t src, uint32_t length,
+int ish_dma_copy(uint32_t chan, uint64_t dst, uint64_t src, uint32_t length,
 		 enum dma_mode mode);
 /**
  * Set upper 32 bits address for DRAM

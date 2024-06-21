@@ -1,11 +1,98 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include "ish_dma.h"
 
+#ifdef CONFIG_SOC_INTEL_ISH_5_8_0
+void ish_dma_set_msb(uint32_t chan, uint32_t dst_msb, uint32_t src_msb)
+{
+	/* nothing to do */
+	(void)chan;
+	(void)dst_msb;
+	(void)src_msb;
+}
+
+int ish_dma_copy(uint32_t chan, uint64_t dst, uint64_t src, uint32_t length,
+		enum dma_mode mode)
+{
+	int rc = DMA_RC_OK;
+	uint32_t src_osr_lmt = (mode & SRC_IS_DRAM) ? DMA_OSR_LMT_DRAM : DMA_OSR_LMT_SRAM;
+	uint32_t dst_osr_lmt = (mode & DST_IS_DRAM) ? DMA_OSR_LMT_DRAM : DMA_OSR_LMT_SRAM;
+
+	if (!length) {
+		return DMA_RC_OK;
+	}
+
+	/* Bringup VNN power rail for accessing SoC fabric */
+	write32(PMU_VNN_REQ, (1 << VNN_ID_DMA(chan)));
+	while (!(read32(PMU_VNN_REQ_ACK) & PMU_VNN_REQ_ACK_STATUS))
+		continue;
+
+	write64(DMAC_CFG_REG, DMAC_CFG_EN);
+	mode |= RD_NON_SNOOP | WR_NON_SNOOP;
+	write32(MISC_DMA_CTL_REG(chan), mode);
+	write64(DMA_CH_CTRL_REG(chan), DMA_CH_CTRL_VAL);
+	write64(DMA_CH_CFG2_REG(chan), DMA_CFG_H_VAL(dst_osr_lmt, src_osr_lmt));
+	write64(DMA_CH_LLP_REG(chan), 0x0);
+	write64(DMA_CH_INT_EN_REG(chan), DMA_CH_INT_EN_VAL);
+	write64(DMA_CH_INT_CLR_REG(chan), read64(DMA_CH_INT_STS_REG(chan)));
+
+	while (length) {
+		uint32_t chunk = (length > DMA_MAX_BLOCK_SIZE) ?
+			DMA_MAX_BLOCK_SIZE : length;
+		uint32_t block_ts = chunk >> DMA_SRC_TR_WIDTH;
+
+		if (chunk % block_ts) {
+			block_ts++;
+		}
+		write64(DMA_CH_BLOCK_TS_REG(chan), block_ts - 1);
+
+		write64(DMA_CH_SAR_REG(chan), src);
+		write64(DMA_CH_DAR_REG(chan), dst);
+
+		write64(DMAC_CHEN_REG, DMAC_CHEN_CH_BITS(chan));
+		while (read64(DMAC_CHEN_REG) & DMAC_CHEN_CH_BITS(chan)) {
+			;
+		}
+
+		if (read64(DMA_CH_INT_STS_REG(chan)) != DMA_INT_XFER_DONE) {
+			write64(DMA_CH_INT_CLR_REG(chan), read64(DMA_CH_INT_STS_REG(chan)));
+			rc = DMA_RC_HW;
+			break;
+		}
+		src += chunk;
+		dst += chunk;
+		length -= chunk;
+		write64(DMA_CH_INT_CLR_REG(chan), read64(DMA_CH_INT_STS_REG(chan)));
+	}
+
+	/* Mark the DMA VNN power rail as no longer needed */
+	write32(PMU_VNN_REQ, (1 << VNN_ID_DMA(chan)));
+
+	return rc;
+}
+
+void ish_dma_disable(void)
+{
+	/* Based on [ROM FAS], 2.1.3 "DMA Controller initialization". */
+	uint32_t counter = 0;
+
+	do {
+		++counter;
+	} while ((uint8_t)read64(DMAC_CHEN_REG) && (counter < (UINT32_MAX / 64)));
+
+	if ((uint8_t)read64(DMAC_CHEN_REG))
+		write64(DMAC_RESET_REG, 1);
+
+	write64(DMAC_INTSTS_EN_REG, 0);
+	write64(DMAC_INTSIG_EN_REG, 0);
+	write64(DMAC_INT_CLR_REG, read64(DMAC_INT_STAT_REG));
+	write64(DMAC_CFG_REG, 0);
+}
+#else
 static int dma_init_called; /* If ish_dma_init is called */
 
 static int dma_poll(uint32_t addr, uint32_t expected, uint32_t mask)
@@ -71,7 +158,7 @@ void ish_dma_init(void)
 	dma_init_called = 1;
 }
 
-int ish_dma_copy(uint32_t chan, uint32_t dst, uint32_t src, uint32_t length,
+int ish_dma_copy(uint32_t chan, uint64_t dst, uint64_t src, uint32_t length,
 		 enum dma_mode mode)
 {
 	uint32_t chan_reg = DMA_REG_BASE + (DMA_CH_REGS_SIZE * chan);
@@ -120,8 +207,8 @@ int ish_dma_copy(uint32_t chan, uint32_t dst, uint32_t src, uint32_t length,
 		eflags = interrupt_lock();
 		write32(MISC_CHID_CFG_REG, chan); /* Set channel to configure */
 		write32(DMA_CTL_HIGH(chan_reg), chunk);	/* Set number of bytes to transfer */
-		write32(DMA_DAR(chan_reg), dst); /* Destination address */
-		write32(DMA_SAR(chan_reg), src); /* Source address */
+		write32(DMA_DAR(chan_reg), (uint32_t)dst); /* Destination address */
+		write32(DMA_SAR(chan_reg), (uint32_t)src); /* Source address */
 		write32(DMA_EN_REG, DMA_CH_EN_BIT(chan) |
 			     DMA_CH_EN_WE_BIT(chan)); /* Enable the channel */
 		interrupt_unlock(eflags);
@@ -178,3 +265,4 @@ void ish_dma_set_msb(uint32_t chan, uint32_t dst_msb, uint32_t src_msb)
 	write32(MISC_DST_FILLIN_DMA(chan), dst_msb);
 	interrupt_unlock(eflags);
 }
+#endif

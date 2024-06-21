@@ -253,13 +253,21 @@ static void init_aon_task(void)
 	aon_share->main_fw_ro_size = (uint32_t)&__rodata_region_end -
 				     (uint32_t)&__text_region_start;
 
+#ifdef CONFIG_SOC_INTEL_ISH_5_8_0
+	aon_share->main_fw_rw_addr = (uint32_t)&__rodata_region_end;
+	aon_share->main_fw_rw_size = (uint32_t)&_image_ram_end -
+				     (uint32_t)&__rodata_region_end;
+#else
 	aon_share->main_fw_rw_addr = (uint32_t)&_image_ram_start;
 	aon_share->main_fw_rw_size = (uint32_t)&_image_ram_end -
 				     (uint32_t)&_image_ram_start;
+#endif
 
+#ifndef CONFIG_SOC_INTEL_ISH_5_8_0
 	aon_share->uma_msb = read32(IPC_UMA_RANGE_LOWER_1);
 
 	ish_dma_init();
+#endif
 }
 
 static inline void check_aon_task_status(void)
