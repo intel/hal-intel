@@ -39,6 +39,16 @@ sedi_power_state_t __attribute__((weak)) sedi_pm_get_device_power(IN sedi_devid_
 	return SEDI_POWER_FULL;
 }
 
+uintptr_t __attribute__((weak)) sedi_core_virt_to_phys(uintptr_t virt)
+{
+	return virt;
+}
+
+uintptr_t __attribute__((weak)) sedi_core_phys_to_virt(uintptr_t phys)
+{
+	return phys;
+}
+
 void PM_VNN_DRIVER_REQ(vnn_id_t vnn_id)
 {
 	unsigned int key = sedi_core_irq_lock();
