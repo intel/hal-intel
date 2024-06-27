@@ -124,4 +124,17 @@ static inline uint64_t sedi_core_get_irq_map(void)
 	return irq_map;
 }
 
+/*!
+ * \brief sedi_virt_to_phys
+ * \param[in] virt: virtual address
+ * \return physical address of the virtual address
+ */
+uintptr_t sedi_core_virt_to_phys(uintptr_t virt);
+
+/*!
+ * \brief sedi_phys_to_virt
+ * \param[in] phys: physical address
+ * \return virtual address of the physical address
+ */
+uintptr_t sedi_core_phys_to_virt(uintptr_t phys);
 #endif
