@@ -401,7 +401,7 @@ int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr,
  *			another parameter.
  * \param[in] i2c_device: i2c device id
  * \param[in] addr: slave address(7-bit or 10-bit)
- * \param[in] *data: pointer of the buffer for data from the slave device
+ * \param[out] *data: pointer of the buffer for data from the slave device
  * \param[out] num: number of data bytes to receive
  * \param[in] pending: i2c data transfer operation is pending
  *                     ('Stop' signal will not be sent)
