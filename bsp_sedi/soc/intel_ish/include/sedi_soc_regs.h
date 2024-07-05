@@ -62,6 +62,20 @@ SEDI_IREG_BASE_DEFINE(I2C, 2, 0x4000);
 
 #define I2C_FIFO_DEPTH (64)
 
+/****** i3c *****/
+/*!
+ * \struct sedi_i3c
+ * \brief  I3C device bus ID
+ */
+typedef enum {
+	SEDI_I3C_0 = 0,
+	SEDI_I3C_1,
+	SEDI_I3C_NUM
+} sedi_i3c_t;
+
+SEDI_IREG_BASE_DEFINE(I3C, 0, 0x4800000);
+SEDI_IREG_BASE_DEFINE(I3C, 1, 0x4802000);
+
 /****** GPIO *****/
 
 /*!
