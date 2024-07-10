@@ -70,8 +70,8 @@ static void pg_exit_restore_hw(void)
 	write32(LAPIC_SPUR, LAPIC_ENABLE | LAPIC_SPUR_RESET);
 
 	write32(CCU_RST_HST, read32(CCU_RST_HST));
-	write32(CCU_TCG_ENABLE, 0);
-	write32(CCU_BCG_ENABLE, 0);
+	write32(CCU_TCG_DISABLE, 0);
+	write32(CCU_BCG_DISABLE, 0);
 
 	write32(CCU_BCG_MIA, 0);
 	write32(CCU_BCG_DMA, 0);
@@ -624,6 +624,8 @@ void sedi_pm_init(void)
 	/* clear reset history register in CCU */
 	write32(CCU_RST_HST, read32(CCU_RST_HST));
 
+	write32(CCU_TCG_DISABLE, 0);
+	write32(CCU_BCG_DISABLE, 0);
 	/* disable TCG and disable BCG */
 	write32(CCU_TCG_EN, 0);
 	reset_bcg();
