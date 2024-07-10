@@ -522,11 +522,32 @@ static void pre_setting_d0ix(void)
 {
 	write32(PMU_VNN_REQ, read32(PMU_VNN_REQ));
 	uart_to_idle();
+
+	/* clear registers */
+	write32(PMU_CG_PG_STATUS, read32(PMU_CG_PG_STATUS));
+	write32(PMU_WAKE_EVENT1, read32(PMU_WAKE_EVENT1));
+	write32(PMU_WAKE_EVENT2, read32(PMU_WAKE_EVENT2));
 }
 
 static void post_setting_d0ix(void)
 {
+	uint32_t cg_pg_status, wk_event_1, wk_event_2, fabric_idle_timeout_snapshot;
+
 	uart_port_restore();
+
+	cg_pg_status = read32(PMU_CG_PG_STATUS);
+	wk_event_1 = read32(PMU_WAKE_EVENT1);
+	wk_event_2 = read32(PMU_WAKE_EVENT2);
+	if (cg_pg_status & PMU_STATUS_CG_ABORT) {
+		PM_LOG("CG_PG_STATUS: 0x%x, Wake_event_1: 0x%x, Wake_event_2: 0x%x\n",
+				cg_pg_status, wk_event_1, wk_event_2);
+		fabric_idle_timeout_snapshot = read32(PMU_FABRIC_SNAPSHOT);
+		if (fabric_idle_timeout_snapshot) {
+			PM_LOG("FABRIC_IDLE_TIMEOUT_SNAPSHOT: 0x%x\n",
+					fabric_idle_timeout_snapshot);
+			write32(PMU_FABRIC_SNAPSHOT, fabric_idle_timeout_snapshot);
+		}
+	}
 }
 
 void sedi_pm_enter_power_state(int state)
