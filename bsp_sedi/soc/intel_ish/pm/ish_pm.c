@@ -14,6 +14,7 @@
 #include <zephyr/irq.h>
 #include <zephyr/drivers/interrupt_controller/ioapic.h>
 #include <zephyr/arch/x86/ia32/segmentation.h>
+#include <string.h>
 
 /* defined in link script: soc/x86/intel_ish/scripts/ish_linker.ld */
 extern uint32_t __text_region_start;
@@ -741,4 +742,12 @@ void command_idle_stats(void)
 		PM_LOG("        last error:   %u\n", aon_share->last_error);
 		PM_LOG("        error counts: %u\n", aon_share->error_count);
 	}
+}
+
+/**
+ * Reset low power idle statistics
+ */
+void reset_pm_stats(void)
+{
+	memset(&pm_stats, 0, sizeof(pm_stats));
 }

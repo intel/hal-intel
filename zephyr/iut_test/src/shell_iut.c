@@ -1,13 +1,14 @@
 /*
- * Copyright (c) 2023 Intel Corporation.
+ * Copyright (c) 2023-2024 Intel Corporation.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
 
 #include <zephyr/kernel.h>
 #include <zephyr/shell/shell.h>
-#include "iut.h"
 #include <zephyr/shell/shell_uart.h>
+#include <zephyr/drivers/uart.h>
+#include "iut.h"
 
 extern int iut_trigger(size_t argc, char **argv);
 
@@ -56,8 +57,8 @@ SHELL_STATIC_SUBCMD_SET_CREATE(sub_iut,
 
 SHELL_CMD_REGISTER(iut, &sub_iut, "IUT commands", NULL);
 
-#ifdef _CONFIG_PM
-static const struct shell_uart *sh_uart;
+#ifdef CONFIG_PM
+static SHELL_UART_STRUCT * sh_uart;
 
 void iut_shell_suspend(void)
 {
@@ -71,22 +72,29 @@ void iut_shell_suspend(void)
 		}
 
 		/*get shell uart backend*/
-		sh_uart = (const struct shell_uart *)shell_ptr->iface->ctx;
+		sh_uart = (SHELL_UART_STRUCT *)shell_ptr->iface->ctx;
 
 		if (sh_uart == NULL) {
 			iut_print("get shell UART pointer error!!!\n");
 			return;
 		}
 	}
-
-	k_timer_stop(sh_uart->timer);
+#ifdef CONFIG_SHELL_BACKEND_SERIAL_INTERRUPT_DRIVEN
+	uart_irq_rx_disable(sh_uart->common.dev);
+#else
+	k_timer_stop(&sh_uart->rx_timer);
+#endif
 }
 
 void iut_shell_resume(void)
 {
 	if (sh_uart) {
-		k_timer_start(sh_uart->timer, K_NO_WAIT,
+#ifdef CONFIG_SHELL_BACKEND_SERIAL_INTERRUPT_DRIVEN
+		uart_irq_rx_enable(sh_uart->common.dev);
+#else
+		k_timer_start(&sh_uart->rx_timer, K_NO_WAIT,
 			K_MSEC(CONFIG_SHELL_BACKEND_SERIAL_RX_POLL_PERIOD));
+#endif
 	}
 }
 #endif
