@@ -312,7 +312,11 @@ static int restore_main_fw(void)
 
 /* SRAM needs time to enter retention mode */
 #define CYCLES_PER_US                  100
+#ifdef CONFIG_SOC_INTEL_ISH_5_8_0
+#define SRAM_RETENTION_US_DELAY	       20
+#else
 #define SRAM_RETENTION_US_DELAY	       5
+#endif
 #define SRAM_RETENTION_CYCLES_DELAY    (SRAM_RETENTION_US_DELAY * CYCLES_PER_US)
 
 #ifdef CONFIG_SOC_INTEL_ISH_5_6_0
@@ -568,6 +572,23 @@ static inline void clear_vnnred_aoncg(void)
 /* SRAM needs 5 clock cycles to avoid power strike when out of retention */
 #define RETENTION_EXTRA_CYCLES_DELAY (5)
 
+#ifdef CONFIG_SOC_INTEL_ISH_5_8_0
+/* enable deep sleep of a SRAM bank */
+#define BANK_DS_ENABLE(i) \
+	(write32(PMU_SRAM_DEEPSLEEP, read32(PMU_SRAM_DEEPSLEEP) | (0x3 << (2 * i))))
+
+/* disable deep sleep of a SRAM bank */
+#define BANK_DS_DISABLE(i) \
+	(write32(PMU_SRAM_DEEPSLEEP, read32(PMU_SRAM_DEEPSLEEP) & ~(0x3 << (2 * i))))
+
+/**
+ * check SRAM bank i power status in PMU_SRAM_PWR_STATUS register
+ * one bank has two tiles, 2 bit for one bank
+ * 1: ready for operation 0: not ready for operation
+ */
+#define BANK_PWR_STATUS(i) (read32(PMU_SRAM_PWR_STATUS) & (0x3 << (2 * i)))
+#endif
+
 static void sram_retention(int out)
 {
 #if defined(CONFIG_SOC_INTEL_ISH_5_6_0)
@@ -592,6 +613,21 @@ static void sram_retention(int out)
 		}
 		mask <<= 1;
 		sum_mask += mask;
+	}
+#elif defined(CONFIG_SOC_INTEL_ISH_5_8_0)
+	for (int i = 0; i < SRAM_POWER_OFF_BANKS; i++) {
+		if (out && !BANK_PWR_STATUS(i)) {
+			/* exit deep sleep on a bank */
+			BANK_DS_DISABLE(i);
+			delay(RETENTION_EXTRA_CYCLES_DELAY);
+			while (!BANK_PWR_STATUS(i))
+				;
+		} else if (!out) {
+			/* enter deep sleep on a bank */
+			BANK_DS_ENABLE(i);
+			while (BANK_PWR_STATUS(i))
+				;
+		}
 	}
 #else
 	if (out) {
