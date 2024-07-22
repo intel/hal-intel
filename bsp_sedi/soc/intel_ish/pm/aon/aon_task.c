@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -565,65 +565,59 @@ static inline void clear_vnnred_aoncg(void)
 	write32(CCU_AONCG_EN, 0);
 }
 
-#ifdef CONFIG_SOC_INTEL_ISH_5_6_0
-#define STRINGIFY(x)			#x
-#define SLINE(num)			STRINGIFY(num)
-#define RETENTION_EXIT_CYCLES_DELAY	5
+/* SRAM needs 5 clock cycles to avoid power strike when out of retention */
+#define RETENTION_EXTRA_CYCLES_DELAY (5)
 
-static void sram_enter_sleep_mode(void)
+static void sram_retention(int out)
 {
+#if defined(CONFIG_SOC_INTEL_ISH_5_6_0)
 	uint32_t val, sum_mask, mask;
 
 	sum_mask = mask = 0x1;
 	val = read32(PMU_SRAM_DEEPSLEEP);
 	while (sum_mask <= CONFIG_RAM_BANK_TILE_MASK) {
-		if (!(val & mask)) {
-			write32(PMU_SRAM_DEEPSLEEP, val | sum_mask);
-			while (read32(PMU_SRAM_PWR_STATUS) & mask)
-				;
+		if (out) {
+			if ((val & mask)) {
+				write32(PMU_SRAM_DEEPSLEEP, val & ~sum_mask);
+				while (!(read32(PMU_SRAM_PWR_STATUS) & mask))
+					;
+				delay(RETENTION_EXTRA_CYCLES_DELAY);
+			}
+		} else {
+			if (!(val & mask)) {
+				write32(PMU_SRAM_DEEPSLEEP, val | sum_mask);
+				while (read32(PMU_SRAM_PWR_STATUS) & mask)
+					;
+			}
 		}
 		mask <<= 1;
 		sum_mask += mask;
 	}
-}
+#else
+	if (out) {
+		/* set main SRAM into normal mode */
+		write32(PMU_LDO_CTRL, PMU_LDO_ENABLE_BIT);
 
-static void sram_exit_sleep_mode(void)
-{
-	uint32_t val, sum_mask, mask;
-
-	sum_mask = mask = 0x1;
-	val = read32(PMU_SRAM_DEEPSLEEP);
-	while (sum_mask <= CONFIG_RAM_BANK_TILE_MASK) {
-		if ((val & mask)) {
-			write32(PMU_SRAM_DEEPSLEEP, val & ~sum_mask);
-			while (!(read32(PMU_SRAM_PWR_STATUS) & mask))
-				;
-			__asm__ volatile (
-					"movl $"SLINE(RETENTION_EXIT_CYCLES_DELAY)", %%ecx;"
-					"loop .;\n\t"
-					:
-					:
-					: "ecx"
-					);
-		}
-		mask <<= 1;
-		sum_mask += mask;
+		/*
+		 * poll LDO_READY status to make sure SRAM LDO is on
+		 * (exited retention mode)
+		 */
+		while (!(read32(PMU_LDO_CTRL) & PMU_LDO_READY_BIT))
+			continue;
+	} else {
+		/* set main SRAM into retention mode */
+		write32(PMU_LDO_CTRL, (PMU_LDO_ENABLE_BIT
+					| PMU_LDO_RETENTION_BIT));
 	}
-}
 #endif
+}
 
 static void handle_d0i2(void)
 {
 	pg_exit_save_ctx();
 	aon_share.pg_exit = 0;
 
-#ifdef CONFIG_SOC_INTEL_ISH_5_6_0
-	sram_enter_sleep_mode();
-#else
-	/* set main SRAM into retention mode*/
-	write32(PMU_LDO_CTRL, (PMU_LDO_ENABLE_BIT
-		| PMU_LDO_RETENTION_BIT));
-#endif
+	sram_retention(0);
 	/* delay some cycles before halt */
 	delay(SRAM_RETENTION_CYCLES_DELAY);
 
@@ -646,19 +640,7 @@ static void handle_d0i2(void)
 
 	clear_vnnred_aoncg();
 
-#ifdef CONFIG_SOC_INTEL_ISH_5_6_0
-	sram_exit_sleep_mode();
-#else
-	/* set main SRAM intto normal mode */
-	write32(PMU_LDO_CTRL, PMU_LDO_ENABLE_BIT);
-
-	/**
-	 * poll LDO_READY status to make sure SRAM LDO is on
-	 * (exited retention mode)
-	 */
-	while (!(read32(PMU_LDO_CTRL) & PMU_LDO_READY_BIT))
-		continue;
-#endif
+	sram_retention(1);
 
 	if (read32(PMU_RST_PREP) & PMU_RST_PREP_AVAIL)
 		handle_reset(ISH_PM_STATE_RESET_PREP);
