@@ -773,7 +773,8 @@ int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, IN
 	i2c->intr_mask = BSETS_INTR_ERROR | SEDI_RBFVM(I2C, INTR_MASK, M_STOP_DET, DISABLED);
 
 	config_and_enable_dma_channel(i2c_device, context->tx_dma_dev, context->tx_dma_handshake,
-		context->tx_dma_chan, (uint32_t)data, context->phy_data_cmd, num - 1, I2C_DMA_DIRECTION_TX);
+		context->tx_dma_chan, (uint32_t)data, context->phy_data_cmd, num - 1,
+		I2C_DMA_DIRECTION_TX);
 
 	dw_i2c_dma_enable(context->base, 1, 1);
 	i2c->enable = SEDI_RBFVM(I2C, ENABLE, ENABLE, ENABLED);
@@ -820,11 +821,13 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, OUT
 
 	/* RX: start read data transfer first */
 	config_and_enable_dma_channel(i2c_device, context->rx_dma_dev, context->rx_dma_handshake,
-		context->rx_dma_chan, context->phy_data_cmd, (uint32_t)data, num, I2C_DMA_DIRECTION_RX);
+		context->rx_dma_chan, context->phy_data_cmd, (uint32_t)data, num,
+		I2C_DMA_DIRECTION_RX);
 
 	/* TX: enable i2c to write RESTART+READ first, then write num-2 READ for each request */
 	config_and_enable_dma_channel(i2c_device, context->tx_dma_dev, context->tx_dma_handshake,
-		context->tx_dma_chan, phy_tx_cmd, context->phy_data_cmd + 1, num - 1, I2C_DMA_DIRECTION_TX_CMD);
+		context->tx_dma_chan, phy_tx_cmd, context->phy_data_cmd + 1, num - 1,
+		I2C_DMA_DIRECTION_TX_CMD);
 
 	dw_i2c_dma_enable(context->base, 1, 0);
 	i2c->enable = SEDI_RBFVM(I2C, ENABLE, ENABLE, ENABLED);
