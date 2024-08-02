@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -47,7 +47,10 @@ static inline void ish_mia_halt(void)
 {
 	/* make sure interrupts are enabled before halting */
 	__asm__ volatile("sti;\n"
-			 "hlt;");
+			 "hlt;\n"
+			 "nop;\n"
+			 "nop;\n"
+			 "cli;");
 }
 
 /* reset ISH mintue-ia cpu core  */
