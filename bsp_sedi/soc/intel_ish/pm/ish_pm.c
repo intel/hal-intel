@@ -38,6 +38,43 @@ extern uint32_t _image_ram_end;
 
 static sedi_uart_config_t uart0_cfg, uart1_cfg, uart2_cfg;
 
+struct {
+	sedi_devid_t id;
+	uint32_t reg;
+	uint32_t bits;
+} static pm_cg_info[] = {
+	{
+		.id = SEDI_DEVID_UART0,
+		.reg = CCU_BCG_UART,
+		.bits = CCU_BCG_BIT_UART0,
+	},
+	{
+		.id = SEDI_DEVID_UART1,
+		.reg = CCU_BCG_UART,
+		.bits = CCU_BCG_BIT_UART1,
+	},
+	{
+		.id = SEDI_DEVID_UART2,
+		.reg = CCU_BCG_UART,
+		.bits = CCU_BCG_BIT_UART2,
+	},
+	{
+		.id = SEDI_DEVID_I2C0,
+		.reg = CCU_BCG_I2C,
+		.bits = CCU_BCG_BIT_I2C0,
+	},
+	{
+		.id = SEDI_DEVID_I2C1,
+		.reg = CCU_BCG_I2C,
+		.bits = CCU_BCG_BIT_I2C1,
+	},
+	{
+		.id = SEDI_DEVID_I2C2,
+		.reg = CCU_BCG_I2C,
+		.bits = CCU_BCG_BIT_I2C2,
+	},
+};
+
 static void uart_to_idle(void)
 {
 	sedi_uart_get_config(SEDI_UART_0, &uart0_cfg);
@@ -750,4 +787,48 @@ void command_idle_stats(void)
 void reset_pm_stats(void)
 {
 	memset(&pm_stats, 0, sizeof(pm_stats));
+}
+
+static int pm_get_cg_info(sedi_devid_t id, uint32_t *reg, uint32_t *reg_bits)
+{
+	*reg = 0x0;
+	*reg_bits = 0x0;
+
+	for (int i = 0; i < ARRAY_SIZE(pm_cg_info); i++) {
+		if (pm_cg_info[i].id == id) {
+			*reg = pm_cg_info[i].reg;
+			*reg_bits = pm_cg_info[i].bits;
+			return SEDI_DRIVER_OK;
+		}
+	}
+
+	return (*reg != 0x0) ? SEDI_DRIVER_OK : SEDI_DRIVER_ERROR;
+}
+
+static void pm_change_cg_state(sedi_devid_t id, bool perform_cg)
+{
+	uint32_t bits, bcg_reg;
+	uint32_t old_val, new_val;
+
+	if (pm_get_cg_info(id, &bcg_reg, &bits) != SEDI_DRIVER_OK)
+		return;
+
+	while (1) {
+		old_val = read32(bcg_reg);
+
+		if (perform_cg)
+			new_val = old_val | bits;
+		else
+			new_val = old_val & ~bits;
+
+		if (atomic_cas((atomic_t *)bcg_reg, (atomic_val_t)old_val, (atomic_val_t)new_val))
+			break;
+	}
+}
+
+void sedi_pm_set_device_power(IN sedi_devid_t id, IN sedi_power_state_t state)
+{
+	if ((id >= SEDI_DEVID_FIRST) && (id < SEDI_DEVID_TOP)) {
+		pm_change_cg_state(id, (state != SEDI_POWER_FULL));
+	}
 }
