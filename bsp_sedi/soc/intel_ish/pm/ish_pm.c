@@ -104,7 +104,7 @@ static uint32_t convert_both_edge_gpio_to_single_edge(void)
 	 */
 	for (i = 0; i < 32; i++) {
 		if (read32(ISH_GPIO_GIMR) & BIT(i) && read32(ISH_GPIO_GRER) & BIT(i) &&
-		    read32(ISH_GPIO_GFER & BIT(i))) {
+		    read32(ISH_GPIO_GFER) & BIT(i)) {
 			/* Record the pin so we can restore it later */
 			both_edge_pins |= BIT(i);
 
