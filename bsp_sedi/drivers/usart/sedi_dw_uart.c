@@ -171,7 +171,10 @@ typedef struct {
 	dma_operation_type_t operation; /* READ/WRITE */
 } uart_dma_ctxt_t;
 
-static uint32_t uart_dma_hs_id[SEDI_UART_NUM];
+static uint32_t uart_dma_hsid_rx[SEDI_UART_NUM] = {DMA_HWID_UART0_RX, DMA_HWID_UART1_RX,
+						   DMA_HWID_UART2_RX};
+static uint32_t uart_dma_hsid_tx[SEDI_UART_NUM] = {DMA_HWID_UART0_TX, DMA_HWID_UART1_TX,
+						   DMA_HWID_UART2_TX};
 
 static uart_dma_ctxt_t dma_write_ctxt[SEDI_UART_NUM] = {
 	{.dma_xfer = NULL, .uart = SEDI_UART_0, .operation = WRITE},
@@ -1871,6 +1874,7 @@ static int sedi_uart_dma_io_async(sedi_uart_t uart, const sedi_uart_dma_xfer_t *
 	dma_channel_direction_t dma_dir;
 	dma_hs_per_rtx_t dma_hs_per;
 	uint32_t src, dst;
+	uint32_t handshake;
 
 	if (op == WRITE) {
 		dma_write_ctxt[uart].dma_xfer = xfer;
@@ -1881,6 +1885,7 @@ static int sedi_uart_dma_io_async(sedi_uart_t uart, const sedi_uart_dma_xfer_t *
 		}
 		dma_dir = DMA_MEMORY_TO_PERIPHERAL;
 		dma_hs_per = DMA_HS_PER_TX;
+		handshake = uart_dma_hsid_tx[uart];
 		src = (uint32_t)xfer->data;
 		dst = (uint32_t)(&regs->rbr_thr_dll);
 	} else if (op == READ) {
@@ -1892,6 +1897,7 @@ static int sedi_uart_dma_io_async(sedi_uart_t uart, const sedi_uart_dma_xfer_t *
 		}
 		dma_dir = DMA_PERIPHERAL_TO_MEMORY;
 		dma_hs_per = DMA_HS_PER_RX;
+		handshake = uart_dma_hsid_rx[uart];
 		dst = (uint32_t)xfer->data;
 		src = (uint32_t)(&regs->rbr_thr_dll);
 		regs->dmasa |= SEDI_RBFVM(UART, DMASA, DMASA, SOFT_ACK);
@@ -1900,7 +1906,8 @@ static int sedi_uart_dma_io_async(sedi_uart_t uart, const sedi_uart_dma_xfer_t *
 	}
 
 	ret = sedi_dma_control(xfer->dma_dev, xfer->channel, SEDI_CONFIG_DMA_HS_DEVICE_ID,
-			       uart_dma_hs_id[uart]);
+			       handshake);
+
 	DBG_CHECK(0 == ret, SEDI_DRIVER_ERROR);
 
 	ret = sedi_dma_control(xfer->dma_dev, xfer->channel, SEDI_CONFIG_DMA_HS_DEVICE_ID_PER_DIR,
@@ -1926,15 +1933,18 @@ static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev, uint32_
 	dma_channel_direction_t dma_dir;
 	dma_hs_per_rtx_t dma_hs_per;
 	uint32_t src, dst;
+	uint32_t handshake;
 
 	if (op == WRITE) {
 		dma_dir = DMA_MEMORY_TO_PERIPHERAL;
 		dma_hs_per = DMA_HS_PER_TX;
+		handshake = uart_dma_hsid_tx[uart];
 		src = (uint32_t)buff;
 		dst = (uint32_t)(&regs->rbr_thr_dll);
 	} else if (op == READ) {
 		dma_dir = DMA_PERIPHERAL_TO_MEMORY;
 		dma_hs_per = DMA_HS_PER_RX;
+		handshake = uart_dma_hsid_rx[uart];
 		dst = (uint32_t)buff;
 		src = (uint32_t)(&regs->rbr_thr_dll);
 		regs->dmasa |= SEDI_RBFM(UART, DMASA, DMASA);
@@ -1946,8 +1956,9 @@ static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev, uint32_
 	if (ret != SEDI_DRIVER_OK) {
 		return ret;
 	}
+
 	ret = sedi_dma_control(dma_dev, channel, SEDI_CONFIG_DMA_HS_DEVICE_ID,
-			       uart_dma_hs_id[uart]);
+			       handshake);
 
 	DBG_CHECK(0 == ret, SEDI_DRIVER_ERROR);
 
