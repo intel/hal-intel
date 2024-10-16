@@ -176,8 +176,8 @@
 
 #define SEDI_PREG_GET(_comp, _reg, _reg_addr)                                                      \
 	({                                                                                         \
-		volatile SEDI_REGT(_comp, _reg) * _addr = (_reg_addr);                             \
-		*_addr;                                                                            \
+		volatile SEDI_REGT(_comp, _reg) * _addr_get = (_reg_addr);                         \
+		*_addr_get;                                                                        \
 	})
 
 #define SEDI_IREG_GET(_comp, _instance, _reg)                                                      \
@@ -190,8 +190,8 @@
  */
 #define SEDI_PREG_SET(_comp, _reg, _value, _reg_addr)                                              \
 	({                                                                                         \
-		volatile SEDI_REGT(_comp, _reg) * _addr = (_reg_addr);                             \
-		*_addr = _value;                                                                   \
+		volatile SEDI_REGT(_comp, _reg) * _addr_set = (_reg_addr);                         \
+		*_addr_set = _value;                                                               \
 	})
 
 #define SEDI_IREG_SET(_comp, _instance, _reg, _value)                                              \
