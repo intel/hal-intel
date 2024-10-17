@@ -6,6 +6,8 @@
 
 #include <sedi_driver_rtc.h>
 
+#include "sedi_soc_regs.h"
+
 /* driver version */
 #define SEDI_RTC_DRIVER_VERSION SEDI_DRIVER_VERSION_MAJOR_MINOR(0, 1)
 

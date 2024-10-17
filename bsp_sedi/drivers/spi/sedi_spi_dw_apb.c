@@ -4,11 +4,13 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "sedi_driver_pm.h"
+#include <sedi_driver_pm.h>
+#include <sedi_driver_spi.h>
+#include <sedi_driver_dma.h>
+
 #include "sedi_driver_core.h"
-#include "sedi_driver_spi.h"
-#include "sedi_driver_dma.h"
 #include "sedi_spi_regs.h"
+#include "sedi_soc_funcs.h"
 
 #define SEDI_SPI_DRV_VERSION SEDI_DRIVER_VERSION_MAJOR_MINOR(1, 0)
 

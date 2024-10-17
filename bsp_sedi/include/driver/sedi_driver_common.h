@@ -10,8 +10,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "sedi_soc_regs.h"
-#include "sedi_soc.h"
+#include "sedi_soc_defs.h"
+#include "sedi_soc_funcs.h"
 
 /*!
  * \defgroup sedi_driver_common Common

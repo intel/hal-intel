@@ -4,12 +4,16 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <stddef.h>
-#include "sedi_driver_dma.h"
-#include "sedi_driver_pm.h"
+#include <sedi_driver_dma.h>
+#include <sedi_driver_pm.h>
 #include <sedi_driver_i2c.h>
-#include <sedi_i2c_regs.h>
+
 #include "sedi_driver_core.h"
+#include "sedi_i2c_regs.h"
+#include "sedi_soc_regs.h"
+#include "sedi_soc_funcs.h"
+
+#include <stddef.h>
 
 #define I2C_SDA_HOLD_DEFAULT (133)
 #define I2C_FIFO_DEFAULT_WATERMARK (I2C_FIFO_DEPTH / 2U)

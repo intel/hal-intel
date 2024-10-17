@@ -5,8 +5,10 @@
  */
 
 #include "sedi_driver_pm.h"
-#include <sedi_gpio_regs.h>
 #include <sedi_driver_gpio.h>
+
+#include "sedi_gpio_regs.h"
+#include "sedi_soc_regs.h"
 
 /* driver version */
 #define SEDI_GPIO_DRIVER_VERSION SEDI_DRIVER_VERSION_MAJOR_MINOR(0, 1)
