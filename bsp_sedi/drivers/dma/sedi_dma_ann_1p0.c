@@ -4,13 +4,14 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "sedi_dma_ann_1p0.h"
-#include "sedi_driver_pm.h"
-
-#include "sedi_soc_regs.h"
+#include <sedi_driver_pm.h>
 #include <sedi_driver_dma.h>
 #include <sedi_driver_ipc.h>
+
 #include "sedi_driver_core.h"
+#include "sedi_dma_ann_1p0.h"
+#include "sedi_soc_regs.h"
+#include "sedi_soc_funcs.h"
 
 #define DMA_RS0 0       /* root space for common memory */
 #define DMA_RS1 1       /* root space for csme memory */

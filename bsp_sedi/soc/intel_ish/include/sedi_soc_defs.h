@@ -1,11 +1,17 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifndef _SEDI_SOC_H_
-#define _SEDI_SOC_H_
+#ifndef _SEDI_SOC_DEFS_H_
+#define _SEDI_SOC_DEFS_H_
+
+#include <stdbool.h>
+
+/*!
+ * \defgroup sedi_soc_defs_ish Intel ISH SoC Definitions
+ */
 
 #define SEDI_CONFIG_ARCH_X86	(1)
 
@@ -34,36 +40,106 @@
 #endif
 
 /*!
- * \defgroup sedi_soc_ish Intel ISH SoC
+ * \enum sedi_hw_rev_t
+ * \brief HW Revision ID
  */
+typedef enum {
+	SEDI_HW_REV_INVALID = 0
+} sedi_hw_rev_t;
 
 /*!
- * \fn uint32_t sedi_pm_get_hbw_clock(void)
- * \brief Get current HBW clock frequency
- * \return uint32_t current HBW clock frequency
- * \ingroup sedi_soc_ish
+ * \enum sedi_uart_t
+ * \brief  uart device bus ID
  */
-static inline uint32_t sedi_pm_get_hbw_clock(void)
-{
-	return SEDI_MHZ_TO_HZ(ISH_CONFIG_CLK_FREQUENCY_MHZ /
-			ISH_CONFIG_HBW_CLK_DIVIDER);
-}
+typedef enum {
+	SEDI_UART_0 = 0,
+	SEDI_UART_1,
+	SEDI_UART_2,
+	SEDI_UART_NUM
+} sedi_uart_t;
 
 /*!
- * \fn uint32_t sedi_pm_get_lbw_clock(void)
- * \brief Get current LBW clock frequency
- * \return uint32_t current LBW clock frequency
- * \ingroup sedi_soc_ish
+ * \enum sedi_dma_t
+ * \brief  DMA device bus ID
  */
-static inline uint32_t sedi_pm_get_lbw_clock(void)
-{
-	return SEDI_MHZ_TO_HZ(ISH_CONFIG_CLK_FREQUENCY_MHZ);
-}
+typedef enum {
+	SEDI_DMA_0 = 0,
+	SEDI_DMA_NUM
+} sedi_dma_t;
+
+/**DMA block TS**/
+#define SEDI_DMA_PERIPH_MAX_SIZE 4096
+#define SEDI_DMA_PERIPH_MAX_SIZE_SHIFT 12
+
+/*!
+ * \enum sedi_i2c_t
+ * \brief  I2C device bus ID
+ */
+typedef enum {
+	SEDI_I2C_0 = 0,
+	SEDI_I2C_1,
+	SEDI_I2C_2,
+	SEDI_I2C_NUM
+} sedi_i2c_t;
+
+#define I2C_FIFO_DEPTH (64)
+
+/*!
+ * \enum sedi_gpio_t
+ * \brief  GPIO device bus ID
+ */
+typedef enum {
+	SEDI_GPIO_0 = 0,
+	SEDI_GPIO_NUM
+} sedi_gpio_t;
+
+#define ISH_PIN_NUM 36
+#define SEDI_GPIO_SOC_PORT_NUM (2U)
+
+#define SEDI_GPIO_TIMESTAMP_SLOTS_NUM 4
+#define SEDI_GPIO_TIMESTAMP_INTERVAL 0x10
+
+/*!
+ * \enum sedi_watchdog_t
+ * \brief  WATCHDOG device bus ID
+ */
+typedef enum {
+	SEDI_WATCHDOG_0 = 0,
+	SEDI_WATCHDOG_NUM
+} sedi_watchdog_t;
+
+#define SEDI_HPET_SOC_TIMER_NUM (3)
+
+/*!
+ * \enum sedi_spi_t
+ * \brief  SPI device bus ID
+ */
+typedef enum {
+	SEDI_SPI_0 = 0,
+	SEDI_SPI_1,
+	SEDI_SPI_NUM
+} sedi_spi_t;
+
+#define SPI_FIFO_DEPTH (64)
+#define SEDI_SPI_USE_DMA (1)
+
+#define SEDI_IRQ_HPET_TIMER_0 (14)
+#define SEDI_IRQ_HPET_TIMER_1 (0) /* fake IRQ number, same as timer 0's */
+
+#ifdef CONFIG_SOC_INTEL_ISH_5_8_0
+#define SEDI_IRQ_RESET_PREP (8)
+#define SEDI_IRQ_PCIEDEV (11)
+#define SEDI_IRQ_PMU2IOAPIC (12)
+#else
+#define SEDI_IRQ_RESET_PREP (6)
+#define SEDI_IRQ_PCIEDEV (9)
+#define SEDI_IRQ_PMU2IOAPIC (10)
+#endif
 
 /*!
  * \enum vnn_id_t
  * \brief VNN ID bit for different drivers
- * \ingroup sedi_soc_ish
+ * \ingroup sedi_soc_defs_ish
  */
 typedef enum {
 	VNN_ID_FIRST = 0,
@@ -82,18 +158,10 @@ typedef enum {
 #define VNN_ID_IPC_CSE_R VNN_ID_IPC_CSME_R
 #define VNN_ID_IPC_CSE_W VNN_ID_IPC_CSME_W
 
-#ifndef SEDI_PMU_BASE
-#define SEDI_PMU_BASE (0x04200000)
-#endif
-
-#define PMU_VNN_REQ_31_0 (SEDI_PMU_BASE + 0x3c)
-#define PMU_VNN_REQ_ACK (SEDI_PMU_BASE + 0x40)
-#define PMU_VNN_REQ_ACK_STS BIT(0)
-
 /*!
  * \enum sedi_devid_t
  * \brief SEDI device ID table
- * \ingroup sedi_soc_ish
+ * \ingroup sedi_soc_defs_ish
  */
 typedef enum {
 	SEDI_DEVID_FIRST = 0,
@@ -109,6 +177,8 @@ typedef enum {
 	SEDI_DEVID_SPI1,
 	SEDI_DEVID_TOP
 } sedi_devid_t;
+
+#define DMA_MISC_FUNC   1
 
 /*!
  * peripheral device id for dma handshake
@@ -136,7 +206,7 @@ typedef enum {
  * \brief check if a device is owned by SoC itself
  * \param[in] dev: device id to check
  * \return true/false
- * \ingroup sedi_soc_ish
+ * \ingroup sedi_soc_defs_ish
  */
 static inline bool sedi_dev_is_self_owned(sedi_devid_t dev)
 {
@@ -145,35 +215,4 @@ static inline bool sedi_dev_is_self_owned(sedi_devid_t dev)
 	return true;
 }
 
-/*!
- * \brief Request VNN for a device
- * \param[in] vnn_id: device id
- * \return void
- * \ingroup sedi_soc_ish
- */
-void PM_VNN_DRIVER_REQ(vnn_id_t vnn_id);
-
-/*!
- * \brief De-request VNN for a device
- * \param[in] vnn_id: device id
- * \return void
- * \ingroup sedi_soc_ish
- */
-void PM_VNN_DRIVER_DEREQ(vnn_id_t vnn_id);
-
-/*!
- * \brief Reset VNN for all devices
- * \return void
- * \ingroup sedi_soc_ish
- */
-void PM_VNN_ALL_RESET(void);
-
-/*!
- * \brief Reset VNN for a device
- * \param[in] vnn_id: device id
- * \return void
- * \ingroup sedi_soc_ish
- */
-void PM_VNN_DRIVER_RESET(vnn_id_t vnn_id);
-
-#endif
+#endif /* _SEDI_SOC_DEFS_H_ */

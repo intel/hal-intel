@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "sedi_driver_common.h"
+#include <sedi_driver_common.h>
 #include "sedi_driver_core.h"
 
 /* counter for vnn_req/vnn_dereq per vnn_id */

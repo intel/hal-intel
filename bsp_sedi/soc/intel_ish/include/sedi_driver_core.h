@@ -7,7 +7,9 @@
 #ifndef _SEDI_DRIVER_CORE_H_
 #define _SEDI_DRIVER_CORE_H_
 #include <stdint.h>
-#include "sedi_driver_common.h"
+#include <sedi_driver_common.h>
+
+#include "sedi_soc_regs.h"
 
 #define SEDI_DCACHE_LINE_SIZE ((uint32_t)16)
 

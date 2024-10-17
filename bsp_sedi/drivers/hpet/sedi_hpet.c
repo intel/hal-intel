@@ -5,7 +5,10 @@
  */
 
 #include <sedi_driver_hpet.h>
-#include <sedi_hpet_regs.h>
+
+#include "sedi_hpet_regs.h"
+#include "sedi_soc_regs.h"
+
 #include <string.h>
 
 /* define two 64-bit registers for easy access with SEDI REG APIs */

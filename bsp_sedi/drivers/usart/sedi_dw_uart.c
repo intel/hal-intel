@@ -4,9 +4,12 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "sedi_driver_uart.h"
-#include "sedi_driver_pm.h"
-#include <sedi_uart_regs.h>
+#include <sedi_driver_uart.h>
+#include <sedi_driver_pm.h>
+
+#include "sedi_uart_regs.h"
+#include "sedi_soc_regs.h"
+#include "sedi_soc_funcs.h"
 
 #define HAS_ADVANCED_UART_CONFIGURATION (0)
 #define HAS_UART_RS485_SUPPORT          (0)
