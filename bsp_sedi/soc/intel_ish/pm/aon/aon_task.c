@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023 -2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -7,7 +7,6 @@
 #include "aon_share.h"
 #include "aon_defs.h"
 #include "../ish_dma.h"
-
 /**
  * Due to very limit AON memory size (typically total 8KB), we don't want to
  * define and allocate whole 256 entries for aontask'IDT, that almost need 2KB
@@ -312,7 +311,11 @@ static int restore_main_fw(void)
 
 /* SRAM needs time to enter retention mode */
 #define CYCLES_PER_US                  100
-#define SRAM_RETENTION_US_DELAY	       5
+#ifdef CONFIG_SOC_INTEL_ISH_5_8_0
+#define SRAM_RETENTION_US_DELAY        20
+#else
+#define SRAM_RETENTION_US_DELAY        5
+#endif
 #define SRAM_RETENTION_CYCLES_DELAY    (SRAM_RETENTION_US_DELAY * CYCLES_PER_US)
 
 #ifdef CONFIG_SOC_INTEL_ISH_5_6_0
@@ -557,21 +560,40 @@ static inline void set_vnnred_aoncg(void)
 {
 	write32(PMU_VNNAON_RED, 1);
 	write32(CCU_AONCG_EN, 1);
+
+	write32(CCU_TCG_EN, 1);
+	write32(CCU_TCG_ENABLE, 0);
+	write32(CCU_BCG_ENABLE, 0);
 }
 
 static inline void clear_vnnred_aoncg(void)
 {
 	write32(PMU_VNNAON_RED, 0);
 	write32(CCU_AONCG_EN, 0);
+
+	write32(CCU_TCG_EN, 0);
+	write32(CCU_TCG_ENABLE, 1);
+	write32(CCU_BCG_ENABLE, 1);
 }
 
-#ifdef CONFIG_SOC_INTEL_ISH_5_6_0
+#if (defined(CONFIG_SOC_INTEL_ISH_5_6_0) || defined(CONFIG_SOC_INTEL_ISH_5_8_0))
 #define STRINGIFY(x)			#x
 #define SLINE(num)			STRINGIFY(num)
 #define RETENTION_EXIT_CYCLES_DELAY	5
+#ifdef CONFIG_SOC_INTEL_ISH_5_8_0
+#define SRAM_PG_BITS(i) (0x3 << (2 * i))
+#define BANK_PWR_STATUS(i) (read32(PMU_SRAM_PWR_STATUS) & SRAM_PG_BITS(i))
+#define BANK_DS_ENABLE(i) \
+		(write32(PMU_SRAM_DEEPSLEEP, read32(PMU_SRAM_DEEPSLEEP) | (0x3 << (2 * i))))
+
+#define BANK_DS_DISABLE(i) \
+		(write32(PMU_SRAM_DEEPSLEEP, read32(PMU_SRAM_DEEPSLEEP) & ~(0x3 << (2 * i))))
+#endif
+
 
 static void sram_enter_sleep_mode(void)
 {
+#if defined(CONFIG_SOC_INTEL_ISH_5_6_0)
 	uint32_t val, sum_mask, mask;
 
 	sum_mask = mask = 0x1;
@@ -585,10 +607,18 @@ static void sram_enter_sleep_mode(void)
 		mask <<= 1;
 		sum_mask += mask;
 	}
+#else
+	for (int i = 0; i < SRAM_POWER_OFF_BANKS; i++) {
+		BANK_DS_ENABLE(i);
+		while (BANK_PWR_STATUS(i))
+			;
+	}
+#endif
 }
 
 static void sram_exit_sleep_mode(void)
 {
+#if defined(CONFIG_SOC_INTEL_ISH_5_6_0)
 	uint32_t val, sum_mask, mask;
 
 	sum_mask = mask = 0x1;
@@ -609,6 +639,16 @@ static void sram_exit_sleep_mode(void)
 		mask <<= 1;
 		sum_mask += mask;
 	}
+#else
+	for (int i = 0; i < SRAM_POWER_OFF_BANKS; i++) {
+		if (!BANK_PWR_STATUS(i)) {
+			BANK_DS_DISABLE(i);
+			delay(RETENTION_EXIT_CYCLES_DELAY);
+			while (!BANK_PWR_STATUS(i))
+				;
+		}
+	}
+#endif
 }
 #endif
 
@@ -617,7 +657,7 @@ static void handle_d0i2(void)
 	pg_exit_save_ctx();
 	aon_share.pg_exit = 0;
 
-#ifdef CONFIG_SOC_INTEL_ISH_5_6_0
+#if (defined(CONFIG_SOC_INTEL_ISH_5_6_0) || defined(CONFIG_SOC_INTEL_ISH_5_8_0))
 	sram_enter_sleep_mode();
 #else
 	/* set main SRAM into retention mode*/
@@ -646,7 +686,7 @@ static void handle_d0i2(void)
 
 	clear_vnnred_aoncg();
 
-#ifdef CONFIG_SOC_INTEL_ISH_5_6_0
+#if (defined(CONFIG_SOC_INTEL_ISH_5_6_0) || defined(CONFIG_SOC_INTEL_ISH_5_8_0))
 	sram_exit_sleep_mode();
 #else
 	/* set main SRAM intto normal mode */
@@ -748,9 +788,6 @@ static void handle_reset(enum ish_pm_state pm_state)
 
 	/* disable CSME CSR irq */
 	disable_csme_csrirq();
-
-	/* power off main SRAM */
-	sram_power(0);
 
 	while (1) {
 		/* clear ISH2HOST doorbell register */
