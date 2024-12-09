@@ -811,7 +811,7 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 	uint32_t len = SEDI_DMA_PERIPH_MAX_SIZE;
 
 	/* release the dma resource */
-	sedi_dma_set_power(dma, chan, SEDI_POWER_OFF);
+	sedi_dma_set_power(dma, chan, SEDI_POWER_LOW);
 	sedi_dma_uninit(dma, chan);
 
 	if (event != SEDI_DMA_EVENT_TRANSFER_DONE) {
