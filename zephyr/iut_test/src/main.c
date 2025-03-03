@@ -146,6 +146,7 @@ int main(void)
 				(argc_run - 2) ? (&argv_run[2]) : NULL);
 
 		k_sem_give(&sem_trigger);
+		k_sem_give(&sem_trigger);
 	};
 
 	return 0;
