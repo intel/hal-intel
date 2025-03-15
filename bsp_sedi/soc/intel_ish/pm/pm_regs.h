@@ -63,6 +63,7 @@
 #define PMU_RST_PREP			(SEDI_PMU_BASE + 0x5c)
 #define PMU_RST_PREP_GET		BIT(0)
 #define PMU_RST_PREP_AVAIL		BIT(1)
+#define PMU_RST_PREP_RESET_TYPE	0x3FC
 #define PMU_RST_PREP_INT_MASK		BIT(31)
 
 #define VNN_ID_DMA0			4
