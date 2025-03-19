@@ -874,6 +874,9 @@ void ish_aon_main(void)
 
 		aon_share.last_error = AON_SUCCESS;
 
+		if (read32(PMU_RST_PREP) & PMU_RST_PREP_AVAIL)
+			handle_reset(ISH_PM_STATE_RESET_PREP);
+
 		switch (aon_share.pm_state) {
 		case ISH_PM_STATE_D0I2:
 			handle_d0i2();
