@@ -549,6 +549,7 @@ void sedi_pm_enter_power_state(int state)
 		enter_d0i0();
 		break;
 	}
+	sedi_core_irq_enable(SEDI_IRQ_RESET_PREP);
 }
 
 static void reset_bcg(void)
