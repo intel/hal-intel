@@ -11,6 +11,7 @@
 #include "sedi_driver_uart.h"
 #include <sedi_driver_rtc.h>
 #include <zephyr/sys/printk.h>
+#include <zephyr/init.h>
 #include <zephyr/irq.h>
 #include <zephyr/drivers/interrupt_controller/ioapic.h>
 #include <zephyr/arch/x86/ia32/segmentation.h>
@@ -610,6 +611,16 @@ static void reset_prep_isr(void)
 
 void sedi_pm_init(void)
 {
+	/*TODO: remove the api */
+}
+
+static int ish_sedi_pm_init(void)
+{
+	/* register ISR */
+	IRQ_CONNECT(SEDI_IRQ_RESET_PREP, 4, reset_prep_isr, 0, IOAPIC_LEVEL);
+	IRQ_CONNECT(SEDI_IRQ_PMU2IOAPIC, 4, pmu_wakeup_isr, 0, IOAPIC_LEVEL);
+	IRQ_CONNECT(SEDI_IRQ_PCIEDEV, 2, pcie_dev_isr, 0, IOAPIC_LEVEL);
+
 	/* clear reset bit */
 	write32(ISH_RST_REG, 0);
 
@@ -631,10 +642,6 @@ void sedi_pm_init(void)
 	write32(PMU_ISH_FABRIC_CNT, (read32(PMU_ISH_FABRIC_CNT) & 0xffff0000) | FABRIC_IDLE_COUNT);
 	write32(PMU_PGCB_CLKGATE_CTRL, TRUNK_CLKGATE_COUNT);
 
-	IRQ_CONNECT(SEDI_IRQ_RESET_PREP, 5, reset_prep_isr, 0, IOAPIC_LEVEL);
-	IRQ_CONNECT(SEDI_IRQ_PMU2IOAPIC, 5, pmu_wakeup_isr, 0, IOAPIC_LEVEL);
-	IRQ_CONNECT(SEDI_IRQ_PCIEDEV, 5, pcie_dev_isr, 0, IOAPIC_LEVEL);
-
 	/* unmask reset prep avail interrupt */
 	write32(PMU_RST_PREP, 0);
 	sedi_core_irq_enable(SEDI_IRQ_RESET_PREP);
@@ -647,7 +654,10 @@ void sedi_pm_init(void)
 		write32(PMU_D3_STATUS, read32(PMU_D3_STATUS));
 
 	sedi_core_irq_enable(SEDI_IRQ_PCIEDEV);
+
+	return 0;
 }
+SYS_INIT(ish_sedi_pm_init, PRE_KERNEL_2, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
 
 void ish_pm_reset(enum ish_pm_state pm_state)
 {
