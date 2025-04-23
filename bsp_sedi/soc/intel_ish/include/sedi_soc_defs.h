@@ -84,6 +84,17 @@ typedef enum {
 
 #define I2C_FIFO_DEPTH (64)
 
+/*
+ * \enum sedi_ipc
+ * \brief IPC interface ID
+ */
+typedef enum {
+	SEDI_IPC_HOST = 0,
+	SEDI_IPC_CSME,
+	SEDI_IPC_PMC,
+	SEDI_IPC_NUM
+} sedi_ipc_t;
+
 /*!
  * \enum sedi_gpio_t
  * \brief  GPIO device bus ID
