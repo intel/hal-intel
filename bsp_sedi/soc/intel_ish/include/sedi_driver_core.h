@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -58,6 +58,28 @@ static inline int sedi_core_clean_dcache_by_addr(uint32_t *addr, int32_t dsize)
 	return sedi_core_inv_clean_dcache_by_addr(addr, dsize);
 }
 
+static inline void sedi_core_cpu_idle(void)
+{
+	__asm__ volatile(
+			"sti;\n\t"
+			"hlt;\n\t"
+			"nop;\n\t"
+			"nop;\n\t"
+			"cli;\n\t");
+}
+
+static inline uint32_t sedi_core_get_eflags(void)
+{
+	uint32_t ret;
+
+	__asm__ volatile(
+		"pushfl;\n\t"
+		"popl  %0;\n\t"
+		: "=r"(ret));
+
+	return ret;
+}
+
 static inline void write_ioapic_reg(const uint32_t reg, const uint32_t val)
 {
 	write32(SEDI_IOAPIC_IDX, (unsigned char)reg);
@@ -70,12 +92,32 @@ static inline unsigned int read_ioapic_reg(const uint32_t reg)
 	return read32(SEDI_IOAPIC_WDW);
 }
 
+static inline void send_ioapic_eoi(const uint32_t vector)
+{
+	write32(SEDI_IOAPIC_EOI, vector);
+}
+
 static inline void update_ioapic_redtbl_raw_lo(const unsigned int irq, const unsigned int val)
 {
 	/* [IOAPIC], 3.2.4. "IOREDTBL[23:0] I/O REDIRECTION TABLE REGISTERS" */
 	const uint32_t redtbl_lo = SEDI_IOAPIC_IOREDTBL + 2 * irq;
 
 	write_ioapic_reg(redtbl_lo, val);
+}
+
+static inline int lapic_pending_interrupt_reqs(void)
+{
+	for (int i = 0; i < SEDI_LAPIC_IRR_COUNT; i++) {
+		if (read32(SEDI_LAPIC_IRR + SEDI_LAPIC_IRR_INST_OFF * i)) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+static inline void lapic_enable(void)
+{
+	write32(SEDI_LAPIC_SPUR, SEDI_LAPIC_ENABLE | SEDI_LAPIC_SPUR_RESET);
 }
 
 static inline void sedi_core_irq_enable(unsigned int irq)

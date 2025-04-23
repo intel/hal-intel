@@ -157,8 +157,8 @@ typedef struct {
 #define SEDI_PM_ERROR_INTR_PENDING (SEDI_DRIVER_ERROR_SPECIFIC - 3)
 
 /*!
- * \def SEDI_PM_ERROR_CG_ABORT
- * \brief Clock gating aborted
+ * \def SEDI_PM_ERROR_CG_PG_ABORT
+ * \brief Clock/Power gating aborted
  */
 #define SEDI_PM_ERROR_CG_PG_ABORT (SEDI_DRIVER_ERROR_SPECIFIC - 4)
 
