@@ -7,12 +7,40 @@
 #ifndef _SEDI_REG_DEFS_H_
 #define _SEDI_REG_DEFS_H_
 
+#ifndef __IO_R
+/*!
+ * \def __IO_R
+ * \brief 'read only' permissions
+ * \ingroup sedi_driver_common
+ */
+#define __IO_R volatile const
+#endif
+
+#ifndef __IO_W
+/*!
+ * \def __IO_W
+ * \brief 'write only' permissions
+ * \ingroup sedi_driver_common
+ */
+#define __IO_W volatile
+#endif
+
+#ifndef __IO_RW
+/*!
+ * \def __IO_RW
+ * \brief 'read / write' permissions
+ * \ingroup sedi_driver_common
+ */
+#define __IO_RW volatile
+#endif
+
 #define __SEDI_CONST_RO const
 #define __SEDI_CONST_WO
 #define __SEDI_CONST_RW
 #define __SEDI_CONST_RO_V const
 #define __SEDI_CONST_RW_V
 #define __SEDI_CONST_RW_L
+#define __SEDI_CONST_RW_C
 #define __SEDI_CONST_RW_AC
 #define __SEDI_CONST_RW_1C
 #define __SEDI_CONST_RW_1S
