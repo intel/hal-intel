@@ -44,9 +44,28 @@ uintptr_t __attribute__((weak)) sedi_core_virt_to_phys(uintptr_t virt)
 	return virt;
 }
 
+void sedi_mia_reset(void)
+{
+	write32(SEDI_REG_BASE(IPC_CSME) + IPC_MIA_RST_REG, 0);
+	write32(SEDI_REG_BASE(IPC_CSME) + IPC_MIA_RST_REG, 1);
+}
+
 uintptr_t __attribute__((weak)) sedi_core_phys_to_virt(uintptr_t phys)
 {
 	return phys;
+}
+
+bool PM_VNN_IS_ACTIVE(uint32_t *req_val)
+{
+	uint32_t req = read32(PMU_VNN_REQ_31_0);
+	uint32_t ack = read32(PMU_VNN_REQ_ACK);
+
+	if (req || (ack & PMU_VNN_REQ_ACK_STS)) {
+		*req_val = req;
+		return true;
+	} else {
+		return false;
+	}
 }
 
 void PM_VNN_DRIVER_REQ(vnn_id_t vnn_id)
