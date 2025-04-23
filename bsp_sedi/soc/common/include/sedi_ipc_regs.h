@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -366,6 +366,39 @@ SEDI_REG_DEFINE(IPC, ISH_AGENT_COMM_AGENT, 0x38, RW, (uint32_t)0xffffffff, (uint
  */
 SEDI_RBF_DEFINE(IPC, ISH_AGENT_COMM_AGENT, AGENT_COMM, 0, 32, RW, (uint32_t)0x0);
 
+/* ********* IPC ISH_AGENT_COMM_AGENT ***********
+ *
+ * Register of SEDI IPC
+ *   ISH_RST_CSE: RST ISH MinuteIA Core
+ *     AddressOffset  : 0x44
+ *     AccessType     : RW
+ *     WritableBitMask: 0xffffffff
+ *     ResetValue     : (uint32_t)0x0
+ */
+SEDI_REG_DEFINE(IPC, ISH_RST_CSE, 0x44, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+
+/*
+ * Bit Field of Register ISH_RST_CSE
+ *   RESERVED0: Reserved Field
+ *     BitOffset : 31
+ *     BitWidth  : 1
+ *     AccessType: RO
+ *     ResetValue: (uint32_t)0x0
+ */
+SEDI_RBF_DEFINE(IPC, ISH_RST_CSE, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+
+/*
+ * Bit Field of Register ISH_RST_CSE
+ *   RESET_BIT: Reset ISH MIA Core Bit
+ *     BitOffset : 31
+ *     BitWidth  : 1
+ *     AccessType: RW
+ *     ResetValue: (uint32_t)0x0
+ */
+SEDI_RBF_DEFINE(IPC, ISH_RST_CSE, RESET_BIT, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(IPC, ISH_RST_CSE, RESET_BIT, 0, 0);
+SEDI_RBFV_DEFINE(IPC, ISH_RST_CSE, RESET_BIT, 1, 1);
+
 /* ********* IPC AGENT2ISH_DOORBELL_AGENT ***********
  *
  * Register of SEDI IPC
@@ -474,7 +507,7 @@ SEDI_REG_DEFINE(IPC, AGENT2ISH_MSG_AGENT, 0xe0, RW, (uint32_t)0xffffffff, (uint3
  */
 SEDI_RBF_DEFINE(IPC, AGENT2ISH_MSG_AGENT, MSG, 0, 32, RW, (uint32_t)0x0);
 
-/* ********* IPC REMAP_AGENT ***********
+/* ********* IPC REMAP0_AGENT ***********
  *
  * Register of SEDI IPC
  *   REMAP_AGENT: Remap0 For AGENT
@@ -483,17 +516,72 @@ SEDI_RBF_DEFINE(IPC, AGENT2ISH_MSG_AGENT, MSG, 0, 32, RW, (uint32_t)0x0);
  *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(IPC, REMAP_AGENT, 0x360, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+SEDI_REG_DEFINE(IPC, REMAP0_AGENT, 0x360, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
- * Bit Field of Register REMAP_AGENT
+ * Bit Field of Register REMAP0_AGENT
  *   REMAP: Remap Address Register
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(IPC, REMAP_AGENT, REMAP, 0, 32, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(IPC, REMAP0_AGENT, REMAP, 0, 32, RW, (uint32_t)0x0);
+
+/* ********* IPC REMAP1_AGENT ***********
+ *
+ * Register of SEDI IPC
+ *   REMAP_AGENT: Remap1 For AGENT
+ *     AddressOffset  : 0x364
+ *     AccessType     : RW
+ *     WritableBitMask: 0xffffffff
+ *     ResetValue     : (uint32_t)0x0
+ */
+SEDI_REG_DEFINE(IPC, REMAP1_AGENT, 0x364, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+
+/* ********* IPC REMAP2_AGENT ***********
+ *
+ * Register of SEDI IPC
+ *   REMAP_AGENT: Remap2 For AGENT
+ *     AddressOffset  : 0x368
+ *     AccessType     : RW
+ *     WritableBitMask: 0xffffffff
+ *     ResetValue     : (uint32_t)0x0
+ */
+SEDI_REG_DEFINE(IPC, REMAP2_AGENT, 0x368, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+
+/* ********* IPC REMAP3_AGENT ***********
+ *
+ * Register of SEDI IPC
+ *   REMAP_AGENT: Remap3 For AGENT
+ *     AddressOffset  : 0x36c
+ *     AccessType     : RW
+ *     WritableBitMask: 0xffffffff
+ *     ResetValue     : (uint32_t)0x0
+ */
+SEDI_REG_DEFINE(IPC, REMAP3_AGENT, 0x36c, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+
+/* ********* IPC REMAP4_AGENT ***********
+ *
+ * Register of SEDI IPC
+ *   REMAP_AGENT: Remap4 For AGENT
+ *     AddressOffset  : 0x370
+ *     AccessType     : RW
+ *     WritableBitMask: 0xffffffff
+ *     ResetValue     : (uint32_t)0x0
+ */
+SEDI_REG_DEFINE(IPC, REMAP4_AGENT, 0x370, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+
+/* ********* IPC REMAP5_AGENT ***********
+ *
+ * Register of SEDI IPC
+ *   REMAP_AGENT: Remap5 For AGENT
+ *     AddressOffset  : 0x374
+ *     AccessType     : RW
+ *     WritableBitMask: 0xffffffff
+ *     ResetValue     : (uint32_t)0x0
+ */
+SEDI_REG_DEFINE(IPC, REMAP5_AGENT, 0x374, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /* ********* IPC ISH_IPC_BUSY_CLEAR_AGENT ***********
  *
@@ -527,6 +615,50 @@ SEDI_RBFV_DEFINE(IPC, ISH_IPC_BUSY_CLEAR_AGENT, ISH2AGENT_BUSY_CLEAR, 1, 1);
  *     ResetValue: (uint32_t)0x0
  */
 SEDI_RBF_DEFINE(IPC, ISH_IPC_BUSY_CLEAR_AGENT, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+
+/* ********* IPC UMA_BASE_LOW_AGENT ***********
+ *
+ * Register of SEDI IPC
+ *   UMA_BASE_LOW_AGENT: UMA BASE Low Address For AGENT
+ *     AddressOffset  : 0x380
+ *     AccessType     : RW
+ *     WritableBitMask: 0xffffffff
+ *     ResetValue     : (uint32_t)0x0
+ */
+SEDI_REG_DEFINE(IPC, UMA_BASE_LOW_AGENT, 0x380, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+
+/* ********* IPC UMA_BASE_HIGH_AGENT ***********
+ *
+ * Register of SEDI IPC
+ *   UMA_BASE_HIGH_AGENT: UMA BASE High Address For AGENT
+ *     AddressOffset  : 0x384
+ *     AccessType     : RW
+ *     WritableBitMask: 0xffffffff
+ *     ResetValue     : (uint32_t)0x0
+ */
+SEDI_REG_DEFINE(IPC, UMA_BASE_HIGH_AGENT, 0x384, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+
+/* ********* IPC UMA_LIMIT_LOW_AGENT ***********
+ *
+ * Register of SEDI IPC
+ *   UMA_LIMIT_LOW_AGENT: UMA LIMIT Low Address For AGENT
+ *     AddressOffset  : 0x388
+ *     AccessType     : RW
+ *     WritableBitMask: 0xffffffff
+ *     ResetValue     : (uint32_t)0x0
+ */
+SEDI_REG_DEFINE(IPC, UMA_LIMIT_LOW_AGENT, 0x388, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+
+/* ********* IPC UMA_LIMIT_HIGH_AGENT ***********
+ *
+ * Register of SEDI IPC
+ *   UMA_LIMIT_HIGH_AGENT: UMA LIMIT High Address For AGENT
+ *     AddressOffset  : 0x38c
+ *     AccessType     : RW
+ *     WritableBitMask: 0xffffffff
+ *     ResetValue     : (uint32_t)0x0
+ */
+SEDI_REG_DEFINE(IPC, UMA_LIMIT_HIGH_AGENT, 0x38c, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /* ********* IPC IPC_D0I3C_AGENT ***********
  *
@@ -704,8 +836,11 @@ typedef struct {
 	/* AGENT Communication */
 	__IO_RW uint32_t ish_agent_comm_agent;
 
+	/* AGENT RESET ISH */
+	__IO_RW uint32_t ish_rst_cse;
+
 	/* Reserved */
-	__IO_RW uint32_t reserved1[3];
+	__IO_RW uint32_t reserved1[2];
 
 	/* Inbound Doorbell AGENT To ISH */
 	__IO_RW uint32_t agent2ish_doorbell_agent;
@@ -729,13 +864,40 @@ typedef struct {
 	__IO_RW uint32_t reserved4[128];
 
 	/* Remap0 For AGENT */
-	__IO_RW uint32_t remap_agent[6];
+	__IO_RW uint32_t remap0_agent;
+
+	/* Remap1 For AGENT */
+	__IO_RW uint32_t remap1_agent;
+
+	/* Remap2 For AGENT */
+	__IO_RW uint32_t remap2_agent;
+
+	/* Remap3 For AGENT */
+	__IO_RW uint32_t remap3_agent;
+
+	/* Remap4 For AGENT */
+	__IO_RW uint32_t remap4_agent;
+
+	/* Remap5 For AGENT */
+	__IO_RW uint32_t remap5_agent;
 
 	/* ISH IPC Busy Clear For AGENT */
 	__IO_RW uint32_t ish_ipc_busy_clear_agent;
 
+	/* UMA Base Low Address For AGENT */
+	__IO_RW uint32_t uma_base_low_agent;
+
+	/* UMA Base High Address For AGENT */
+	__IO_RW uint32_t uma_base_high_agent;
+
+	/* UMA Limit Low Address For AGENT */
+	__IO_RW uint32_t uma_limit_low_agent;
+
+	/* UMA Limit High Address For AGENT */
+	__IO_RW uint32_t uma_limit_high_agent;
+
 	/* Reserved */
-	__IO_RW uint32_t reserved5[213];
+	__IO_RW uint32_t reserved5[209];
 
 	/* D0i3 Control For AGENT */
 	__IO_RW uint32_t ipc_d0i3c_agent;
