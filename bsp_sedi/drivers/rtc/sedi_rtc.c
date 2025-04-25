@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - 2024 Intel Corporation
+ * Copyright (c) 2023-2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -7,6 +7,7 @@
 #include <sedi_driver_rtc.h>
 
 #include "sedi_soc_regs.h"
+#include "sedi_misc_regs.h"
 
 /* driver version */
 #define SEDI_RTC_DRIVER_VERSION SEDI_DRIVER_VERSION_MAJOR_MINOR(0, 1)
@@ -63,9 +64,9 @@ uint64_t sedi_rtc_get(void)
 	uint32_t upper;
 
 	do {
-		upper = read32(SEDI_RTC_COUNTER1);
-		lower = read32(SEDI_RTC_COUNTER0);
-	} while (upper != read32(SEDI_RTC_COUNTER1));
+		upper = SEDI_REG_GET(MISC, ISH_RTC_COUNTER1);
+		lower = SEDI_REG_GET(MISC, ISH_RTC_COUNTER0);
+	} while (upper != SEDI_REG_GET(MISC, ISH_RTC_COUNTER1));
 
 	return ((uint64_t)upper << 32U) | lower;
 }
