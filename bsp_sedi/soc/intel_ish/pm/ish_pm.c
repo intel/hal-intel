@@ -46,13 +46,13 @@ static void uart_to_idle(void)
 	write32(SEDI_IREG_BASE(UART, 0)  + DLH, 0x0);
 	write32(SEDI_IREG_BASE(UART, 0)  + LCR, 0);
 
-	sedi_uart_get_config(SEDI_UART_0, &uart1_cfg);
+	sedi_uart_get_config(SEDI_UART_1, &uart1_cfg);
 	write32(SEDI_IREG_BASE(UART, 1)  + LCR, 0x80);
 	write32(SEDI_IREG_BASE(UART, 1)  + DLL, 0x1);
 	write32(SEDI_IREG_BASE(UART, 1)  + DLH, 0x0);
 	write32(SEDI_IREG_BASE(UART, 1)  + LCR, 0);
 
-	sedi_uart_get_config(SEDI_UART_0, &uart2_cfg);
+	sedi_uart_get_config(SEDI_UART_2, &uart2_cfg);
 	write32(SEDI_IREG_BASE(UART, 2)  + LCR, 0x80);
 	write32(SEDI_IREG_BASE(UART, 2)  + DLL, 0x1);
 	write32(SEDI_IREG_BASE(UART, 2)  + DLH, 0x0);
