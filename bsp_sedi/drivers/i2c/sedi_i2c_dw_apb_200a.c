@@ -658,6 +658,7 @@ int32_t sedi_i2c_set_power(IN sedi_i2c_t i2c_device, IN sedi_power_state_t state
 	return ret;
 }
 
+#ifdef SEDI_I2C_USE_DMA
 static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 		const int event, void *param)
 {
@@ -741,6 +742,7 @@ static int config_and_enable_dma_channel(sedi_i2c_t i2c_dev, int dma, int handsh
 
 	return ret;
 }
+#endif
 
 int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, IN uint8_t *data,
 	IN uint32_t num, IN bool pending, IN uint32_t dma_dev, IN uint32_t dma_chan)
@@ -749,6 +751,7 @@ int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, IN
 	DBG_CHECK(0 != (addr & SEDI_RBFM(I2C, TAR, IC_TAR)), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(NULL != data, SEDI_DRIVER_ERROR_PARAMETER);
 
+#ifdef SEDI_I2C_USE_DMA
 	struct i2c_context *context = &contexts[i2c_device];
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
 
@@ -784,6 +787,9 @@ int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, IN
 	i2c->enable = SEDI_RBFVM(I2C, ENABLE, ENABLE, ENABLED);
 
 	return SEDI_DRIVER_OK;
+#else
+	return SEDI_DRIVER_ERROR_UNSUPPORTED;
+#endif
 }
 
 int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, OUT uint8_t *data,
@@ -794,6 +800,7 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, OUT
 	DBG_CHECK(0 != (addr & SEDI_RBFM(I2C, TAR, IC_TAR)), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(NULL != data, SEDI_DRIVER_ERROR_PARAMETER);
 
+#ifdef SEDI_I2C_USE_DMA
 	struct i2c_context *context = &contexts[i2c_device];
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
 
@@ -837,6 +844,9 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, OUT
 	i2c->enable = SEDI_RBFVM(I2C, ENABLE, ENABLE, ENABLED);
 
 	return SEDI_DRIVER_OK;
+#else
+	return SEDI_DRIVER_ERROR_UNSUPPORTED;
+#endif
 }
 
 int32_t sedi_i2c_master_write_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, IN uint8_t *data,
@@ -1069,6 +1079,7 @@ int32_t sedi_i2c_control(IN sedi_i2c_t i2c_device, IN uint32_t control, IN uint3
 
 	/* force i2c enter IDLE mode */
 	case SEDI_I2C_ABORT_TRANSFER:
+#ifdef SEDI_I2C_USE_DMA
 		if (context->tx_dma_chan > SEDI_I2C_DMA_CHANNEL_UNUSED) {
 			sedi_dma_abort_transfer(context->tx_dma_dev,
 						context->tx_dma_chan);
@@ -1079,6 +1090,7 @@ int32_t sedi_i2c_control(IN sedi_i2c_t i2c_device, IN uint32_t control, IN uint3
 						context->rx_dma_chan);
 			context->rx_dma_chan = SEDI_I2C_DMA_CHANNEL_UNUSED;
 		}
+#endif
 		dw_i2c_abort(context);
 		context->pending = 0;
 		context->status.busy = 0;
