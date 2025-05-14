@@ -1090,8 +1090,10 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 			lld_spi_dr_address(context->base), len);
 	}
 
-#endif
 	return SEDI_DRIVER_OK;
+#else
+	return SEDI_DRIVER_ERROR_UNSUPPORTED;
+#endif
 }
 
 int32_t sedi_spi_poll_transfer(IN sedi_spi_t spi_device, IN uint8_t *data_out,
