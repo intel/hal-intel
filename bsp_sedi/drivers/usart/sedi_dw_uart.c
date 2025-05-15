@@ -83,7 +83,7 @@
 	((uint32_t)(((uint32_t)(de_to_re)) << SEDI_RBFO(UART, TAT, DE_to_RE) |                     \
 		    ((uint32_t)(re_to_de)) << SEDI_RBFO(UART, TAT, RE_to_DE)))
 
-#define SEDI_UART_POLL_WAIT(_cond) SEDI_POLL_WAIT_MUTE((_cond), 100)
+#define SEDI_UART_POLL_UNTIL(_cond) SEDI_POLL_UNTIL_MUTE((_cond), 100)
 
 /**
  * UART context to be saved between sleep/resume.
@@ -232,7 +232,7 @@ static void sedi_dma_event_cb(IN sedi_dma_t dma_device, IN int channel_id, IN in
 			/* wait for transfer to complete as data may
 			 * still be in the fifo/ tx shift regs.
 			 */
-			SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+			SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 			if (xfer->callback) {
 				xfer->callback(xfer->cb_param, SEDI_DRIVER_OK, line_err_status,
 					       xfer->len);
@@ -270,7 +270,7 @@ static void uart_soft_rst_instance(sedi_uart_t uart)
 	*rst_reg &= (~(1 << uart));
 
 	/* Wait till reset bit is cleared */
-	SEDI_UART_POLL_WAIT(*rst_reg & (1 << uart));
+	SEDI_UART_POLL_UNTIL(((*rst_reg & (1 << uart)) == 0));
 }
 #endif
 
@@ -307,7 +307,7 @@ static void io_vec_write_callback(void *data, int error, uint32_t status, uint32
 	uart_write_transfer[uart] = &vec_write_ctxt[uart].xfer;
 
 	/* Wait for last write transfer to finish completely. */
-	SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+	SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 
 	regs->iir_fcr = (SEDI_RBFM(UART, IIR, FIFOE) | SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD);
 
@@ -699,14 +699,14 @@ int sedi_uart_write(IN sedi_uart_t uart, IN uint8_t data)
 
 	sedi_uart_regs_t *const regs = SEDI_UART[uart];
 
-	ret = SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+	ret = SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 	if (ret) {
 		return ret;
 	}
 
 	regs->rbr_thr_dll = data;
 	/* Wait for transaction to complete. */
-	ret = SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+	ret = SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 	return ret;
 }
 
@@ -789,12 +789,12 @@ int sedi_uart_write_buffer(IN sedi_uart_t uart, IN uint8_t *const data, IN uint3
 		 * Because FCR_FIFOE and IER_PTIME are enabled, LSR_THRE
 		 * behaves as a TX FIFO full indicator.
 		 */
-		SEDI_UART_POLL_WAIT(regs->lsr & SEDI_RBFVM(UART, LSR, THRE, ENABLED));
+		SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, THRE, DISABLED));
 		regs->rbr_thr_dll = *d;
 		d++;
 	}
 	/* Wait for transaction to complete. */
-	return SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+	return SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 }
 
 int sedi_uart_read_buffer(IN sedi_uart_t uart, OUT uint8_t *const data, IN uint32_t req_len,
@@ -1157,15 +1157,15 @@ int sedi_uart_9bit_send_address(IN sedi_uart_t uart, uint8_t address)
 			regs->rbr_thr_dll = (BIT(8) | (uint32_t)address);
 
 			/* Wait for address to be sent. */
-			ret = SEDI_UART_POLL_WAIT(!(regs->lsr &
-						SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+			ret = SEDI_UART_POLL_UNTIL(regs->lsr &
+						SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 		} else {
 			regs->tar = address;
 			/* Sending the address. */
 			regs->lcr_ext |= SEDI_RBFVM(UART, LCR_EXT, SEND_ADDR, 1);
 			/* Wait for address to be sent. */
-			ret = SEDI_UART_POLL_WAIT(regs->lcr_ext &
-					SEDI_RBFVM(UART, LCR_EXT, SEND_ADDR, 1));
+			ret = SEDI_UART_POLL_UNTIL(regs->lcr_ext &
+					SEDI_RBFVM(UART, LCR_EXT, SEND_ADDR, 0));
 		}
 	} else {
 		/* UART not configured for 9 bit operation. */
@@ -1982,7 +1982,7 @@ static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev, uint32_
 	}
 	/* wait for transfer to complete */
 	if (op == WRITE) {
-		ret = SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+		ret = SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 	}
 
 	return ret;

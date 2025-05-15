@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - 2024 Intel Corporation
+ * Copyright (c) 2023 - 2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -66,7 +66,7 @@ static const sedi_hpet_capabilities_t hpet_cap = { 0 };
 
 static inline void wait_for_idle(uint32_t bits)
 {
-	SEDI_POLL_WAIT(SEDI_REG_GET(HPET, HPET_CTRL_STS) & bits, 10);
+	SEDI_POLL_UNTIL((SEDI_REG_GET(HPET, HPET_CTRL_STS) & bits) == 0x0, 10);
 }
 
 uint32_t sedi_hpet_get_min_delay(void)
