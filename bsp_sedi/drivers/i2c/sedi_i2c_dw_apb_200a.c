@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - 2024 Intel Corporation
+ * Copyright (c) 2023 - 2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -128,7 +128,7 @@ static uint32_t regval_speed[I2C_SPEED_MAX] = {
 struct i2c_context contexts[SEDI_I2C_NUM] = { I2C_CONTEXT_INIT(0), I2C_CONTEXT_INIT(1),
 					      I2C_CONTEXT_INIT(2) };
 
-#define SEDI_I2C_POLL_WAIT(_cond) SEDI_POLL_WAIT_MUTE((_cond), 100)
+#define SEDI_I2C_POLL_UNTIL(_cond) SEDI_POLL_UNTIL_MUTE((_cond), 100)
 
 static void i2c_isr_complete(sedi_i2c_t i2c_device, bool is_error);
 
@@ -165,7 +165,7 @@ static void dw_i2c_enable(uint32_t base)
 	i2c->intr_mask = 0;
 
 	i2c->enable = SEDI_RBFVM(I2C, ENABLE, ENABLE, ENABLED);
-	SEDI_I2C_POLL_WAIT(SEDI_PREG_RBFV_IS_SET(I2C, ENABLE_STATUS, IC_EN, DISABLED,
+	SEDI_I2C_POLL_UNTIL(SEDI_PREG_RBFV_IS_SET(I2C, ENABLE_STATUS, IC_EN, ENABLED,
 				&i2c->enable_status));
 }
 
@@ -183,14 +183,14 @@ static int dw_i2c_disable(uint32_t base)
 
 	if (SEDI_PREG_RBFV_IS_SET(I2C, STATUS, MST_ACTIVITY, ACTIVE, &i2c->status)) {
 		SEDI_PREG_RBFV_SET(I2C, ENABLE, ABORT, ENABLED, &i2c->enable);
-		SEDI_I2C_POLL_WAIT(SEDI_PREG_RBFV_IS_SET(I2C, ENABLE, ABORT, ENABLED,
+		SEDI_I2C_POLL_UNTIL(SEDI_PREG_RBFV_IS_SET(I2C, ENABLE, ABORT, DISABLE,
 					&i2c->enable));
 	}
 
-	SEDI_I2C_POLL_WAIT(SEDI_PREG_RBFV_IS_SET(I2C, STATUS, MST_ACTIVITY, ACTIVE, &i2c->status));
+	SEDI_I2C_POLL_UNTIL(SEDI_PREG_RBFV_IS_SET(I2C, STATUS, MST_ACTIVITY, IDLE, &i2c->status));
 
 	i2c->enable = 0;
-	SEDI_I2C_POLL_WAIT(SEDI_PREG_RBFV_IS_SET(I2C, ENABLE_STATUS, IC_EN, ENABLED,
+	SEDI_I2C_POLL_UNTIL(SEDI_PREG_RBFV_IS_SET(I2C, ENABLE_STATUS, IC_EN, DISABLED,
 				&i2c->enable_status));
 
 	return 0;
@@ -277,8 +277,8 @@ static int dw_i2c_poll_write(uint32_t base, const uint8_t *buffer, uint32_t leng
 
 		i2c->data_cmd = buffer[i] | cmd;
 
-		ret = SEDI_I2C_POLL_WAIT(SEDI_PREG_RBFV_IS_SET(I2C, STATUS, TFNF, FULL,
-					&i2c->status) && !(i2c->raw_intr_stat & BSETS_INTR_ERROR));
+		ret = SEDI_I2C_POLL_UNTIL(SEDI_PREG_RBFV_IS_SET(I2C, STATUS, TFNF, NOT_FULL,
+					&i2c->status) || (i2c->raw_intr_stat & BSETS_INTR_ERROR));
 		if (ret) {
 			return ret;
 		}
@@ -289,7 +289,7 @@ static int dw_i2c_poll_write(uint32_t base, const uint8_t *buffer, uint32_t leng
 	}
 
 	/* Wait for end */
-	ret = SEDI_I2C_POLL_WAIT(SEDI_PREG_RBFV_IS_SET(I2C, STATUS, ACTIVITY, ACTIVE,
+	ret = SEDI_I2C_POLL_UNTIL(SEDI_PREG_RBFV_IS_SET(I2C, STATUS, ACTIVITY, INACTIVE,
 				&i2c->status));
 
 	return ret;
@@ -308,8 +308,8 @@ static int dw_i2c_poll_read(uint32_t base, uint8_t *buffer, uint32_t length, boo
 
 		i2c->data_cmd = cmd;
 
-		ret = SEDI_I2C_POLL_WAIT(SEDI_PREG_RBFV_IS_SET(I2C, STATUS, RFNE, EMPTY,
-					&i2c->status) && !(i2c->raw_intr_stat & BSETS_INTR_ERROR));
+		ret = SEDI_I2C_POLL_UNTIL(SEDI_PREG_RBFV_IS_SET(I2C, STATUS, RFNE, NOT_EMPTY,
+					&i2c->status) || (i2c->raw_intr_stat & BSETS_INTR_ERROR));
 		if (ret) {
 			return ret;
 		}
@@ -323,7 +323,7 @@ static int dw_i2c_poll_read(uint32_t base, uint8_t *buffer, uint32_t length, boo
 	}
 
 	/* Wait for end */
-	ret = SEDI_I2C_POLL_WAIT(SEDI_PREG_RBFV_IS_SET(I2C, STATUS, ACTIVITY, ACTIVE,
+	ret = SEDI_I2C_POLL_UNTIL(SEDI_PREG_RBFV_IS_SET(I2C, STATUS, ACTIVITY, INACTIVE,
 				&i2c->status));
 
 	return ret;
@@ -388,7 +388,7 @@ static void dw_i2c_abort(struct i2c_context *context)
 	SEDI_PREG_RBFV_SET(I2C, ENABLE, ABORT, ENABLED, &i2c->enable);
 
 	/* Waiting for abort operation finished, HW can clear */
-	SEDI_I2C_POLL_WAIT(SEDI_PREG_RBFV_IS_SET(I2C, RAW_INTR_STAT, TX_ABRT, INACTIVE,
+	SEDI_I2C_POLL_UNTIL(SEDI_PREG_RBFV_IS_SET(I2C, RAW_INTR_STAT, TX_ABRT, ACTIVE,
 				&i2c->raw_intr_stat));
 	while (SEDI_PREG_RBFV_GET(I2C, RXFLR, RXFLR, &i2c->rxflr) != 0) {
 		value = i2c->data_cmd;
@@ -684,8 +684,8 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 		uint32_t data = (context->rx_dma_chan != SEDI_I2C_DMA_CHANNEL_UNUSED)
 				? SEDI_RBFVM(I2C, DATA_CMD, CMD, READ)
 				: context->buf[context->buf_size - 1];
-		SEDI_I2C_POLL_WAIT(SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr)
-				== I2C_FIFO_DEPTH);
+		SEDI_I2C_POLL_UNTIL(SEDI_PREG_RBFV_GET(I2C, TXFLR, TXFLR, &i2c->txflr)
+				!= I2C_FIFO_DEPTH);
 		i2c->data_cmd = data | (context->pending
 				? 0 : (SEDI_RBFVM(I2C, DATA_CMD, STOP, ENABLE)));
 		context->buf_index = context->buf_size;
