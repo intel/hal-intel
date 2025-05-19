@@ -355,6 +355,7 @@ static uint32_t dw_i2c_clear_interrupt(uint32_t base)
 	return stat;
 }
 
+#ifdef SEDI_I2C_USE_DMA
 static void dw_i2c_dma_enable(uint32_t base, int fifo_depth, int tx_only)
 {
 	sedi_i2c_regs_t *i2c = (void *)base;
@@ -371,6 +372,7 @@ static void dw_i2c_dma_enable(uint32_t base, int fifo_depth, int tx_only)
 
 	i2c->dma_cr = dma_cr;
 }
+#endif
 
 /* force enter IDLE mode */
 static void dw_i2c_abort(struct i2c_context *context)
@@ -788,6 +790,14 @@ int32_t sedi_i2c_master_write_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, IN
 
 	return SEDI_DRIVER_OK;
 #else
+	PARAM_UNUSED(i2c_device);
+	PARAM_UNUSED(addr);
+	PARAM_UNUSED(data);
+	PARAM_UNUSED(num);
+	PARAM_UNUSED(pending);
+	PARAM_UNUSED(dma_dev);
+	PARAM_UNUSED(dma_chan);
+
 	return SEDI_DRIVER_ERROR_UNSUPPORTED;
 #endif
 }
@@ -845,6 +855,16 @@ int32_t sedi_i2c_master_read_dma(IN sedi_i2c_t i2c_device, IN uint32_t addr, OUT
 
 	return SEDI_DRIVER_OK;
 #else
+	PARAM_UNUSED(i2c_device);
+	PARAM_UNUSED(addr);
+	PARAM_UNUSED(data);
+	PARAM_UNUSED(num);
+	PARAM_UNUSED(pending);
+	PARAM_UNUSED(rx_dma_dev);
+	PARAM_UNUSED(rx_dma_chan);
+	PARAM_UNUSED(cmd_dma_dev);
+	PARAM_UNUSED(cmd_dma_chan);
+
 	return SEDI_DRIVER_ERROR_UNSUPPORTED;
 #endif
 }
