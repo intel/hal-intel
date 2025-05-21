@@ -842,9 +842,9 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 		context->data_rx_idx = context->rx_data_len;
 		/* If finished Rx, and need to do bit convert */
 		if (context->is_lsb == true) {
-#ifndef SEDI_CONFIG_ARCH_X86
+#if !defined(SEDI_CONFIG_ARCH_X86) && !defined(SEDI_CONFIG_ARCH_ARC)
 			/* Invalidate cache */
-			sedi_core_inv_dcache_by_addr(
+			sedi_core_inv_clean_dcache_by_addr(
 				(uint32_t *)(context->data_rx),
 				context->rx_data_len);
 #endif
@@ -1002,7 +1002,7 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 					(uint32_t *)(context->data_tx),
 					context->tx_data_len);
 		}
-#ifdef SEDI_CONFIG_ARCH_X86
+#if defined(SEDI_CONFIG_ARCH_X86) || defined(SEDI_CONFIG_ARCH_ARC)
 		if (context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) {
 			sedi_core_inv_clean_dcache_by_addr(
 					(uint32_t *)(context->data_rx),
