@@ -132,7 +132,6 @@ typedef enum {
 } sedi_spi_t;
 
 #define SPI_FIFO_DEPTH (64)
-#define SEDI_SPI_USE_DMA (1)
 
 #define SEDI_IRQ_HPET_TIMER_0 (14)
 #define SEDI_IRQ_HPET_TIMER_1 (0) /* fake IRQ number, same as timer 0's */
