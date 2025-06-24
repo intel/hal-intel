@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Intel Corporation
+ * Copyright (c) 2023-2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -324,49 +324,49 @@ SEDI_RBFV_DEFINE(IPC, CIS_AGENT, CH_INTR_STATUS, 1, 1);
  */
 SEDI_RBF_DEFINE(IPC, CIS_AGENT, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* IPC ISH_AGENT_FWSTS_AGENT ***********
+/* ********* IPC ISH_FWSTS ***********
  *
  * Register of SEDI IPC
- *   ISH_AGENT_FWSTS_AGENT: AGENT Firmware Status
+ *   ISH_FWSTS: Firmware Status
  *     AddressOffset  : 0x34
  *     AccessType     : RW
  *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(IPC, ISH_AGENT_FWSTS_AGENT, 0x34, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+SEDI_REG_DEFINE(IPC, ISH_FWSTS, 0x34, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AGENT_FWSTS_AGENT
- *   ISH_AGENT_FWSTS: AGENT Firmware Status Register
+ * Bit Field of Register ISH_FWSTS
+ *   ISH_FWSTS: Firmware Status Register
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(IPC, ISH_AGENT_FWSTS_AGENT, ISH_AGENT_FWSTS, 0, 32, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(IPC, ISH_FWSTS, ISH_FWSTS, 0, 32, RW, (uint32_t)0x0);
 
-/* ********* IPC ISH_AGENT_COMM_AGENT ***********
+/* ********* IPC ISH_COMM ***********
  *
  * Register of SEDI IPC
- *   ISH_AGENT_COMM_AGENT: AGENT Communication
+ *   ISH_COMM: Communication Register
  *     AddressOffset  : 0x38
  *     AccessType     : RW
  *     WritableBitMask: 0xffffffff
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(IPC, ISH_AGENT_COMM_AGENT, 0x38, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
+SEDI_REG_DEFINE(IPC, ISH_COMM, 0x38, RW, (uint32_t)0xffffffff, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AGENT_COMM_AGENT
- *   AGENT_COMM: AGENT Communication Register
+ * Bit Field of Register ISH_COMM
+ *   ISH_COMM: Communication Register
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(IPC, ISH_AGENT_COMM_AGENT, AGENT_COMM, 0, 32, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(IPC, ISH_COMM, ISH_COMM, 0, 32, RW, (uint32_t)0x0);
 
-/* ********* IPC ISH_AGENT_COMM_AGENT ***********
+/* ********* IPC ISH_RST_CSE ***********
  *
  * Register of SEDI IPC
  *   ISH_RST_CSE: RST ISH MinuteIA Core
@@ -831,10 +831,10 @@ typedef struct {
 	__IO_RW uint32_t reserved0[7];
 
 	/* AGENT Firmware Status */
-	__IO_RW uint32_t ish_agent_fwsts_agent;
+	__IO_RW uint32_t ish_fwsts;
 
 	/* AGENT Communication */
-	__IO_RW uint32_t ish_agent_comm_agent;
+	__IO_RW uint32_t ish_comm;
 
 	/* AGENT RESET ISH */
 	__IO_RW uint32_t ish_rst_cse;
