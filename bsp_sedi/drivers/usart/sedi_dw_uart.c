@@ -16,6 +16,10 @@
 #define HAS_UART_9BIT_SUPPORT           (0)
 #define HAS_UART_SOFT_RST               (0)
 
+#if HAS_UART_SOFT_RST
+#include "sedi_ccu_regs.h"
+#endif
+
 /* No interrupt pending */
 #define SEDI_UART_IIR_NO_INTERRUPT_PENDING (0x01)
 /* Transmit Holding Register Empty. */
@@ -253,24 +257,23 @@ static void sedi_dma_event_cb(IN sedi_dma_t dma_device, IN int channel_id, IN in
 static void uart_soft_rst(void)
 {
 	static bool uart_rst_done;
-	volatile uint32_t *rst_reg = (uint32_t *)(SEDI_UART_SFT_RST_REG);
 
 	if (!uart_rst_done) {
-		*rst_reg = SEDI_UART_SFT_RST_MASK;
-		*rst_reg = 0;
+		SEDI_REG_RBF_SET(CCU, UART_SOFT_RST, UART_RST,
+				SEDI_RBFM(CCU, UART_SOFT_RST, UART_RST));
+		SEDI_REG_RBF_SET(CCU, UART_SOFT_RST, UART_RST, 0x0);
 		uart_rst_done = true;
 	}
 }
 
 static void uart_soft_rst_instance(sedi_uart_t uart)
 {
-	volatile uint32_t *rst_reg = (uint32_t *)(SEDI_UART_SFT_RST_REG);
-
-	*rst_reg |= (1 << uart);
-	*rst_reg &= (~(1 << uart));
+	uint32_t rst_value = SEDI_REG_RBFV_GET(CCU, UART_SOFT_RST, UART_RST);
+	SEDI_REG_RBF_SET(CCU, UART_SOFT_RST, UART_RST, rst_value | BIT(uart));
+	SEDI_REG_RBF_SET(CCU, UART_SOFT_RST, UART_RST, rst_value & ~BIT(uart));
 
 	/* Wait till reset bit is cleared */
-	SEDI_UART_POLL_UNTIL(((*rst_reg & (1 << uart)) == 0));
+	SEDI_UART_POLL_UNTIL(((SEDI_REG_RBFV_GET(CCU, UART_SOFT_RST, UART_RST) & BIT(uart)) == 0));
 }
 #endif
 
