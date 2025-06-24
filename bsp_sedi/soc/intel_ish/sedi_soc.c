@@ -6,6 +6,7 @@
 
 #include <sedi_driver_common.h>
 #include "sedi_driver_core.h"
+#include "sedi_pmu_regs.h"
 
 /* counter for vnn_req/vnn_dereq per vnn_id */
 static uint8_t vnn_req_counter[VNN_ID_TOP];
@@ -57,10 +58,9 @@ uintptr_t __attribute__((weak)) sedi_core_phys_to_virt(uintptr_t phys)
 
 bool PM_VNN_IS_ACTIVE(uint32_t *req_val)
 {
-	uint32_t req = read32(PMU_VNN_REQ_31_0);
-	uint32_t ack = read32(PMU_VNN_REQ_ACK);
+	uint32_t req = SEDI_REG_GET(PMU, VNN_REQ);
 
-	if (req || (ack & PMU_VNN_REQ_ACK_STS)) {
+	if (req || SEDI_REG_RBFV_IS_SET(PMU, VNN_REQ_ACK, VNN_REQ_ACK_STATUS, 1)) {
 		*req_val = req;
 		return true;
 	} else {
@@ -73,13 +73,12 @@ void PM_VNN_DRIVER_REQ(vnn_id_t vnn_id)
 	unsigned int key = sedi_core_irq_lock();
 
 	if (!vnn_req_counter[vnn_id])
-		write32(PMU_VNN_REQ_31_0, BIT(vnn_id));
+		SEDI_REG_SET(PMU, VNN_REQ, BIT(vnn_id));
 	++vnn_req_counter[vnn_id];
 
 	sedi_core_irq_unlock(key);
 
-	while (!(read32(PMU_VNN_REQ_ACK) & PMU_VNN_REQ_ACK_STS))
-		;
+	SEDI_POLL_UNTIL(SEDI_REG_RBFV_IS_SET(PMU, VNN_REQ_ACK, VNN_REQ_ACK_STATUS, 1), 1000);
 }
 
 void PM_VNN_DRIVER_DEREQ(vnn_id_t vnn_id)
@@ -94,8 +93,8 @@ void PM_VNN_DRIVER_DEREQ(vnn_id_t vnn_id)
 		goto out;
 	}
 
-	write32(PMU_VNN_REQ_31_0, BIT(vnn_id));
-	write32(PMU_VNN_REQ_ACK, read32(PMU_VNN_REQ_ACK));
+	SEDI_REG_SET(PMU, VNN_REQ, BIT(vnn_id));
+	SEDI_REG_SET(PMU, VNN_REQ_ACK, SEDI_REG_GET(PMU, VNN_REQ_ACK));
 out:
 	sedi_core_irq_unlock(key);
 }
@@ -104,8 +103,8 @@ void PM_VNN_ALL_RESET(void)
 {
 	unsigned int key = sedi_core_irq_lock();
 
-	write32(PMU_VNN_REQ_31_0, read32(PMU_VNN_REQ_31_0));
-	write32(PMU_VNN_REQ_ACK, read32(PMU_VNN_REQ_ACK));
+	SEDI_REG_SET(PMU, VNN_REQ, SEDI_REG_GET(PMU, VNN_REQ));
+	SEDI_REG_SET(PMU, VNN_REQ_ACK, SEDI_REG_GET(PMU, VNN_REQ_ACK));
 
 	for (int i = 0; i < VNN_ID_TOP; i++) {
 		vnn_req_counter[i] = 0;
@@ -118,7 +117,7 @@ void PM_VNN_DRIVER_RESET(vnn_id_t vnn_id)
 {
 	unsigned int key = sedi_core_irq_lock();
 
-	write32(PMU_VNN_REQ_31_0, read32(PMU_VNN_REQ_31_0) & BIT(vnn_id));
+	SEDI_REG_SET(PMU, VNN_REQ, SEDI_REG_GET(PMU, VNN_REQ) & BIT(vnn_id));
 	vnn_req_counter[vnn_id] = 0;
 
 	sedi_core_irq_unlock(key);
