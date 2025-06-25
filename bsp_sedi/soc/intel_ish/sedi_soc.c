@@ -7,6 +7,7 @@
 #include <sedi_driver_common.h>
 #include "sedi_driver_core.h"
 #include "sedi_pmu_regs.h"
+#include "sedi_ipc_regs.h"
 
 /* counter for vnn_req/vnn_dereq per vnn_id */
 static uint8_t vnn_req_counter[VNN_ID_TOP];
@@ -47,8 +48,8 @@ uintptr_t __attribute__((weak)) sedi_core_virt_to_phys(uintptr_t virt)
 
 void sedi_mia_reset(void)
 {
-	write32(SEDI_REG_BASE(IPC_CSME) + IPC_MIA_RST_REG, 0);
-	write32(SEDI_REG_BASE(IPC_CSME) + IPC_MIA_RST_REG, 1);
+	SEDI_IREG_RBF_SET(IPC, CSME, ISH_RST_CSE, RESET_BIT, 0);
+	SEDI_IREG_RBF_SET(IPC, CSME, ISH_RST_CSE, RESET_BIT, 1);
 }
 
 uintptr_t __attribute__((weak)) sedi_core_phys_to_virt(uintptr_t phys)
