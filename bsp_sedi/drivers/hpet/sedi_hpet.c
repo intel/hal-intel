@@ -269,24 +269,32 @@ void sedi_hpet_set_int_status(IN uint32_t val)
 
 void sedi_hpet_timer_int_handler(IN sedi_hpet_t timer_id)
 {
+	/* Get a copy of the callback and parameter as they're
+	 * reset to zero when killing the timer in one_shot mode.
+	 */
+	hpet_callback_t callback = bsp_timers[timer_id].callback;
+	void *param = bsp_timers[timer_id].param;
+
 	if (!(SEDI_REG_GET(HPET, GIS_LOW) & BIT(timer_id)))
 		return;
 
-	/* Clear the GIS flags */
-	sedi_hpet_set_int_status(BIT(timer_id));
-
-	if (bsp_timers[timer_id].callback) {
-		bsp_timers[timer_id].callback(bsp_timers[timer_id].param);
-	}
+	SEDI_ASSERT(bsp_timers[timer_id].start);
 
 	if (bsp_timers[timer_id].one_shot) {
 		sedi_hpet_kill_timer(timer_id);
 	} else {
+		sedi_hpet_set_int_status(BIT(timer_id));
+
 		bsp_timers[timer_id].expires =
 			sedi_hpet_get_main_counter() + bsp_timers[timer_id].timeout;
 		/* Set new comparator */
 		sedi_hpet_set_comparator(timer_id, bsp_timers[timer_id].expires);
 	}
+
+	if (callback) {
+		callback(param);
+	}
+
 }
 
 int32_t sedi_hpet_config_timer(IN sedi_hpet_t timer_id, IN uint64_t microseconds,
@@ -316,6 +324,9 @@ int32_t sedi_hpet_config_timer(IN sedi_hpet_t timer_id, IN uint64_t microseconds
 int32_t sedi_hpet_kill_timer(IN sedi_hpet_t timer_id)
 {
 	DBG_CHECK(timer_id < SEDI_HPET_SOC_TIMER_NUM, SEDI_DRIVER_ERROR_PARAMETER);
+
+	if (!bsp_timers[timer_id].start)
+		return SEDI_DRIVER_OK;
 
 	/* Disable interrupt */
 	sedi_hpet_disable_interrupt(timer_id);
