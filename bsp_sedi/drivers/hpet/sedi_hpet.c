@@ -263,7 +263,7 @@ uint32_t sedi_hpet_get_int_status(void)
 
 void sedi_hpet_set_int_status(IN uint32_t val)
 {
-	SEDI_REG_SET(HPET, GIS_LOW, val);
+	SEDI_REG_SET(HPET, GIS_LOW, val & SEDI_REG_GET(HPET, GIS_LOW));
 	wait_for_idle(CTRL_STS_GENERAL_INT_STATUS);
 }
 
