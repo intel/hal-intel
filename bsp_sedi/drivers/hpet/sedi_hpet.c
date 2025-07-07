@@ -47,9 +47,7 @@ typedef struct {
 	uint32_t one_shot : 1; /* select period/non-period mode */
 	uint32_t rsvd : 29; /* reserved */
 	uint32_t valid : 1; /* Check if the position has been token */
-	uint64_t microsec; /* user's parameter */
 	uint64_t timeout; /* translated parameter, for sort */
-	uint64_t expires; /* current + timeout, for sort */
 	hpet_callback_t callback; /* callback */
 	void *param; /* callback param, user defined */
 } hpet_timer_ctx_t;
@@ -285,10 +283,9 @@ void sedi_hpet_timer_int_handler(IN sedi_hpet_t timer_id)
 	} else {
 		sedi_hpet_set_int_status(BIT(timer_id));
 
-		bsp_timers[timer_id].expires =
-			sedi_hpet_get_main_counter() + bsp_timers[timer_id].timeout;
 		/* Set new comparator */
-		sedi_hpet_set_comparator(timer_id, bsp_timers[timer_id].expires);
+		sedi_hpet_set_comparator(timer_id,
+				sedi_hpet_get_main_counter() + bsp_timers[timer_id].timeout);
 	}
 
 	if (callback) {
@@ -309,9 +306,7 @@ int32_t sedi_hpet_config_timer(IN sedi_hpet_t timer_id, IN uint64_t microseconds
 	bsp_timers[timer_id].valid = 1;
 	bsp_timers[timer_id].start = 0;
 	bsp_timers[timer_id].one_shot = one_shot ? 1 : 0;
-	bsp_timers[timer_id].microsec = microseconds;
 	bsp_timers[timer_id].timeout = US_TO_HPET_CYCLE(microseconds + HPET_CYCLE_TO_US(1));
-	bsp_timers[timer_id].expires = 0;
 	bsp_timers[timer_id].callback = callback;
 	bsp_timers[timer_id].param = (void *)param;
 	if (bsp_timers[timer_id].timeout < hpet_min_delay) {
@@ -348,10 +343,10 @@ int32_t sedi_hpet_start_timer(IN sedi_hpet_t timer_id)
 	sedi_hpet_enable_interrupt(timer_id);
 
 	bsp_timers[timer_id].start = 1;
-	bsp_timers[timer_id].expires = sedi_hpet_get_main_counter() + bsp_timers[timer_id].timeout;
 
 	/* Set comparator to correct value */
-	sedi_hpet_set_comparator(timer_id, bsp_timers[timer_id].expires);
+	sedi_hpet_set_comparator(timer_id,
+			sedi_hpet_get_main_counter() + bsp_timers[timer_id].timeout);
 
 	return SEDI_DRIVER_OK;
 }
