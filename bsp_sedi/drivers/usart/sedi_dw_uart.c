@@ -4,14 +4,21 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "sedi_driver_uart.h"
-#include "sedi_driver_pm.h"
-#include <sedi_uart_regs.h>
+#include <sedi_driver_uart.h>
+#include <sedi_driver_pm.h>
+
+#include "sedi_uart_regs.h"
+#include "sedi_soc_regs.h"
+#include "sedi_soc_funcs.h"
 
 #define HAS_ADVANCED_UART_CONFIGURATION (0)
 #define HAS_UART_RS485_SUPPORT          (0)
 #define HAS_UART_9BIT_SUPPORT           (0)
 #define HAS_UART_SOFT_RST               (0)
+
+#if HAS_UART_SOFT_RST
+#include "sedi_ccu_regs.h"
+#endif
 
 /* No interrupt pending */
 #define SEDI_UART_IIR_NO_INTERRUPT_PENDING (0x01)
@@ -80,7 +87,7 @@
 	((uint32_t)(((uint32_t)(de_to_re)) << SEDI_RBFO(UART, TAT, DE_to_RE) |                     \
 		    ((uint32_t)(re_to_de)) << SEDI_RBFO(UART, TAT, RE_to_DE)))
 
-#define SEDI_UART_POLL_WAIT(_cond) SEDI_POLL_WAIT_MUTE((_cond), 100)
+#define SEDI_UART_POLL_UNTIL(_cond) SEDI_POLL_UNTIL_MUTE((_cond), 100)
 
 /**
  * UART context to be saved between sleep/resume.
@@ -171,7 +178,10 @@ typedef struct {
 	dma_operation_type_t operation; /* READ/WRITE */
 } uart_dma_ctxt_t;
 
-static uint32_t uart_dma_hs_id[SEDI_UART_NUM];
+static uint32_t uart_dma_hsid_rx[SEDI_UART_NUM] = {DMA_HWID_UART0_RX, DMA_HWID_UART1_RX,
+						   DMA_HWID_UART2_RX};
+static uint32_t uart_dma_hsid_tx[SEDI_UART_NUM] = {DMA_HWID_UART0_TX, DMA_HWID_UART1_TX,
+						   DMA_HWID_UART2_TX};
 
 static uart_dma_ctxt_t dma_write_ctxt[SEDI_UART_NUM] = {
 	{.dma_xfer = NULL, .uart = SEDI_UART_0, .operation = WRITE},
@@ -226,7 +236,7 @@ static void sedi_dma_event_cb(IN sedi_dma_t dma_device, IN int channel_id, IN in
 			/* wait for transfer to complete as data may
 			 * still be in the fifo/ tx shift regs.
 			 */
-			SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+			SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 			if (xfer->callback) {
 				xfer->callback(xfer->cb_param, SEDI_DRIVER_OK, line_err_status,
 					       xfer->len);
@@ -247,24 +257,23 @@ static void sedi_dma_event_cb(IN sedi_dma_t dma_device, IN int channel_id, IN in
 static void uart_soft_rst(void)
 {
 	static bool uart_rst_done;
-	volatile uint32_t *rst_reg = (uint32_t *)(SEDI_UART_SFT_RST_REG);
 
 	if (!uart_rst_done) {
-		*rst_reg = SEDI_UART_SFT_RST_MASK;
-		*rst_reg = 0;
+		SEDI_REG_RBF_SET(CCU, UART_SOFT_RST, UART_RST,
+				SEDI_RBFM(CCU, UART_SOFT_RST, UART_RST));
+		SEDI_REG_RBF_SET(CCU, UART_SOFT_RST, UART_RST, 0x0);
 		uart_rst_done = true;
 	}
 }
 
 static void uart_soft_rst_instance(sedi_uart_t uart)
 {
-	volatile uint32_t *rst_reg = (uint32_t *)(SEDI_UART_SFT_RST_REG);
-
-	*rst_reg |= (1 << uart);
-	*rst_reg &= (~(1 << uart));
+	uint32_t rst_value = SEDI_REG_RBFV_GET(CCU, UART_SOFT_RST, UART_RST);
+	SEDI_REG_RBF_SET(CCU, UART_SOFT_RST, UART_RST, rst_value | BIT(uart));
+	SEDI_REG_RBF_SET(CCU, UART_SOFT_RST, UART_RST, rst_value & ~BIT(uart));
 
 	/* Wait till reset bit is cleared */
-	SEDI_UART_POLL_WAIT(*rst_reg & (1 << uart));
+	SEDI_UART_POLL_UNTIL(((SEDI_REG_RBFV_GET(CCU, UART_SOFT_RST, UART_RST) & BIT(uart)) == 0));
 }
 #endif
 
@@ -301,7 +310,7 @@ static void io_vec_write_callback(void *data, int error, uint32_t status, uint32
 	uart_write_transfer[uart] = &vec_write_ctxt[uart].xfer;
 
 	/* Wait for last write transfer to finish completely. */
-	SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+	SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 
 	regs->iir_fcr = (SEDI_RBFM(UART, IIR, FIFOE) | SEDI_UART_FCR_TX_0_RX_1_2_THRESHOLD);
 
@@ -693,14 +702,14 @@ int sedi_uart_write(IN sedi_uart_t uart, IN uint8_t data)
 
 	sedi_uart_regs_t *const regs = SEDI_UART[uart];
 
-	ret = SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+	ret = SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 	if (ret) {
 		return ret;
 	}
 
 	regs->rbr_thr_dll = data;
 	/* Wait for transaction to complete. */
-	ret = SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+	ret = SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 	return ret;
 }
 
@@ -783,12 +792,12 @@ int sedi_uart_write_buffer(IN sedi_uart_t uart, IN uint8_t *const data, IN uint3
 		 * Because FCR_FIFOE and IER_PTIME are enabled, LSR_THRE
 		 * behaves as a TX FIFO full indicator.
 		 */
-		SEDI_UART_POLL_WAIT(regs->lsr & SEDI_RBFVM(UART, LSR, THRE, ENABLED));
+		SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, THRE, DISABLED));
 		regs->rbr_thr_dll = *d;
 		d++;
 	}
 	/* Wait for transaction to complete. */
-	return SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+	return SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 }
 
 int sedi_uart_read_buffer(IN sedi_uart_t uart, OUT uint8_t *const data, IN uint32_t req_len,
@@ -1151,15 +1160,15 @@ int sedi_uart_9bit_send_address(IN sedi_uart_t uart, uint8_t address)
 			regs->rbr_thr_dll = (BIT(8) | (uint32_t)address);
 
 			/* Wait for address to be sent. */
-			ret = SEDI_UART_POLL_WAIT(!(regs->lsr &
-						SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+			ret = SEDI_UART_POLL_UNTIL(regs->lsr &
+						SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 		} else {
 			regs->tar = address;
 			/* Sending the address. */
 			regs->lcr_ext |= SEDI_RBFVM(UART, LCR_EXT, SEND_ADDR, 1);
 			/* Wait for address to be sent. */
-			ret = SEDI_UART_POLL_WAIT(regs->lcr_ext &
-					SEDI_RBFVM(UART, LCR_EXT, SEND_ADDR, 1));
+			ret = SEDI_UART_POLL_UNTIL(regs->lcr_ext &
+					SEDI_RBFVM(UART, LCR_EXT, SEND_ADDR, 0));
 		}
 	} else {
 		/* UART not configured for 9 bit operation. */
@@ -1871,6 +1880,7 @@ static int sedi_uart_dma_io_async(sedi_uart_t uart, const sedi_uart_dma_xfer_t *
 	dma_channel_direction_t dma_dir;
 	dma_hs_per_rtx_t dma_hs_per;
 	uint32_t src, dst;
+	uint32_t handshake;
 
 	if (op == WRITE) {
 		dma_write_ctxt[uart].dma_xfer = xfer;
@@ -1881,6 +1891,7 @@ static int sedi_uart_dma_io_async(sedi_uart_t uart, const sedi_uart_dma_xfer_t *
 		}
 		dma_dir = DMA_MEMORY_TO_PERIPHERAL;
 		dma_hs_per = DMA_HS_PER_TX;
+		handshake = uart_dma_hsid_tx[uart];
 		src = (uint32_t)xfer->data;
 		dst = (uint32_t)(&regs->rbr_thr_dll);
 	} else if (op == READ) {
@@ -1892,6 +1903,7 @@ static int sedi_uart_dma_io_async(sedi_uart_t uart, const sedi_uart_dma_xfer_t *
 		}
 		dma_dir = DMA_PERIPHERAL_TO_MEMORY;
 		dma_hs_per = DMA_HS_PER_RX;
+		handshake = uart_dma_hsid_rx[uart];
 		dst = (uint32_t)xfer->data;
 		src = (uint32_t)(&regs->rbr_thr_dll);
 		regs->dmasa |= SEDI_RBFVM(UART, DMASA, DMASA, SOFT_ACK);
@@ -1900,7 +1912,8 @@ static int sedi_uart_dma_io_async(sedi_uart_t uart, const sedi_uart_dma_xfer_t *
 	}
 
 	ret = sedi_dma_control(xfer->dma_dev, xfer->channel, SEDI_CONFIG_DMA_HS_DEVICE_ID,
-			       uart_dma_hs_id[uart]);
+			       handshake);
+
 	DBG_CHECK(0 == ret, SEDI_DRIVER_ERROR);
 
 	ret = sedi_dma_control(xfer->dma_dev, xfer->channel, SEDI_CONFIG_DMA_HS_DEVICE_ID_PER_DIR,
@@ -1926,15 +1939,18 @@ static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev, uint32_
 	dma_channel_direction_t dma_dir;
 	dma_hs_per_rtx_t dma_hs_per;
 	uint32_t src, dst;
+	uint32_t handshake;
 
 	if (op == WRITE) {
 		dma_dir = DMA_MEMORY_TO_PERIPHERAL;
 		dma_hs_per = DMA_HS_PER_TX;
+		handshake = uart_dma_hsid_tx[uart];
 		src = (uint32_t)buff;
 		dst = (uint32_t)(&regs->rbr_thr_dll);
 	} else if (op == READ) {
 		dma_dir = DMA_PERIPHERAL_TO_MEMORY;
 		dma_hs_per = DMA_HS_PER_RX;
+		handshake = uart_dma_hsid_rx[uart];
 		dst = (uint32_t)buff;
 		src = (uint32_t)(&regs->rbr_thr_dll);
 		regs->dmasa |= SEDI_RBFM(UART, DMASA, DMASA);
@@ -1946,8 +1962,9 @@ static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev, uint32_
 	if (ret != SEDI_DRIVER_OK) {
 		return ret;
 	}
+
 	ret = sedi_dma_control(dma_dev, channel, SEDI_CONFIG_DMA_HS_DEVICE_ID,
-			       uart_dma_hs_id[uart]);
+			       handshake);
 
 	DBG_CHECK(0 == ret, SEDI_DRIVER_ERROR);
 
@@ -1968,7 +1985,7 @@ static int sedi_uart_dma_io_polled(sedi_uart_t uart, sedi_dma_t dma_dev, uint32_
 	}
 	/* wait for transfer to complete */
 	if (op == WRITE) {
-		ret = SEDI_UART_POLL_WAIT(!(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED)));
+		ret = SEDI_UART_POLL_UNTIL(regs->lsr & SEDI_RBFVM(UART, LSR, TEMT, ENABLED));
 	}
 
 	return ret;

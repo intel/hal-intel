@@ -5,8 +5,10 @@
  */
 
 #include "sedi_driver_pm.h"
-#include <sedi_gpio_regs.h>
 #include <sedi_driver_gpio.h>
+
+#include "sedi_gpio_regs.h"
+#include "sedi_soc_regs.h"
 
 /* driver version */
 #define SEDI_GPIO_DRIVER_VERSION SEDI_DRIVER_VERSION_MAJOR_MINOR(0, 1)
@@ -167,17 +169,22 @@ void gpio_isr(IN sedi_gpio_t gpio_device)
 	sedi_gpio_regs_t *gpio = resources_map[gpio_device].reg;
 	gpio_context_t *context = &(gpio_context[gpio_device]);
 	uint8_t i;
-	uint32_t gisr;
-	uint32_t gimr;
+	uint32_t gisr, gwsr;
+	uint32_t gimr, gwmr;
 
 	for (i = 0; i < SEDI_GPIO_SOC_PORT_NUM; i++) {
 		gisr = gpio->gisr[i];
 		gimr = gpio->gimr[i];
+		gwsr = gpio->gwsr[i];
+		gwmr = gpio->gwmr[i];
 
 		gisr &= gimr;
+		gwsr &= gwmr;
 
 		/* Clear the interrupts */
 		gpio->gisr[i] = gisr;
+		/* Clear wake bit */
+		gpio->gwsr[i] = gwsr;
 
 		if ((context->cb_event) && (gisr != 0)) {
 			(context->cb_event)(gisr, i, context->callback_param);

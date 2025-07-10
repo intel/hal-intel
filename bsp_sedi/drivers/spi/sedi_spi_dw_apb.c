@@ -1,14 +1,16 @@
 /*
- * Copyright (c) 2023 - 2024 Intel Corporation
+ * Copyright (c) 2023 - 2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "sedi_driver_pm.h"
+#include <sedi_driver_pm.h>
+#include <sedi_driver_spi.h>
+#include <sedi_driver_dma.h>
+
 #include "sedi_driver_core.h"
-#include "sedi_driver_spi.h"
-#include "sedi_driver_dma.h"
 #include "sedi_spi_regs.h"
+#include "sedi_soc_funcs.h"
 
 #define SEDI_SPI_DRV_VERSION SEDI_DRIVER_VERSION_MAJOR_MINOR(1, 0)
 
@@ -50,7 +52,7 @@ SEDI_RBF_DEFINE(SPI, SPI_CTRLR0, WAIT_CYCLES, 11, 5, RW, (uint32_t)0x0);
 SEDI_RBF_DEFINE(SPI, TXFTLR, TFT, 0, 16, RW, (uint32_t)0x0);
 #endif
 
-#define SEDI_SPI_POLL_WAIT(_cond) SEDI_POLL_WAIT((_cond), 100)
+#define SEDI_SPI_POLL_UNTIL(_cond) SEDI_POLL_UNTIL((_cond), 100)
 
 struct spi_context {
 	/* hardware config */
@@ -173,7 +175,7 @@ static inline void lld_spi_enable(sedi_spi_regs_t *spi, bool enable)
 
 	SEDI_PREG_RBF_SET(SPI, SSIENR, SSI_EN, val, &spi->ssienr);
 
-	SEDI_SPI_POLL_WAIT(SEDI_PREG_RBFV_GET(SPI, SSIENR, SSI_EN, &spi->ssienr) != val);
+	SEDI_SPI_POLL_UNTIL(SEDI_PREG_RBFV_GET(SPI, SSIENR, SSI_EN, &spi->ssienr) == val);
 }
 
 static inline void lld_spi_dma_enable(sedi_spi_regs_t *spi, bool enable)
@@ -809,7 +811,7 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 	uint32_t len = SEDI_DMA_PERIPH_MAX_SIZE;
 
 	/* release the dma resource */
-	sedi_dma_set_power(dma, chan, SEDI_POWER_OFF);
+	sedi_dma_set_power(dma, chan, SEDI_POWER_LOW);
 	sedi_dma_uninit(dma, chan);
 
 	if (event != SEDI_DMA_EVENT_TRANSFER_DONE) {
@@ -834,15 +836,15 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 				context->tx_data_len);
 		}
 		/* Waiting for TX FIFO empty */
-		SEDI_SPI_POLL_WAIT(lld_spi_is_busy(context->base));
+		SEDI_SPI_POLL_UNTIL(!lld_spi_is_busy(context->base));
 	} else if (chan == context->rx_channel) {
 		context->dma_rx_finished = true;
 		context->data_rx_idx = context->rx_data_len;
 		/* If finished Rx, and need to do bit convert */
 		if (context->is_lsb == true) {
-#ifndef SEDI_CONFIG_ARCH_X86
+#if !defined(SEDI_CONFIG_ARCH_X86) && !defined(SEDI_CONFIG_ARCH_ARC)
 			/* Invalidate cache */
-			sedi_core_inv_dcache_by_addr(
+			sedi_core_inv_clean_dcache_by_addr(
 				(uint32_t *)(context->data_rx),
 				context->rx_data_len);
 #endif
@@ -1000,7 +1002,7 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 					(uint32_t *)(context->data_tx),
 					context->tx_data_len);
 		}
-#ifdef SEDI_CONFIG_ARCH_X86
+#if defined(SEDI_CONFIG_ARCH_X86) || defined(SEDI_CONFIG_ARCH_ARC)
 		if (context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) {
 			sedi_core_inv_clean_dcache_by_addr(
 					(uint32_t *)(context->data_rx),
@@ -1088,8 +1090,10 @@ int32_t sedi_spi_dma_transfer(IN sedi_spi_t spi_device, IN uint32_t tx_dma,
 			lld_spi_dr_address(context->base), len);
 	}
 
-#endif
 	return SEDI_DRIVER_OK;
+#else
+	return SEDI_DRIVER_ERROR_UNSUPPORTED;
+#endif
 }
 
 int32_t sedi_spi_poll_transfer(IN sedi_spi_t spi_device, IN uint8_t *data_out,
@@ -1172,7 +1176,7 @@ int32_t sedi_spi_poll_transfer(IN sedi_spi_t spi_device, IN uint8_t *data_out,
 	}
 
 	/* Waiting for SPI idle */
-	SEDI_SPI_POLL_WAIT(lld_spi_is_busy(context->base));
+	SEDI_SPI_POLL_UNTIL(!lld_spi_is_busy(context->base));
 	lld_spi_enable(context->base, false);
 
 	context->status.busy = 0U;
@@ -1470,7 +1474,7 @@ void spi_isr(IN sedi_spi_t spi_device)
 		end = true;
 		event = SEDI_SPI_EVENT_COMPLETE;
 		/* Wait for Data in FIFO send out while not continuous */
-		SEDI_SPI_POLL_WAIT(lld_spi_is_busy(context->base));
+		SEDI_SPI_POLL_UNTIL(!lld_spi_is_busy(context->base));
 
 		/* If need to reverse rx buffer */
 		if ((context->transfer_mode != SEDI_RBFV(SPI, CTRLR0, TMOD, TX_ONLY)) &&

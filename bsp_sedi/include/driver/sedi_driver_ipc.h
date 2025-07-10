@@ -13,18 +13,6 @@ extern "C" {
 
 #include "sedi_driver_common.h"
 
-/*
- * struct sedi_ipc
- * define IPC interface ID
- * \ingroup sedi_driver_ipc
- */
-typedef enum {
-	SEDI_IPC_HOST = 0,
-	SEDI_IPC_CSME,
-	SEDI_IPC_PMC,
-	SEDI_IPC_NUM
-} sedi_ipc_t;
-
 /****** IPC Event *****/
 
 /*

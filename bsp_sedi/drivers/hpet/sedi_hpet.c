@@ -1,11 +1,14 @@
 /*
- * Copyright (c) 2023 - 2024 Intel Corporation
+ * Copyright (c) 2023 - 2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include <sedi_driver_hpet.h>
-#include <sedi_hpet_regs.h>
+
+#include "sedi_hpet_regs.h"
+#include "sedi_soc_regs.h"
+
 #include <string.h>
 
 /* define two 64-bit registers for easy access with SEDI REG APIs */
@@ -63,7 +66,7 @@ static const sedi_hpet_capabilities_t hpet_cap = { 0 };
 
 static inline void wait_for_idle(uint32_t bits)
 {
-	SEDI_POLL_WAIT(SEDI_REG_GET(HPET, HPET_CTRL_STS) & bits, 10);
+	SEDI_POLL_UNTIL((SEDI_REG_GET(HPET, HPET_CTRL_STS) & bits) == 0x0, 10);
 }
 
 uint32_t sedi_hpet_get_min_delay(void)
@@ -260,30 +263,38 @@ uint32_t sedi_hpet_get_int_status(void)
 
 void sedi_hpet_set_int_status(IN uint32_t val)
 {
-	SEDI_REG_SET(HPET, GIS_LOW, val);
+	SEDI_REG_SET(HPET, GIS_LOW, val & SEDI_REG_GET(HPET, GIS_LOW));
 	wait_for_idle(CTRL_STS_GENERAL_INT_STATUS);
 }
 
 void sedi_hpet_timer_int_handler(IN sedi_hpet_t timer_id)
 {
+	/* Get a copy of the callback and parameter as they're
+	 * reset to zero when killing the timer in one_shot mode.
+	 */
+	hpet_callback_t callback = bsp_timers[timer_id].callback;
+	void *param = bsp_timers[timer_id].param;
+
 	if (!(SEDI_REG_GET(HPET, GIS_LOW) & BIT(timer_id)))
 		return;
 
-	/* Clear the GIS flags */
-	sedi_hpet_set_int_status(BIT(timer_id));
-
-	if (bsp_timers[timer_id].callback) {
-		bsp_timers[timer_id].callback(bsp_timers[timer_id].param);
-	}
+	SEDI_ASSERT(bsp_timers[timer_id].start);
 
 	if (bsp_timers[timer_id].one_shot) {
 		sedi_hpet_kill_timer(timer_id);
 	} else {
+		sedi_hpet_set_int_status(BIT(timer_id));
+
 		bsp_timers[timer_id].expires =
 			sedi_hpet_get_main_counter() + bsp_timers[timer_id].timeout;
 		/* Set new comparator */
 		sedi_hpet_set_comparator(timer_id, bsp_timers[timer_id].expires);
 	}
+
+	if (callback) {
+		callback(param);
+	}
+
 }
 
 int32_t sedi_hpet_config_timer(IN sedi_hpet_t timer_id, IN uint64_t microseconds,
@@ -313,6 +324,9 @@ int32_t sedi_hpet_config_timer(IN sedi_hpet_t timer_id, IN uint64_t microseconds
 int32_t sedi_hpet_kill_timer(IN sedi_hpet_t timer_id)
 {
 	DBG_CHECK(timer_id < SEDI_HPET_SOC_TIMER_NUM, SEDI_DRIVER_ERROR_PARAMETER);
+
+	if (!bsp_timers[timer_id].start)
+		return SEDI_DRIVER_OK;
 
 	/* Disable interrupt */
 	sedi_hpet_disable_interrupt(timer_id);

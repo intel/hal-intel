@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "sedi_driver_core.h"
-#include <sedi_driver_common.h>
-#include <sedi_ipc_regs.h>
 #include <sedi_driver_ipc.h>
+
+#include "sedi_driver_core.h"
+#include "sedi_ipc_regs.h"
+#include "sedi_soc_funcs.h"
 
 #define SEDI_IPC_API_VERSION 0
 /* driver version */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - 2024 Intel Corporation
+ * Copyright (c) 2023 - 2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -10,8 +10,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "sedi_soc_regs.h"
-#include "sedi_soc.h"
+#include "sedi_soc_defs.h"
 
 /*!
  * \defgroup sedi_driver_common Common
@@ -158,8 +157,8 @@ typedef struct {
 #define SEDI_PM_ERROR_INTR_PENDING (SEDI_DRIVER_ERROR_SPECIFIC - 3)
 
 /*!
- * \def SEDI_PM_ERROR_CG_ABORT
- * \brief Clock gating aborted
+ * \def SEDI_PM_ERROR_CG_PG_ABORT
+ * \brief Clock/Power gating aborted
  */
 #define SEDI_PM_ERROR_CG_PG_ABORT (SEDI_DRIVER_ERROR_SPECIFIC - 4)
 
@@ -397,40 +396,52 @@ static inline void write64(uint32_t addr, IN uint64_t val)
 
 uint64_t sedi_rtc_get_us(void);
 
-#define __SEDI_POLL_WAIT(_cond, _ms, _mute)                                                        \
+/*!
+ * \def SEDI_RUN_UNTIL_USEC/MSEC/SEC
+ * \brief SEDI helper of a for loop to run at most N microseconds/milliseconds/seconds.
+ * \ingroup sedi_driver_common
+ */
+#define SEDI_RUN_UNTIL_USEC(_us)                                                                   \
+		for (uint64_t __sedi_us_start = sedi_rtc_get_us(), __sedi_us_cur = __sedi_us_start;\
+				(__sedi_us_cur - __sedi_us_start) < (_us);                         \
+				__sedi_us_cur = sedi_rtc_get_us()                                  \
+		)
+#define SEDI_RUN_UNTIL_MSEC(_ms)  SEDI_RUN_UNTIL_USEC((_ms) * 1000)
+#define SEDI_RUN_UNTIL_SEC(_sec)  SEDI_RUN_UNTIL_MSEC((_sec) * 1000)
+
+#define __SEDI_POLL_UNTIL_USEC(_cond, _us, _mute)                                                  \
 	({                                                                                         \
-		int ret = SEDI_DRIVER_OK;                                                          \
-		uint64_t us_start;                                                                 \
-		us_start = sedi_rtc_get_us();                                                      \
-		while (_cond) {                                                                    \
-			uint64_t us_cur;                                                           \
-			us_cur = sedi_rtc_get_us();                                                \
-			if (((int64_t)(us_cur - us_start) > ((_ms) * 1000)) && (_cond)) {          \
-				if (!(_mute)) {                                                    \
-					SEDI_LOG_ERR("SEDI poll %d ms timeout at %s : %d\n", (_ms),\
-						     __func__, __LINE__);                          \
-				}                                                                  \
-				ret = SEDI_DRIVER_ERROR_TIMEOUT;                                   \
+		int __sedi_ret = SEDI_DRIVER_ERROR_TIMEOUT;                                        \
+		SEDI_RUN_UNTIL_USEC((_us)) {                                                       \
+			if (_cond) {                                                               \
+				__sedi_ret = SEDI_DRIVER_OK;                                       \
 				break;                                                             \
 			}                                                                          \
 		}                                                                                  \
-		ret;                                                                               \
+		if (!(_mute) && (__sedi_ret != SEDI_DRIVER_OK)) {                                  \
+			SEDI_LOG_ERR("SEDI poll %d us timeout at %s : %d\n", (_us),                \
+					     __func__, __LINE__);                                  \
+		}                                                                                  \
+		__sedi_ret;                                                                        \
 	})
 
 /*!
- * \function SEDI_POLL_WAIT
- * \brief SEDI helper function to poll wait ((_cond) == true) at most (_ms) milliseconds.
+ * \function SEDI_POLL_UNTIL
+ * \brief SEDI helper function to poll until ((_cond) == true) at most (_ms)
+ *	milliseconds.
  * \return SEDI_DRIVER_OK or SEDI_DRIVER_ERROR_TIMEOUT
  * \ingroup sedi_driver_common
  */
-#define SEDI_POLL_WAIT(_cond, _ms) __SEDI_POLL_WAIT(_cond, _ms, false)
+#define SEDI_POLL_UNTIL(_cond, _ms) __SEDI_POLL_UNTIL_USEC(_cond, ((_ms) * 1000), false)
 
 /*!
- * \function SEDI_POLL_WAIT_MUTE
- * \brief SEDI helper function to poll wait ((_cond) == true) at most (_ms) milliseconds, and don't
- *	print error log when timeout happens to avoid potential recursive logging.
+ * \function SEDI_POLL_UNTIL_MUTE
+ * \brief SEDI helper function to poll until ((_cond) == true) at most (_ms)
+ *	milliseconds, and don't	print error log when timeout happens to avoid potential
+ *	recursive logging.
  * \return SEDI_DRIVER_OK or SEDI_DRIVER_ERROR_TIMEOUT
  * \ingroup sedi_driver_common
  */
-#define SEDI_POLL_WAIT_MUTE(_cond, _ms) __SEDI_POLL_WAIT(_cond, _ms, true)
+#define SEDI_POLL_UNTIL_MUTE(_cond, _ms) __SEDI_POLL_UNTIL_USEC(_cond, ((_ms) * 1000), true)
+
 #endif /* _SEDI_DRIVER_COMMON_H_*/

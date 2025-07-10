@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2024 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -7,15 +7,46 @@
 #ifndef _SEDI_REG_DEFS_H_
 #define _SEDI_REG_DEFS_H_
 
+#ifndef __IO_R
+/*!
+ * \def __IO_R
+ * \brief 'read only' permissions
+ * \ingroup sedi_driver_common
+ */
+#define __IO_R volatile const
+#endif
+
+#ifndef __IO_W
+/*!
+ * \def __IO_W
+ * \brief 'write only' permissions
+ * \ingroup sedi_driver_common
+ */
+#define __IO_W volatile
+#endif
+
+#ifndef __IO_RW
+/*!
+ * \def __IO_RW
+ * \brief 'read / write' permissions
+ * \ingroup sedi_driver_common
+ */
+#define __IO_RW volatile
+#endif
+
 #define __SEDI_CONST_RO const
 #define __SEDI_CONST_WO
 #define __SEDI_CONST_RW
 #define __SEDI_CONST_RO_V const
 #define __SEDI_CONST_RW_V
 #define __SEDI_CONST_RW_L
+#define __SEDI_CONST_RW_C
+#define __SEDI_CONST_RW_AC
 #define __SEDI_CONST_RW_1C
+#define __SEDI_CONST_RW_1S
 #define __SEDI_CONST_RW_1C_V
 #define __SEDI_CONST_RW_1S_V
+#define __SEDI_CONST_RW_1S_1C_V
 #define __SEDI_CONST_RSV const
 
 #define __SEDI_UNUSED __attribute__((unused))
@@ -161,7 +192,7 @@
  */
 
 #define SEDI_IREG_PTR(_comp, _instance, _reg)                                                      \
-	(volatile(SEDI_REGT(_comp, _reg) *)(SEDI_IREG_BASE(_comp, _instance) +                     \
+	((volatile SEDI_REGT(_comp, _reg) *)(SEDI_IREG_BASE(_comp, _instance) +                     \
 					    SEDI_REGO(_comp, _reg)))
 
 #define SEDI_REG_PTR(_comp, _reg)                                                                  \
@@ -173,8 +204,8 @@
 
 #define SEDI_PREG_GET(_comp, _reg, _reg_addr)                                                      \
 	({                                                                                         \
-		volatile SEDI_REGT(_comp, _reg) * _addr = (_reg_addr);                             \
-		*_addr;                                                                            \
+		volatile SEDI_REGT(_comp, _reg) * _addr_get = (_reg_addr);                         \
+		*_addr_get;                                                                        \
 	})
 
 #define SEDI_IREG_GET(_comp, _instance, _reg)                                                      \
@@ -187,8 +218,8 @@
  */
 #define SEDI_PREG_SET(_comp, _reg, _value, _reg_addr)                                              \
 	({                                                                                         \
-		volatile SEDI_REGT(_comp, _reg) * _addr = (_reg_addr);                             \
-		*_addr = _value;                                                                   \
+		volatile SEDI_REGT(_comp, _reg) * _addr_set = (_reg_addr);                         \
+		*_addr_set = _value;                                                               \
 	})
 
 #define SEDI_IREG_SET(_comp, _instance, _reg, _value)                                              \
