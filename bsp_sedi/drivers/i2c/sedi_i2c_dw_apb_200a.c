@@ -611,8 +611,9 @@ int32_t sedi_i2c_init(IN sedi_i2c_t i2c_device,
 
 	context->phy_data_cmd = sedi_core_virt_to_phys(context->base)
 		+ offsetof(sedi_i2c_regs_t, data_cmd);
-	if (!phy_tx_cmd)
+	if (!phy_tx_cmd) {
 		phy_tx_cmd = sedi_core_virt_to_phys((uint32_t)&tx_cmd);
+	}
 
 	return SEDI_DRIVER_OK;
 }
