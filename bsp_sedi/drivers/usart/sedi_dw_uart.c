@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - 2024 Intel Corporation
+ * Copyright (c) 2023 - 2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -269,6 +269,7 @@ static void uart_soft_rst(void)
 static void uart_soft_rst_instance(sedi_uart_t uart)
 {
 	uint32_t rst_value = SEDI_REG_RBFV_GET(CCU, UART_SOFT_RST, UART_RST);
+
 	SEDI_REG_RBF_SET(CCU, UART_SOFT_RST, UART_RST, rst_value | BIT(uart));
 	SEDI_REG_RBF_SET(CCU, UART_SOFT_RST, UART_RST, rst_value & ~BIT(uart));
 

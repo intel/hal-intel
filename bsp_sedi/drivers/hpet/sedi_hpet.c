@@ -320,8 +320,9 @@ int32_t sedi_hpet_kill_timer(IN sedi_hpet_t timer_id)
 {
 	DBG_CHECK(timer_id < SEDI_HPET_SOC_TIMER_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
-	if (!bsp_timers[timer_id].start)
+	if (!bsp_timers[timer_id].start) {
 		return SEDI_DRIVER_OK;
+	}
 
 	/* Disable interrupt */
 	sedi_hpet_disable_interrupt(timer_id);
