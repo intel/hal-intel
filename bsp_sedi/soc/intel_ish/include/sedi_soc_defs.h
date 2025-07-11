@@ -85,7 +85,7 @@ typedef enum {
 #define I2C_FIFO_DEPTH (64)
 
 /*
- * \enum sedi_ipc
+ * \enum sedi_ipc_t
  * \brief IPC interface ID
  */
 typedef enum {
@@ -133,17 +133,21 @@ typedef enum {
 
 #define SPI_FIFO_DEPTH (64)
 
+#if defined(CONFIG_SOC_INTEL_ISH_5_4_1) || defined(CONFIG_SOC_INTEL_ISH_5_6_0)
 #define SEDI_IRQ_HPET_TIMER_0 (14)
+#else
+#define SEDI_IRQ_HPET_TIMER_0 (17)
+#endif
 #define SEDI_IRQ_HPET_TIMER_1 (0) /* fake IRQ number, same as timer 0's */
 
-#ifdef CONFIG_SOC_INTEL_ISH_5_8_0
-#define SEDI_IRQ_RESET_PREP (8)
-#define SEDI_IRQ_PCIEDEV (11)
-#define SEDI_IRQ_PMU2IOAPIC (12)
-#else
+#if defined(CONFIG_SOC_INTEL_ISH_5_4_1) || defined(CONFIG_SOC_INTEL_ISH_5_6_0)
 #define SEDI_IRQ_RESET_PREP (6)
 #define SEDI_IRQ_PCIEDEV (9)
 #define SEDI_IRQ_PMU2IOAPIC (10)
+#else
+#define SEDI_IRQ_RESET_PREP (8)
+#define SEDI_IRQ_PCIEDEV (11)
+#define SEDI_IRQ_PMU2IOAPIC (12)
 #endif
 
 /*!
