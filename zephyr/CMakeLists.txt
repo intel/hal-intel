@@ -9,6 +9,7 @@ if(CONFIG_INTEL_HAL)
   zephyr_interface_library_named(BSP_SEDI)
   target_link_libraries(zephyr_interface INTERFACE BSP_SEDI)
   target_include_directories(BSP_SEDI INTERFACE ${BSP_SEDI_SRC}/include/driver)
+  target_include_directories(BSP_SEDI INTERFACE ${BSP_SEDI_SRC}/include)
 
   zephyr_library_named(modules_intel_hal)
   zephyr_library_link_libraries(BSP_SEDI)
