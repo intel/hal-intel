@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Intel Corporation
+ * Copyright (c) 2023-2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -153,8 +153,8 @@
  */
 #define SEDI_REG_DEFINE(_comp, _reg, _offset, _access, _writable_bitmask, _reset_val)              \
 	static const uint32_t SEDI_REGO(_comp, _reg) = (_offset);                                  \
-	static __SEDI_CONST_##_access __typeof__(_reset_val)                                       \
-		__SEDI_UNUSED SEDI_REGR(_comp, _reg) = (_reset_val)
+	static __SEDI_CONST_##_access __typeof__(_reset_val) __SEDI_UNUSED SEDI_REGR(              \
+		_comp, _reg) = (_reset_val)
 
 /*
  * Define constants for a Register Bit Field (RBF)
@@ -166,12 +166,12 @@
 	static const uint32_t SEDI_RBFO(_comp, _reg, _bf) = (_offset);                             \
 	static const uint32_t SEDI_RBFW(_comp, _reg, _bf) = (_width);                              \
 	static const SEDI_REGT(_comp, _reg) SEDI_RBFM(_comp, _reg, _bf) =                          \
-		(((_offset) + (_width)) >= sizeof(SEDI_REGT(_comp, _reg)) * 8) ?                   \
-			((SEDI_REGT(_comp, _reg))(-1) &                                            \
-			 ~(_SEDI_REGBM(_comp, _reg, _offset) - 1)) :                               \
-			((_SEDI_REGBM(_comp, _reg, _width) - 1) << (_offset));                     \
-	static __SEDI_CONST_##_access __typeof__(_reset_val)                                       \
-		__SEDI_UNUSED SEDI_RBFR(_comp, _reg, _bf) = (_reset_val)
+		(((_offset) + (_width)) >= sizeof(SEDI_REGT(_comp, _reg)) * 8)                     \
+			? ((SEDI_REGT(_comp, _reg))(-1) &                                          \
+			   ~(_SEDI_REGBM(_comp, _reg, _offset) - 1))                               \
+			: ((_SEDI_REGBM(_comp, _reg, _width) - 1) << (_offset));                   \
+	static __SEDI_CONST_##_access __typeof__(_reset_val) __SEDI_UNUSED SEDI_RBFR(              \
+		_comp, _reg, _bf) = (_reset_val)
 
 /*
  * Define a Register Bit Field Value (RBFV) with name _value_name
@@ -192,8 +192,8 @@
  */
 
 #define SEDI_IREG_PTR(_comp, _instance, _reg)                                                      \
-	((volatile SEDI_REGT(_comp, _reg) *)(SEDI_IREG_BASE(_comp, _instance) +                     \
-					    SEDI_REGO(_comp, _reg)))
+	((volatile SEDI_REGT(_comp, _reg) *)(SEDI_IREG_BASE(_comp, _instance) +                    \
+					     SEDI_REGO(_comp, _reg)))
 
 #define SEDI_REG_PTR(_comp, _reg)                                                                  \
 	((volatile SEDI_REGT(_comp, _reg) *)(SEDI_REG_BASE(_comp) + SEDI_REGO(_comp, _reg)))
