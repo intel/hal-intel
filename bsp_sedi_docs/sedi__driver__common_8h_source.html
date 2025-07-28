@@ -70,7 +70,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (c) 2023 - 2024 Intel Corporation</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (c) 2023 - 2025 Intel Corporation</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * SPDX-License-Identifier: BSD-3-Clause</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> */</span></div>
@@ -81,237 +81,241 @@ $(function() {
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;stdint.h&gt;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;sedi_soc_regs.h&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;sedi_soc.h&quot;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#ifndef NULL</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#define NULL ((void *)0)</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#ifndef BIT</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#gad27cc17b25bb93134368d5eb21126eae">   32</a></span>&#160;<span class="preprocessor">#define BIT(x) (1U &lt;&lt; (x))</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#ifndef TRUE</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#define TRUE 1</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#ifndef FALSE</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#define FALSE 0</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#ifndef MS_PER_SEC</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#define MS_PER_SEC 1000</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#ifndef NS_PER_US</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#define NS_PER_US 1000</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#define SEDI_DRIVER_VERSION_MAJOR_MINOR(major, minor) (((major) &lt;&lt; 8) | (minor))</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="structsedi__driver__version__t.html">   77</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
-<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="structsedi__driver__version__t.html#a4f8c72ff087e09387b2d3e3495fdc970">   78</a></span>&#160;    uint16_t <a class="code" href="structsedi__driver__version__t.html#a4f8c72ff087e09387b2d3e3495fdc970">api</a>; </div>
-<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="structsedi__driver__version__t.html#a32ef275440eb8e1a7db6eda2cd404595">   79</a></span>&#160;    uint16_t <a class="code" href="structsedi__driver__version__t.html#a32ef275440eb8e1a7db6eda2cd404595">drv</a>; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;} <a class="code" href="structsedi__driver__version__t.html">sedi_driver_version_t</a>;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="group__return__status.html#gade39305ad79dd59713fb458101f834f4">   92</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_OK 0</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="group__return__status.html#gae18ab52a769bf3949534e141ae108dd0">   98</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR -1</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="group__return__status.html#ga8ca582445057a7a7e3ac7d54b1667871">  104</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_BUSY -2</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="group__return__status.html#ga7b2adbb47de64d2d5d9a1367e150644b">  110</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_TIMEOUT -3</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno"><a class="line" href="group__return__status.html#gabf829c647a0c6f0c0799e19dce46a125">  116</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_UNSUPPORTED -4</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno"><a class="line" href="group__return__status.html#ga32a568565b4b73fc5548634308af2003">  122</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_PARAMETER -5</span></div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
-<div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="group__return__status.html#gaeebe5a090b7a929c1c45b5fdb52ae2c5">  128</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_TRANSFER -6</span></div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="group__return__status.html#gaa03a89bcfad67cc5c078d3e79cece383">  134</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_NO_DEV -7</span></div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno"><a class="line" href="group__return__status.html#ga1c9cea3c60807c09b3af98e65b779d8c">  140</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_SPECIFIC -8</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
-<div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="group__return__status.html#gad98264418392bd4fe5a9baed0a809eb9">  146</a></span>&#160;<span class="preprocessor">#define SEDI_USART_ERROR_CANCELED (SEDI_DRIVER_ERROR_SPECIFIC - 1)</span></div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
-<div class="line"><a name="l00152"></a><span class="lineno"><a class="line" href="group__return__status.html#ga5dac7cf9113458b2473449c1a0f92985">  152</a></span>&#160;<span class="preprocessor">#define SEDI_PM_ERROR_NOMEM (SEDI_DRIVER_ERROR_SPECIFIC - 2)</span></div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="group__return__status.html#ga13de72648d543da4eda0589e23efc521">  158</a></span>&#160;<span class="preprocessor">#define SEDI_PM_ERROR_INTR_PENDING (SEDI_DRIVER_ERROR_SPECIFIC - 3)</span></div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;<span class="preprocessor">#define SEDI_PM_ERROR_CG_PG_ABORT (SEDI_DRIVER_ERROR_SPECIFIC - 4)</span></div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
-<div class="line"><a name="l00170"></a><span class="lineno"><a class="line" href="group__return__status.html#ga3bd25714458f7647c877bc9f2947e385">  170</a></span>&#160;<span class="preprocessor">#define PARAM_UNUSED(x) (void)(x)</span></div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="keyword">enum</span> {</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    SEDI_LOG_LEVEL_ERR = 1,</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    SEDI_LOG_LEVEL_WRN = 2,</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    SEDI_LOG_LEVEL_INF = 3,</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    SEDI_LOG_LEVEL_DBG = 4,</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;};</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
-<div class="line"><a name="l00189"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#ga78b973fba3428cb6f9879b705523eeaa">  189</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__sedi__driver__common.html#ga78b973fba3428cb6f9879b705523eeaa">sedi_log</a>(<span class="keywordtype">int</span> level, <span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="preprocessor">#define SEDI_LOG_ERR(...) sedi_log(SEDI_LOG_LEVEL_ERR, __VA_ARGS__)</span></div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="preprocessor">#define SEDI_LOG_WRN(...) sedi_log(SEDI_LOG_LEVEL_WRN, __VA_ARGS__)</span></div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;<span class="preprocessor">#define SEDI_LOG_INF(...) sedi_log(SEDI_LOG_LEVEL_INF, __VA_ARGS__)</span></div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="preprocessor">#define SEDI_LOG_DBG(...) sedi_log(SEDI_LOG_LEVEL_DBG, __VA_ARGS__)</span></div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="preprocessor">#ifdef CONFIG_DEBUG</span></div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="preprocessor">#define DBG_CHECK(condition, error)                                            \</span></div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="preprocessor">    do {                                                                   \</span></div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="preprocessor">        if (!(condition)) {                                            \</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="preprocessor">            SEDI_LOG_ERR(&quot;SEDI DBG_CHECK error %d @%s:%d:(%s)\n&quot;</span>,  \</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;                error, __func__, __LINE__, #condition);    \</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;            return error;                                          \</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        }                                                              \</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    } while (0)</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00210"></a><span class="lineno"><a class="line" href="group__return__status.html#ga630be2b122e79926e29f99fd600694e1">  210</a></span>&#160;<span class="preprocessor">#define DBG_CHECK(condition, error)</span></div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="preprocessor">#ifdef CONFIG_DEBUG</span></div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="keywordtype">void</span> sedi_assert_halt(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<span class="preprocessor">#define SEDI_ASSERT(condition)                                                 \</span></div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="preprocessor">    do {                                                                   \</span></div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="preprocessor">        if (!(condition)) {                                            \</span></div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="preprocessor">            SEDI_LOG_ERR(&quot;SEDI ASSERT @%s:%d:(%s)\n&quot;</span>,              \</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;                    __func__, __LINE__, #condition);   \</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;            sedi_assert_halt();                                    \</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;        }                                                              \</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    } while (0)</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00228"></a><span class="lineno"><a class="line" href="group__return__status.html#ga53477353bc4e28c4d1c137935e6eda00">  228</a></span>&#160;<span class="preprocessor">#define SEDI_ASSERT(condition)</span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="preprocessor">#define SET_MASK(x) (1UL &lt;&lt; (x))</span></div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="preprocessor">#define CLEAR_MASK(x) (~(1UL &lt;&lt; (x)))</span></div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160; </div>
-<div class="line"><a name="l00247"></a><span class="lineno"><a class="line" href="group__return__status.html#ga23f7c6e1691962a560c3d538978fc30d">  247</a></span>&#160;<span class="preprocessor">#define SEDI_ISR_DECLARE(func) void func(void)</span></div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
-<div class="line"><a name="l00254"></a><span class="lineno"><a class="line" href="group__return__status.html#gad67eb4129aef5dcf18ccc2e5b20ea7d4">  254</a></span>&#160;<span class="preprocessor">#define SET_BITS(reg_name, start, width, value)                                \</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="preprocessor">    do {                                                                   \</span></div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="preprocessor">        uint32_t tmp = 1 &lt;&lt; (width);                                   \</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="preprocessor">        reg_name &amp;= ~((tmp - 1) &lt;&lt; (start));                           \</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="preprocessor">        reg_name |= ((value) &lt;&lt; (start));                              \</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="preprocessor">    } while (0)</span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160; </div>
-<div class="line"><a name="l00266"></a><span class="lineno"><a class="line" href="group__return__status.html#ga640295226a119338f25e3b4bbd66897c">  266</a></span>&#160;<span class="preprocessor">#define GET_BITS(reg_name, start, width)                                       \</span></div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="preprocessor">    ((reg_name) &amp; (((1&lt;&lt;(width)) - 1) &lt;&lt; (start)))</span></div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    SEDI_POWER_OFF,</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    SEDI_POWER_SUSPEND,</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    SEDI_POWER_FORCE_SUSPEND,</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;    SEDI_POWER_LOW,</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    SEDI_POWER_FULL</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;} <a class="code" href="structsedi__power__state__t.html">sedi_power_state_t</a>;</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160; </div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="preprocessor">#ifndef __IO_R</span></div>
-<div class="line"><a name="l00297"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#ga71cbf515582e2b46e08bc3af31059fd1">  297</a></span>&#160;<span class="preprocessor">#define __IO_R volatile const</span></div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160; </div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;<span class="preprocessor">#ifndef __IO_W</span></div>
-<div class="line"><a name="l00306"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#ga28df646240a304a086c3109af344f3a8">  306</a></span>&#160;<span class="preprocessor">#define __IO_W volatile</span></div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160; </div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;<span class="preprocessor">#ifndef __IO_RW</span></div>
-<div class="line"><a name="l00315"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#gaae98f6affaec42fea00b163c0641d2f3">  315</a></span>&#160;<span class="preprocessor">#define __IO_RW volatile</span></div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160; </div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;<span class="preprocessor">#ifndef IN</span></div>
-<div class="line"><a name="l00324"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">  324</a></span>&#160;<span class="preprocessor">#define IN const</span></div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160; </div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;<span class="preprocessor">#ifndef OUT</span></div>
-<div class="line"><a name="l00333"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#gaec78e7a9e90a406a56f859ee456e8eae">  333</a></span>&#160;<span class="preprocessor">#define OUT</span></div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160; </div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;<span class="preprocessor">#ifndef INOUT</span></div>
-<div class="line"><a name="l00342"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#ga62766f3ea8784d1db62df989f8f33d2d">  342</a></span>&#160;<span class="preprocessor">#define INOUT</span></div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160; </div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="comment">/* register read/write help function */</span></div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> uint8_t read8(<a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint32_t addr)</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;{</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    <span class="keywordflow">return</span> *(<span class="keyword">const</span> <span class="keyword">volatile</span> uint8_t *)addr;</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;}</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160; </div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> uint16_t read16(<a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint32_t addr)</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;{</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    <span class="keywordflow">return</span> *(<span class="keyword">const</span> <span class="keyword">volatile</span> uint16_t *)addr;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;}</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160; </div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> uint32_t read32(<a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint32_t addr)</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;{</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    <span class="keywordflow">return</span> *(<span class="keyword">const</span> <span class="keyword">volatile</span> uint32_t *)addr;</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;}</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160; </div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="comment">/* Note - 64 bit function isn&#39;t atomic */</span></div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> uint64_t read64(<a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint32_t addr)</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;{</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    <span class="keywordflow">return</span> *(<span class="keyword">const</span> <span class="keyword">volatile</span> uint64_t *)addr;</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;}</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160; </div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> write8(uint32_t addr, <a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint8_t val)</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;{</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    *(<span class="keyword">volatile</span> uint8_t *)addr = (uint8_t)val;</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;}</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160; </div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> write16(uint32_t addr, <a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint16_t val)</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;{</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    *(<span class="keyword">volatile</span> uint16_t *)addr = (uint16_t)val;</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;}</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160; </div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> write32(uint32_t addr, <a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint32_t val)</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;{</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    *(<span class="keyword">volatile</span> uint32_t *)addr = val;</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;}</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160; </div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;<span class="comment">/* Note - 64 bit function isn&#39;t atomic */</span></div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> write64(uint32_t addr, <a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint64_t val)</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;{</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    *(<span class="keyword">volatile</span> uint64_t *)addr = val;</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;}</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160; </div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="preprocessor">#define SET_REG_BIT(address, smask)                                           \</span></div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;<span class="preprocessor">    write32(address, read32(address) | (smask))</span></div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160; </div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;<span class="preprocessor">#define CLEAR_REG_BIT(address, cmask)                                         \</span></div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="preprocessor">    write32(address, read32(address) &amp; ~(cmask))</span></div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160; </div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;uint64_t sedi_rtc_get_us(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160; </div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;<span class="preprocessor">#define __SEDI_POLL_WAIT(_cond, _ms, _mute)                                                        \</span></div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;<span class="preprocessor">    ({                                                                                         \</span></div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;<span class="preprocessor">        int ret = SEDI_DRIVER_OK;                                                          \</span></div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;<span class="preprocessor">        uint64_t us_start;                                                                 \</span></div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="preprocessor">        us_start = sedi_rtc_get_us();                                                      \</span></div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;<span class="preprocessor">        while (_cond) {                                                                    \</span></div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;<span class="preprocessor">            uint64_t us_cur;                                                           \</span></div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="preprocessor">            us_cur = sedi_rtc_get_us();                                                \</span></div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;<span class="preprocessor">            if (((int64_t)(us_cur - us_start) &gt; ((_ms) * 1000)) &amp;&amp; (_cond)) {          \</span></div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<span class="preprocessor">                if (!(_mute)) {                                                    \</span></div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;<span class="preprocessor">                    SEDI_LOG_ERR(&quot;SEDI poll %d ms timeout at %s : %d\n&quot;</span>, (_ms),\</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;                             __func__, __LINE__);                          \</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                }                                                                  \</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;                ret = SEDI_DRIVER_ERROR_TIMEOUT;                                   \</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;                break;                                                             \</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;            }                                                                          \</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;        }                                                                                  \</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;        ret;                                                                               \</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    })</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160; </div>
-<div class="line"><a name="l00426"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#ga9d5c8e9cb8e16f4a0412cc42919ab431">  426</a></span>&#160;<span class="preprocessor">#define SEDI_POLL_WAIT(_cond, _ms) __SEDI_POLL_WAIT(_cond, _ms, false)</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;sedi_soc_defs.h&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#ifndef NULL</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#define NULL ((void *)0)</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#ifndef BIT</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#gad27cc17b25bb93134368d5eb21126eae">   31</a></span>&#160;<span class="preprocessor">#define BIT(x) (1U &lt;&lt; (x))</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#ifndef TRUE</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#define TRUE 1</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#ifndef FALSE</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#define FALSE 0</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#ifndef MS_PER_SEC</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#define MS_PER_SEC 1000</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#ifndef NS_PER_US</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#define NS_PER_US 1000</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#define SEDI_DRIVER_VERSION_MAJOR_MINOR(major, minor) (((major) &lt;&lt; 8) | (minor))</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="structsedi__driver__version__t.html">   76</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="structsedi__driver__version__t.html#a4f8c72ff087e09387b2d3e3495fdc970">   77</a></span>&#160;    uint16_t <a class="code" href="structsedi__driver__version__t.html#a4f8c72ff087e09387b2d3e3495fdc970">api</a>; </div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="structsedi__driver__version__t.html#a32ef275440eb8e1a7db6eda2cd404595">   78</a></span>&#160;    uint16_t <a class="code" href="structsedi__driver__version__t.html#a32ef275440eb8e1a7db6eda2cd404595">drv</a>; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;} <a class="code" href="structsedi__driver__version__t.html">sedi_driver_version_t</a>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="group__return__status.html#gade39305ad79dd59713fb458101f834f4">   91</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_OK 0</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno"><a class="line" href="group__return__status.html#gae18ab52a769bf3949534e141ae108dd0">   97</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR -1</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="group__return__status.html#ga8ca582445057a7a7e3ac7d54b1667871">  103</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_BUSY -2</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="group__return__status.html#ga7b2adbb47de64d2d5d9a1367e150644b">  109</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_TIMEOUT -3</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="group__return__status.html#gabf829c647a0c6f0c0799e19dce46a125">  115</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_UNSUPPORTED -4</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="group__return__status.html#ga32a568565b4b73fc5548634308af2003">  121</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_PARAMETER -5</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="group__return__status.html#gaeebe5a090b7a929c1c45b5fdb52ae2c5">  127</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_TRANSFER -6</span></div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00133"></a><span class="lineno"><a class="line" href="group__return__status.html#gaa03a89bcfad67cc5c078d3e79cece383">  133</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_NO_DEV -7</span></div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="group__return__status.html#ga1c9cea3c60807c09b3af98e65b779d8c">  139</a></span>&#160;<span class="preprocessor">#define SEDI_DRIVER_ERROR_SPECIFIC -8</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
+<div class="line"><a name="l00145"></a><span class="lineno"><a class="line" href="group__return__status.html#gad98264418392bd4fe5a9baed0a809eb9">  145</a></span>&#160;<span class="preprocessor">#define SEDI_USART_ERROR_CANCELED (SEDI_DRIVER_ERROR_SPECIFIC - 1)</span></div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
+<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="group__return__status.html#ga5dac7cf9113458b2473449c1a0f92985">  151</a></span>&#160;<span class="preprocessor">#define SEDI_PM_ERROR_NOMEM (SEDI_DRIVER_ERROR_SPECIFIC - 2)</span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno"><a class="line" href="group__return__status.html#ga13de72648d543da4eda0589e23efc521">  157</a></span>&#160;<span class="preprocessor">#define SEDI_PM_ERROR_INTR_PENDING (SEDI_DRIVER_ERROR_SPECIFIC - 3)</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="group__return__status.html#ga4f116e7acdf1e67e8a043e5563b84fb1">  163</a></span>&#160;<span class="preprocessor">#define SEDI_PM_ERROR_CG_PG_ABORT (SEDI_DRIVER_ERROR_SPECIFIC - 4)</span></div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00169"></a><span class="lineno"><a class="line" href="group__return__status.html#ga3bd25714458f7647c877bc9f2947e385">  169</a></span>&#160;<span class="preprocessor">#define PARAM_UNUSED(x) (void)(x)</span></div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    SEDI_LOG_LEVEL_ERR = 1,</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    SEDI_LOG_LEVEL_WRN = 2,</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    SEDI_LOG_LEVEL_INF = 3,</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    SEDI_LOG_LEVEL_DBG = 4,</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;};</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
+<div class="line"><a name="l00188"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#ga78b973fba3428cb6f9879b705523eeaa">  188</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__sedi__driver__common.html#ga78b973fba3428cb6f9879b705523eeaa">sedi_log</a>(<span class="keywordtype">int</span> level, <span class="keyword">const</span> <span class="keywordtype">char</span> *fmt, ...);</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="preprocessor">#define SEDI_LOG_ERR(...) sedi_log(SEDI_LOG_LEVEL_ERR, __VA_ARGS__)</span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;<span class="preprocessor">#define SEDI_LOG_WRN(...) sedi_log(SEDI_LOG_LEVEL_WRN, __VA_ARGS__)</span></div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;<span class="preprocessor">#define SEDI_LOG_INF(...) sedi_log(SEDI_LOG_LEVEL_INF, __VA_ARGS__)</span></div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;<span class="preprocessor">#define SEDI_LOG_DBG(...) sedi_log(SEDI_LOG_LEVEL_DBG, __VA_ARGS__)</span></div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="preprocessor">#ifdef CONFIG_DEBUG</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="preprocessor">#define DBG_CHECK(condition, error)                                            \</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="preprocessor">    do {                                                                   \</span></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="preprocessor">        if (!(condition)) {                                            \</span></div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="preprocessor">            SEDI_LOG_ERR(&quot;SEDI DBG_CHECK error %d @%s:%d:(%s)\n&quot;</span>,  \</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                error, __func__, __LINE__, #condition);    \</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;            return error;                                          \</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        }                                                              \</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    } while (0)</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00209"></a><span class="lineno"><a class="line" href="group__return__status.html#ga630be2b122e79926e29f99fd600694e1">  209</a></span>&#160;<span class="preprocessor">#define DBG_CHECK(condition, error)</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="preprocessor">#ifdef CONFIG_DEBUG</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="keywordtype">void</span> sedi_assert_halt(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="preprocessor">#define SEDI_ASSERT(condition)                                                 \</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;<span class="preprocessor">    do {                                                                   \</span></div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="preprocessor">        if (!(condition)) {                                            \</span></div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="preprocessor">            SEDI_LOG_ERR(&quot;SEDI ASSERT @%s:%d:(%s)\n&quot;</span>,              \</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                    __func__, __LINE__, #condition);   \</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;            sedi_assert_halt();                                    \</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;        }                                                              \</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    } while (0)</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00227"></a><span class="lineno"><a class="line" href="group__return__status.html#ga53477353bc4e28c4d1c137935e6eda00">  227</a></span>&#160;<span class="preprocessor">#define SEDI_ASSERT(condition)</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="preprocessor">#define SET_MASK(x) (1UL &lt;&lt; (x))</span></div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="preprocessor">#define CLEAR_MASK(x) (~(1UL &lt;&lt; (x)))</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160; </div>
+<div class="line"><a name="l00246"></a><span class="lineno"><a class="line" href="group__return__status.html#ga23f7c6e1691962a560c3d538978fc30d">  246</a></span>&#160;<span class="preprocessor">#define SEDI_ISR_DECLARE(func) void func(void)</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160; </div>
+<div class="line"><a name="l00253"></a><span class="lineno"><a class="line" href="group__return__status.html#gad67eb4129aef5dcf18ccc2e5b20ea7d4">  253</a></span>&#160;<span class="preprocessor">#define SET_BITS(reg_name, start, width, value)                                \</span></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="preprocessor">    do {                                                                   \</span></div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="preprocessor">        uint32_t tmp = 1 &lt;&lt; (width);                                   \</span></div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="preprocessor">        reg_name &amp;= ~((tmp - 1) &lt;&lt; (start));                           \</span></div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="preprocessor">        reg_name |= ((value) &lt;&lt; (start));                              \</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="preprocessor">    } while (0)</span></div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
+<div class="line"><a name="l00265"></a><span class="lineno"><a class="line" href="group__return__status.html#ga640295226a119338f25e3b4bbd66897c">  265</a></span>&#160;<span class="preprocessor">#define GET_BITS(reg_name, start, width)                                       \</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="preprocessor">    ((reg_name) &amp; (((1&lt;&lt;(width)) - 1) &lt;&lt; (start)))</span></div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    SEDI_POWER_OFF,</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    SEDI_POWER_SUSPEND,</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    SEDI_POWER_FORCE_SUSPEND,</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;    SEDI_POWER_LOW,</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    SEDI_POWER_FULL</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;} <a class="code" href="structsedi__power__state__t.html">sedi_power_state_t</a>;</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160; </div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;<span class="preprocessor">#ifndef __IO_R</span></div>
+<div class="line"><a name="l00296"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#ga71cbf515582e2b46e08bc3af31059fd1">  296</a></span>&#160;<span class="preprocessor">#define __IO_R volatile const</span></div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160; </div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="preprocessor">#ifndef __IO_W</span></div>
+<div class="line"><a name="l00305"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#ga28df646240a304a086c3109af344f3a8">  305</a></span>&#160;<span class="preprocessor">#define __IO_W volatile</span></div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="preprocessor">#ifndef __IO_RW</span></div>
+<div class="line"><a name="l00314"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#gaae98f6affaec42fea00b163c0641d2f3">  314</a></span>&#160;<span class="preprocessor">#define __IO_RW volatile</span></div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160; </div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;<span class="preprocessor">#ifndef IN</span></div>
+<div class="line"><a name="l00323"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">  323</a></span>&#160;<span class="preprocessor">#define IN const</span></div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160; </div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;<span class="preprocessor">#ifndef OUT</span></div>
+<div class="line"><a name="l00332"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#gaec78e7a9e90a406a56f859ee456e8eae">  332</a></span>&#160;<span class="preprocessor">#define OUT</span></div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160; </div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;<span class="preprocessor">#ifndef INOUT</span></div>
+<div class="line"><a name="l00341"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#ga62766f3ea8784d1db62df989f8f33d2d">  341</a></span>&#160;<span class="preprocessor">#define INOUT</span></div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160; </div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="comment">/* register read/write help function */</span></div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> uint8_t read8(<a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint32_t addr)</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;{</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    <span class="keywordflow">return</span> *(<span class="keyword">const</span> <span class="keyword">volatile</span> uint8_t *)addr;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;}</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160; </div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> uint16_t read16(<a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint32_t addr)</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;{</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    <span class="keywordflow">return</span> *(<span class="keyword">const</span> <span class="keyword">volatile</span> uint16_t *)addr;</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;}</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160; </div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> uint32_t read32(<a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint32_t addr)</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;{</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    <span class="keywordflow">return</span> *(<span class="keyword">const</span> <span class="keyword">volatile</span> uint32_t *)addr;</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;}</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160; </div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="comment">/* Note - 64 bit function isn&#39;t atomic */</span></div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> uint64_t read64(<a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint32_t addr)</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;{</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    <span class="keywordflow">return</span> *(<span class="keyword">const</span> <span class="keyword">volatile</span> uint64_t *)addr;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;}</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160; </div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> write8(uint32_t addr, <a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint8_t val)</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;{</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    *(<span class="keyword">volatile</span> uint8_t *)addr = (uint8_t)val;</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;}</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160; </div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> write16(uint32_t addr, <a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint16_t val)</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;{</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    *(<span class="keyword">volatile</span> uint16_t *)addr = (uint16_t)val;</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;}</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160; </div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> write32(uint32_t addr, <a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint32_t val)</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;{</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;    *(<span class="keyword">volatile</span> uint32_t *)addr = val;</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;}</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160; </div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;<span class="comment">/* Note - 64 bit function isn&#39;t atomic */</span></div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> write64(uint32_t addr, <a class="code" href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a> uint64_t val)</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;{</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    *(<span class="keyword">volatile</span> uint64_t *)addr = val;</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;}</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160; </div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;<span class="preprocessor">#define SET_REG_BIT(address, smask)                                           \</span></div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;<span class="preprocessor">    write32(address, read32(address) | (smask))</span></div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160; </div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;<span class="preprocessor">#define CLEAR_REG_BIT(address, cmask)                                         \</span></div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;<span class="preprocessor">    write32(address, read32(address) &amp; ~(cmask))</span></div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160; </div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;uint64_t sedi_rtc_get_us(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160; </div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="preprocessor">#define SEDI_RUN_UNTIL_USEC(_us)                                                                   \</span></div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;<span class="preprocessor">        for (uint64_t __sedi_us_start = sedi_rtc_get_us(), __sedi_us_cur = __sedi_us_start;\</span></div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;<span class="preprocessor">                (__sedi_us_cur - __sedi_us_start) &lt; (_us);                         \</span></div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="preprocessor">                __sedi_us_cur = sedi_rtc_get_us()                                  \</span></div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;<span class="preprocessor">        )</span></div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;<span class="preprocessor">#define SEDI_RUN_UNTIL_MSEC(_ms)  SEDI_RUN_UNTIL_USEC((_ms) * 1000)</span></div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;<span class="preprocessor">#define SEDI_RUN_UNTIL_SEC(_sec)  SEDI_RUN_UNTIL_MSEC((_sec) * 1000)</span></div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160; </div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;<span class="preprocessor">#define __SEDI_POLL_UNTIL_USEC(_cond, _us, _mute)                                                  \</span></div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;<span class="preprocessor">    ({                                                                                         \</span></div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;<span class="preprocessor">        int __sedi_ret = SEDI_DRIVER_ERROR_TIMEOUT;                                        \</span></div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;<span class="preprocessor">        SEDI_RUN_UNTIL_USEC((_us)) {                                                       \</span></div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;<span class="preprocessor">            if (_cond) {                                                               \</span></div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;<span class="preprocessor">                __sedi_ret = SEDI_DRIVER_OK;                                       \</span></div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="preprocessor">                break;                                                             \</span></div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="preprocessor">            }                                                                          \</span></div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="preprocessor">        }                                                                                  \</span></div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="preprocessor">        if (!(_mute) &amp;&amp; (__sedi_ret != SEDI_DRIVER_OK)) {                                  \</span></div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;<span class="preprocessor">            SEDI_LOG_ERR(&quot;SEDI poll %d us timeout at %s : %d\n&quot;</span>, (_us),                \</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                         __func__, __LINE__);                                  \</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;        }                                                                                  \</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        __sedi_ret;                                                                        \</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;    })</div>
 <div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160; </div>
-<div class="line"><a name="l00435"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#gafe212bb60fde0c2e8c4119691745e223">  435</a></span>&#160;<span class="preprocessor">#define SEDI_POLL_WAIT_MUTE(_cond, _ms) __SEDI_POLL_WAIT(_cond, _ms, true)</span></div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _SEDI_DRIVER_COMMON_H_*/</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00435"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#gab1ac7b625940c0cea8a147d241d855cc">  435</a></span>&#160;<span class="preprocessor">#define SEDI_POLL_UNTIL(_cond, _ms) __SEDI_POLL_UNTIL_USEC(_cond, ((_ms) * 1000), false)</span></div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160; </div>
+<div class="line"><a name="l00445"></a><span class="lineno"><a class="line" href="group__sedi__driver__common.html#ga89b68f8157108ea0b1f80618c0443034">  445</a></span>&#160;<span class="preprocessor">#define SEDI_POLL_UNTIL_MUTE(_cond, _ms) __SEDI_POLL_UNTIL_USEC(_cond, ((_ms) * 1000), true)</span></div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160; </div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _SEDI_DRIVER_COMMON_H_*/</span><span class="preprocessor"></span></div>
 <div class="ttc" id="agroup__sedi__driver__common_html_ga78b973fba3428cb6f9879b705523eeaa"><div class="ttname"><a href="group__sedi__driver__common.html#ga78b973fba3428cb6f9879b705523eeaa">sedi_log</a></div><div class="ttdeci">void sedi_log(int level, const char *fmt,...)</div><div class="ttdoc">SEDI logging function.</div></div>
-<div class="ttc" id="agroup__sedi__driver__common_html_gac2bbd6d630a06a980d9a92ddb9a49928"><div class="ttname"><a href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a></div><div class="ttdeci">#define IN</div><div class="ttdoc">Input parameter indicator.</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:324</div></div>
-<div class="ttc" id="astructsedi__driver__version__t_html"><div class="ttname"><a href="structsedi__driver__version__t.html">sedi_driver_version_t</a></div><div class="ttdoc">Driver Version.</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:77</div></div>
-<div class="ttc" id="astructsedi__driver__version__t_html_a32ef275440eb8e1a7db6eda2cd404595"><div class="ttname"><a href="structsedi__driver__version__t.html#a32ef275440eb8e1a7db6eda2cd404595">sedi_driver_version_t::drv</a></div><div class="ttdeci">uint16_t drv</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:79</div></div>
-<div class="ttc" id="astructsedi__driver__version__t_html_a4f8c72ff087e09387b2d3e3495fdc970"><div class="ttname"><a href="structsedi__driver__version__t.html#a4f8c72ff087e09387b2d3e3495fdc970">sedi_driver_version_t::api</a></div><div class="ttdeci">uint16_t api</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:78</div></div>
+<div class="ttc" id="agroup__sedi__driver__common_html_gac2bbd6d630a06a980d9a92ddb9a49928"><div class="ttname"><a href="group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928">IN</a></div><div class="ttdeci">#define IN</div><div class="ttdoc">Input parameter indicator.</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:323</div></div>
+<div class="ttc" id="astructsedi__driver__version__t_html"><div class="ttname"><a href="structsedi__driver__version__t.html">sedi_driver_version_t</a></div><div class="ttdoc">Driver Version.</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:76</div></div>
+<div class="ttc" id="astructsedi__driver__version__t_html_a32ef275440eb8e1a7db6eda2cd404595"><div class="ttname"><a href="structsedi__driver__version__t.html#a32ef275440eb8e1a7db6eda2cd404595">sedi_driver_version_t::drv</a></div><div class="ttdeci">uint16_t drv</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:78</div></div>
+<div class="ttc" id="astructsedi__driver__version__t_html_a4f8c72ff087e09387b2d3e3495fdc970"><div class="ttname"><a href="structsedi__driver__version__t.html#a4f8c72ff087e09387b2d3e3495fdc970">sedi_driver_version_t::api</a></div><div class="ttdeci">uint16_t api</div><div class="ttdef"><b>Definition:</b> sedi_driver_common.h:77</div></div>
 <div class="ttc" id="astructsedi__power__state__t_html"><div class="ttname"><a href="structsedi__power__state__t.html">sedi_power_state_t</a></div><div class="ttdoc">General power states.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

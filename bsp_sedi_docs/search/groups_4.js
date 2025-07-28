@@ -8,5 +8,6 @@ var searchData=
   ['i2c_20event_20handler_20callback_1082',['I2C Event Handler Callback',['../group__i2c__event__handler.html',1,'']]],
   ['i2c_20event_20types_1083',['I2C Event Types',['../group__i2c__event.html',1,'']]],
   ['i2c_20usage_20limits_1084',['I2C Usage Limits',['../group__i2c__usage__limits.html',1,'']]],
-  ['intel_20ish_20soc_1085',['Intel ISH SoC',['../group__sedi__soc__ish.html',1,'']]]
+  ['intel_20ish_20soc_20definitions_1085',['Intel ISH SoC Definitions',['../group__sedi__soc__defs__ish.html',1,'']]],
+  ['intel_20ish_20soc_20helper_20functions_1086',['Intel ISH SoC Helper Functions',['../group__sedi__soc__funcs__ish.html',1,'']]]
 ];

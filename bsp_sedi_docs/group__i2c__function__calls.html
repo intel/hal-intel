@@ -621,7 +621,7 @@ As the DW I2C needs 2 channels to do RX DMA operation, need to add another param
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">i2c_device</td><td>i2c device id </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">addr</td><td>slave address(7-bit or 10-bit) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">*data</td><td>pointer of the buffer for data from the slave device </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">*data</td><td>pointer of the buffer for data from the slave device </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">num</td><td>number of data bytes to receive </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">pending</td><td>i2c data transfer operation is pending ('Stop' signal will not be sent) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">rx_dma_dev</td><td>rx dma device id </td></tr>

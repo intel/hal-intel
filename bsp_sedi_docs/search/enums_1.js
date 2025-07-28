@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['sedi_5fdevid_5ft_975',['sedi_devid_t',['../group__sedi__soc__ish.html#gadc1d782c2b086653b7e030df793997ef',1,'sedi_soc.h']]],
+  ['sedi_5fdevid_5ft_975',['sedi_devid_t',['../group__sedi__soc__defs__ish.html#gadc1d782c2b086653b7e030df793997ef',1,'sedi_soc_defs.h']]],
   ['sedi_5fspi_5fioctl_976',['sedi_spi_ioctl',['../group__spi__control__mode.html#ga83e8ffc8d789c784231990d2765b84f7',1,'sedi_driver_spi.h']]],
   ['sedi_5fuart_5flc_5ft_977',['sedi_uart_lc_t',['../group__uart__structure__type.html#ga7322588af441c6b9b6dcbaff19eb1107',1,'sedi_driver_uart.h']]],
   ['sedi_5fuart_5frs485_5ftransfer_5fmode_5ft_978',['sedi_uart_rs485_transfer_mode_t',['../group__uart__structure__type.html#ga6633c01177593eecf871b9179e32b98e',1,'sedi_driver_uart.h']]],

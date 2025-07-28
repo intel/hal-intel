@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SEDI BSP of Intel HAL: Intel ISH SoC</title>
+<title>SEDI BSP of Intel HAL: Intel ISH SoC Helper Functions</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,66 +62,31 @@ $(function() {
 
 <div class="header">
   <div class="summary">
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">Intel ISH SoC</div>  </div>
+<div class="title">Intel ISH SoC Helper Functions</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:gaebbd39def2d70e13cf0b97600be7f2b7"><td class="memItemLeft" align="right" valign="top"><a id="gaebbd39def2d70e13cf0b97600be7f2b7"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a> { <br />
-&#160;&#160;<b>VNN_ID_FIRST</b> = 0
-, <b>VNN_ID_AON_TASK</b> = VNN_ID_FIRST
-, <b>VNN_ID_IPC_HOST_W</b>
-, <b>VNN_ID_IPC_HOST_R</b>
-, <br />
-&#160;&#160;<b>VNN_ID_IPC_CSME_W</b>
-, <b>VNN_ID_IPC_CSME_R</b>
-, <b>VNN_ID_IPC_PMC_W</b> = 5
-, <b>VNN_ID_IPC_PMC_R</b>
-, <br />
-&#160;&#160;<b>VNN_ID_DMA0</b>
-, <b>VNN_ID_SIDEBAND</b>
-, <b>VNN_ID_TOP</b>
-<br />
- }</td></tr>
-<tr class="memdesc:gaebbd39def2d70e13cf0b97600be7f2b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">VNN ID bit for different drivers. <br /></td></tr>
-<tr class="separator:gaebbd39def2d70e13cf0b97600be7f2b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gadc1d782c2b086653b7e030df793997ef"><td class="memItemLeft" align="right" valign="top"><a id="gadc1d782c2b086653b7e030df793997ef"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__ish.html#gadc1d782c2b086653b7e030df793997ef">sedi_devid_t</a> { <br />
-&#160;&#160;<b>SEDI_DEVID_FIRST</b> = 0
-, <b>SEDI_DEVID_I2C0</b> = SEDI_DEVID_FIRST
-, <b>SEDI_DEVID_I2C1</b>
-, <b>SEDI_DEVID_I2C2</b>
-, <br />
-&#160;&#160;<b>SEDI_DEVID_UART0</b>
-, <b>SEDI_DEVID_UART1</b>
-, <b>SEDI_DEVID_UART2</b>
-, <b>SEDI_DEVID_GPIO0</b>
-, <br />
-&#160;&#160;<b>SEDI_DEVID_DMA0</b>
-, <b>SEDI_DEVID_SPI0</b>
-, <b>SEDI_DEVID_SPI1</b>
-, <b>SEDI_DEVID_TOP</b>
-<br />
- }</td></tr>
-<tr class="memdesc:gadc1d782c2b086653b7e030df793997ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">SEDI device ID table. <br /></td></tr>
-<tr class="separator:gadc1d782c2b086653b7e030df793997ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga6a3706ea2f0ea224ef61d8a445cdc797"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__ish.html#ga6a3706ea2f0ea224ef61d8a445cdc797">PM_VNN_DRIVER_REQ</a> (<a class="el" href="group__sedi__soc__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a> vnn_id)</td></tr>
-<tr class="memdesc:ga6a3706ea2f0ea224ef61d8a445cdc797"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request VNN for a device.  <a href="group__sedi__soc__ish.html#ga6a3706ea2f0ea224ef61d8a445cdc797">More...</a><br /></td></tr>
+<tr class="memitem:ga6803d2d8fb0dc6501e251daea1e5ce73"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__funcs__ish.html#ga6803d2d8fb0dc6501e251daea1e5ce73">sedi_mia_reset</a> (void)</td></tr>
+<tr class="memdesc:ga6803d2d8fb0dc6501e251daea1e5ce73"><td class="mdescLeft">&#160;</td><td class="mdescRight">MIA core reset.  <a href="group__sedi__soc__funcs__ish.html#ga6803d2d8fb0dc6501e251daea1e5ce73">More...</a><br /></td></tr>
+<tr class="separator:ga6803d2d8fb0dc6501e251daea1e5ce73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7a24d0f4a3f047205752b5e75170f15c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__funcs__ish.html#ga7a24d0f4a3f047205752b5e75170f15c">PM_VNN_IS_ACTIVE</a> (uint32_t *req_val)</td></tr>
+<tr class="memdesc:ga7a24d0f4a3f047205752b5e75170f15c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if VNN is active.  <a href="group__sedi__soc__funcs__ish.html#ga7a24d0f4a3f047205752b5e75170f15c">More...</a><br /></td></tr>
+<tr class="separator:ga7a24d0f4a3f047205752b5e75170f15c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6a3706ea2f0ea224ef61d8a445cdc797"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__funcs__ish.html#ga6a3706ea2f0ea224ef61d8a445cdc797">PM_VNN_DRIVER_REQ</a> (<a class="el" href="group__sedi__soc__defs__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a> vnn_id)</td></tr>
+<tr class="memdesc:ga6a3706ea2f0ea224ef61d8a445cdc797"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request VNN for a device.  <a href="group__sedi__soc__funcs__ish.html#ga6a3706ea2f0ea224ef61d8a445cdc797">More...</a><br /></td></tr>
 <tr class="separator:ga6a3706ea2f0ea224ef61d8a445cdc797"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga22319c43b5a7d7e1b35edfca64684c54"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__ish.html#ga22319c43b5a7d7e1b35edfca64684c54">PM_VNN_DRIVER_DEREQ</a> (<a class="el" href="group__sedi__soc__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a> vnn_id)</td></tr>
-<tr class="memdesc:ga22319c43b5a7d7e1b35edfca64684c54"><td class="mdescLeft">&#160;</td><td class="mdescRight">De-request VNN for a device.  <a href="group__sedi__soc__ish.html#ga22319c43b5a7d7e1b35edfca64684c54">More...</a><br /></td></tr>
+<tr class="memitem:ga22319c43b5a7d7e1b35edfca64684c54"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__funcs__ish.html#ga22319c43b5a7d7e1b35edfca64684c54">PM_VNN_DRIVER_DEREQ</a> (<a class="el" href="group__sedi__soc__defs__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a> vnn_id)</td></tr>
+<tr class="memdesc:ga22319c43b5a7d7e1b35edfca64684c54"><td class="mdescLeft">&#160;</td><td class="mdescRight">De-request VNN for a device.  <a href="group__sedi__soc__funcs__ish.html#ga22319c43b5a7d7e1b35edfca64684c54">More...</a><br /></td></tr>
 <tr class="separator:ga22319c43b5a7d7e1b35edfca64684c54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga23fca36a582a8b2c55a2ee991e2b3830"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__ish.html#ga23fca36a582a8b2c55a2ee991e2b3830">PM_VNN_ALL_RESET</a> (void)</td></tr>
-<tr class="memdesc:ga23fca36a582a8b2c55a2ee991e2b3830"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset VNN for all devices.  <a href="group__sedi__soc__ish.html#ga23fca36a582a8b2c55a2ee991e2b3830">More...</a><br /></td></tr>
+<tr class="memitem:ga23fca36a582a8b2c55a2ee991e2b3830"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__funcs__ish.html#ga23fca36a582a8b2c55a2ee991e2b3830">PM_VNN_ALL_RESET</a> (void)</td></tr>
+<tr class="memdesc:ga23fca36a582a8b2c55a2ee991e2b3830"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset VNN for all devices.  <a href="group__sedi__soc__funcs__ish.html#ga23fca36a582a8b2c55a2ee991e2b3830">More...</a><br /></td></tr>
 <tr class="separator:ga23fca36a582a8b2c55a2ee991e2b3830"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab586a2aa846d9ce19f07a88afd2a0051"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__ish.html#gab586a2aa846d9ce19f07a88afd2a0051">PM_VNN_DRIVER_RESET</a> (<a class="el" href="group__sedi__soc__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a> vnn_id)</td></tr>
-<tr class="memdesc:gab586a2aa846d9ce19f07a88afd2a0051"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset VNN for a device.  <a href="group__sedi__soc__ish.html#gab586a2aa846d9ce19f07a88afd2a0051">More...</a><br /></td></tr>
+<tr class="memitem:gab586a2aa846d9ce19f07a88afd2a0051"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sedi__soc__funcs__ish.html#gab586a2aa846d9ce19f07a88afd2a0051">PM_VNN_DRIVER_RESET</a> (<a class="el" href="group__sedi__soc__defs__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a> vnn_id)</td></tr>
+<tr class="memdesc:gab586a2aa846d9ce19f07a88afd2a0051"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset VNN for a device.  <a href="group__sedi__soc__funcs__ish.html#gab586a2aa846d9ce19f07a88afd2a0051">More...</a><br /></td></tr>
 <tr class="separator:gab586a2aa846d9ce19f07a88afd2a0051"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -156,7 +121,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void PM_VNN_DRIVER_DEREQ </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__sedi__soc__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__sedi__soc__defs__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a>&#160;</td>
           <td class="paramname"><em>vnn_id</em></td><td>)</td>
           <td></td>
         </tr>
@@ -183,7 +148,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void PM_VNN_DRIVER_REQ </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__sedi__soc__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__sedi__soc__defs__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a>&#160;</td>
           <td class="paramname"><em>vnn_id</em></td><td>)</td>
           <td></td>
         </tr>
@@ -210,7 +175,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void PM_VNN_DRIVER_RESET </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__sedi__soc__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__sedi__soc__defs__ish.html#gaebbd39def2d70e13cf0b97600be7f2b7">vnn_id_t</a>&#160;</td>
           <td class="paramname"><em>vnn_id</em></td><td>)</td>
           <td></td>
         </tr>
@@ -221,6 +186,60 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">vnn_id</td><td>device id </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>void </dd></dl>
+
+</div>
+</div>
+<a id="ga7a24d0f4a3f047205752b5e75170f15c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7a24d0f4a3f047205752b5e75170f15c">&#9670;&nbsp;</a></span>PM_VNN_IS_ACTIVE()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool PM_VNN_IS_ACTIVE </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>req_val</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if VNN is active. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">req_val</td><td>pointer to uint32 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>bool </dd></dl>
+
+</div>
+</div>
+<a id="ga6803d2d8fb0dc6501e251daea1e5ce73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6803d2d8fb0dc6501e251daea1e5ce73">&#9670;&nbsp;</a></span>sedi_mia_reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sedi_mia_reset </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>MIA core reset. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">null</td><td></td></tr>
   </table>
   </dd>
 </dl>

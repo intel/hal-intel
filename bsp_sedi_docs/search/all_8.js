@@ -14,11 +14,12 @@ var searchData=
   ['ier_142',['ier',['../structsedi__uart__context__t.html#a0e2fe76e203607eaf3e2872f50bd714a',1,'sedi_uart_context_t']]],
   ['in_143',['IN',['../group__sedi__driver__common.html#gac2bbd6d630a06a980d9a92ddb9a49928',1,'sedi_driver_common.h']]],
   ['inout_144',['INOUT',['../group__sedi__driver__common.html#ga62766f3ea8784d1db62df989f8f33d2d',1,'sedi_driver_common.h']]],
-  ['intel_20ish_20soc_145',['Intel ISH SoC',['../group__sedi__soc__ish.html',1,'']]],
-  ['io_5fvec_5fcntxt_5ft_146',['io_vec_cntxt_t',['../structio__vec__cntxt__t.html',1,'']]],
-  ['iosf_5faddr_5ffillin_5fdma_5fch_147',['iosf_addr_fillin_dma_ch',['../structdma__misc__regs__t.html#a7fc1c32270b2af3594fa4e6e7c509c8e',1,'dma_misc_regs_t']]],
-  ['ipc_5fcontext_5ft_148',['ipc_context_t',['../structipc__context__t.html',1,'']]],
-  ['ipc_5fresource_5ft_149',['ipc_resource_t',['../structipc__resource__t.html',1,'']]],
-  ['ish_5faon_5fshare_150',['ish_aon_share',['../structish__aon__share.html',1,'']]],
-  ['isr_151',['isr',['../structsedi__spi__status__t.html#a3d0047f4050a2ee65615a04d33dbb7f2',1,'sedi_spi_status_t']]]
+  ['intel_20ish_20soc_20definitions_145',['Intel ISH SoC Definitions',['../group__sedi__soc__defs__ish.html',1,'']]],
+  ['intel_20ish_20soc_20helper_20functions_146',['Intel ISH SoC Helper Functions',['../group__sedi__soc__funcs__ish.html',1,'']]],
+  ['io_5fvec_5fcntxt_5ft_147',['io_vec_cntxt_t',['../structio__vec__cntxt__t.html',1,'']]],
+  ['iosf_5faddr_5ffillin_5fdma_5fch_148',['iosf_addr_fillin_dma_ch',['../structdma__misc__regs__t.html#a7fc1c32270b2af3594fa4e6e7c509c8e',1,'dma_misc_regs_t']]],
+  ['ipc_5fcontext_5ft_149',['ipc_context_t',['../structipc__context__t.html',1,'']]],
+  ['ipc_5fresource_5ft_150',['ipc_resource_t',['../structipc__resource__t.html',1,'']]],
+  ['ish_5faon_5fshare_151',['ish_aon_share',['../structish__aon__share.html',1,'']]],
+  ['isr_152',['isr',['../structsedi__spi__status__t.html#a3d0047f4050a2ee65615a04d33dbb7f2',1,'sedi_spi_status_t']]]
 ];
