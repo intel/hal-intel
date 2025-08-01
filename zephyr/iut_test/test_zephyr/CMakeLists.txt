@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+target_include_directories(app PRIVATE ./include)
+
 if(CONFIG_DMA_SEDI)
   target_sources(app PRIVATE dma/test_dma_m2m.c)
 endif()

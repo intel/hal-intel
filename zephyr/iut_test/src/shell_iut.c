@@ -56,8 +56,13 @@ SHELL_STATIC_SUBCMD_SET_CREATE(sub_iut,
 
 SHELL_CMD_REGISTER(iut, &sub_iut, "IUT commands", NULL);
 
-#ifdef _CONFIG_PM
-static const struct shell_uart *sh_uart;
+#ifdef CONFIG_SHELL
+
+#if defined(CONFIG_SHELL_BACKEND_SERIAL_INTERRUPT_DRIVEN)
+BUILD_ASSERT(0, "CONFIG_SHELL_BACKEND_SERIAL_INTERRUPT_DRIVEN must be disabled");
+#endif
+
+static struct shell_uart_polling *sh_uart;
 
 void iut_shell_suspend(void)
 {
@@ -71,7 +76,7 @@ void iut_shell_suspend(void)
 		}
 
 		/*get shell uart backend*/
-		sh_uart = (const struct shell_uart *)shell_ptr->iface->ctx;
+		sh_uart = (struct shell_uart_polling *)shell_ptr->iface->ctx;
 
 		if (sh_uart == NULL) {
 			iut_print("get shell UART pointer error!!!\n");
@@ -79,13 +84,13 @@ void iut_shell_suspend(void)
 		}
 	}
 
-	k_timer_stop(sh_uart->timer);
+	k_timer_stop(&sh_uart->rx_timer);
 }
 
 void iut_shell_resume(void)
 {
 	if (sh_uart) {
-		k_timer_start(sh_uart->timer, K_NO_WAIT,
+		k_timer_start(&sh_uart->rx_timer, K_NO_WAIT,
 			K_MSEC(CONFIG_SHELL_BACKEND_SERIAL_RX_POLL_PERIOD));
 	}
 }
