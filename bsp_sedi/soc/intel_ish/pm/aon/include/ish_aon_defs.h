@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifndef _AON_DEFS_H_
-#define _AON_DEFS_H_
+#ifndef _ISH_AON_DEFS_H_
+#define _ISH_AON_DEFS_H_
 
-#include "../ia_structs.h"
+#include "ish_ia_structs.h"
 
 /**
  * SNOWBALL - registers about UMA/IMR DDR information and FW location

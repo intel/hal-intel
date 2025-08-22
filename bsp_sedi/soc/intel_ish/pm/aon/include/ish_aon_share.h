@@ -4,11 +4,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifndef _AON_SHARE_H_
-#define _AON_SHARE_H_
+#ifndef _ISH_AON_SHARE_H_
+#define _ISH_AON_SHARE_H_
 
-#include "../ia_structs.h"
-#include "../ish_pm.h"
+#include "ish_ia_structs.h"
 
 /* magic ID for valid aontask image check */
 #define AON_MAGIC_ID			        0x544E4F41  /*"AONT"*/
@@ -18,6 +17,34 @@
 #define AON_ERROR_NOT_SUPPORT_POWER_MODE	1
 #define AON_ERROR_DMA_FAILED			2
 
+/* power states for ISH */
+enum ish_pm_state {
+	/* D0 state: active mode */
+	ISH_PM_STATE_D0 = 0,
+	/* sleep state: cpu halt */
+	ISH_PM_STATE_D0I0,
+	/* deep sleep state 1: Trunk Clock Gating(TCG), cpu halt*/
+	ISH_PM_STATE_D0I1,
+	/* deep sleep state 2: TCG, SRAM retention, cpu halt */
+	ISH_PM_STATE_D0I2,
+	/* deep sleep state 3: TCG, SRAM power off, cpu halt*/
+	ISH_PM_STATE_D0I3,
+	/**
+	 * D3 state: power off state, on ISH5.0, can't do real power off,
+	 * similar to D0I3, but will reset ISH
+	 */
+	ISH_PM_STATE_D3,
+	/**
+	 * reset ISH, main FW received 'reboot' command
+	 */
+	ISH_PM_STATE_RESET,
+	/**
+	 * reset ISH, main FW received reset_prep interrupt during
+	 * S0->Sx transition.
+	 */
+	ISH_PM_STATE_RESET_PREP,
+	ISH_PM_STATE_NUM
+};
 
 /* shared data structure between main FW and aontask */
 struct ish_aon_share {
