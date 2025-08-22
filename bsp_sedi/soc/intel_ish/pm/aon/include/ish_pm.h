@@ -8,7 +8,7 @@
 #define _ISH_PM_H_
 
 #include <sedi_driver_common.h>
-#include "pm_regs.h"
+#include "ish_registers.h"
 
 #define FABRIC_IDLE_COUNT	50
 #define TRUNK_CLKGATE_COUNT	0xf

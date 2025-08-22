@@ -8,7 +8,7 @@
 #define _ISH_DMA_H_
 
 #include <sedi_driver_common.h>
-#include "pm_regs.h"
+#include "ish_registers.h"
 
 /* DMA return codes */
 #define DMA_RC_OK 0 /* Success */

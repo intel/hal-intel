@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "aon/aon_share.h"
+#include "ish_aon_share.h"
 #include "ish_dma.h"
 #include "ish_pm.h"
 #include "sedi_driver_core.h"

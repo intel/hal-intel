@@ -7,8 +7,8 @@
 #ifndef _AON_SHARE_H_
 #define _AON_SHARE_H_
 
-#include "../ia_structs.h"
-#include "../ish_pm.h"
+#include "ia_structs.h"
+#include "ish_pm.h"
 
 /* magic ID for valid aontask image check */
 #define AON_MAGIC_ID			        0x544E4F41  /*"AONT"*/

@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "aon_share.h"
-#include "aon_defs.h"
-#include "../ish_dma.h"
+#include "ish_aon_share.h"
+#include "ish_aon_defs.h"
+#include "ish_dma.h"
 /**
  * Due to very limit AON memory size (typically total 8KB), we don't want to
  * define and allocate whole 256 entries for aontask'IDT, that almost need 2KB
