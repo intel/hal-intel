@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifndef _IA_STRUCTS_H_
-#define _IA_STRUCTS_H_
+#ifndef _ISH_IA_STRUCTS_H_
+#define _ISH_IA_STRUCTS_H_
 
 #include <stdint.h>
 
