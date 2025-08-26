@@ -730,7 +730,7 @@ int32_t sedi_dma_start_transfer_polling(IN sedi_dma_t dma_device,
 	DBG_CHECK(channel_id < DMA_CHANNEL_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(length <= DMA_MAX_BLOCK_SIZE, SEDI_DRIVER_ERROR_PARAMETER);
 
-	uint32_t ret;
+	int32_t ret;
 	volatile dma_ann_1p0_regs_t *regs = resources[dma_device].regs;
 	volatile dma_chan_reg_t *chan_regs = &(regs->chan_reg[channel_id]);
 	sedi_dma_event_cb_t cb = dma_context[dma_device].cb_event[channel_id];
