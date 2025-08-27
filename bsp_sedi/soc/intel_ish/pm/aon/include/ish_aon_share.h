@@ -85,6 +85,8 @@ struct ish_aon_share {
 
 	/* host suspend state */
 	uint32_t host_in_suspend;
-} __attribute__((packed));
+};
+
+extern struct ish_aon_share aon_share;
 
 #endif /* _AON_SHARE_H_ */

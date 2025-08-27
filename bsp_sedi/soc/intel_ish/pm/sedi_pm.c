@@ -136,12 +136,9 @@ struct pm_context {
 	struct ish_aon_share *aon_share;
 	/* TSS segment selector for task switching */
 	int aon_tss_selector[2];
-} __attribute__((packed));
-
-static struct pm_context pm_ctx = {
+} pm_ctx = {
 	.aon_valid = 0,
-	/* aon shared data located in the start of aon memory */
-	.aon_share = (struct ish_aon_share *)CONFIG_AON_RAM_BASE,
+	.aon_share = &aon_share,
 };
 
 /* D0ix statistics data, including each state's count and total stay time */
