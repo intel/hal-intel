@@ -28,8 +28,9 @@
 	.equ	AON_DS,				0xc
 
 
-	.global ipapg
-ipapg:
+	.section .text.ish_ipapg
+	.global ish_ipapg
+ish_ipapg:
 	push	%ebp
 	push	%edi
 	push	%esi
@@ -106,18 +107,18 @@ return_to_aon:
 	#return to AON task (still with ROM GDT and segments in case of PG exit)
 	ret
 
-	.global pg_exit_save_ctx
-pg_exit_save_ctx:
-	sgdtl	mainfw_gdt
-	str 	tr
+	.global ish_pg_exit_save_ctx
+ish_pg_exit_save_ctx:
+	sgdtl	ish_mainfw_gdt
+	str 	ish_mainfw_tr
 	ret
 
-	.global pg_exit_restore_ctx
-pg_exit_restore_ctx:
+	.global ish_pg_exit_restore_ctx
+ish_pg_exit_restore_ctx:
 
 	#load RTOS GDT and AON task
-	lgdtl	mainfw_gdt
-	ltr	tr
+	lgdtl	ish_mainfw_gdt
+	ltr	ish_mainfw_tr
 
 	#load AON LDT and segments
 	lea	aon_tss, %eax

@@ -25,14 +25,11 @@ struct snowball_struct {
 /* aontask entry point function */
 void ish_aon_main(void);
 
-extern int ipapg(void);
-extern void pg_exit_restore_ctx(void);
-extern void pg_exit_save_ctx(void);
+extern int ish_ipapg(void);
+extern void ish_pg_exit_restore_ctx(void);
+extern void ish_pg_exit_save_ctx(void);
 
-struct gdt_header mainfw_gdt;
-uint16_t tr;
-
-#define FPU_REG_SET_SIZE 108
-uint8_t fpu_reg_set[FPU_REG_SET_SIZE];
+struct gdt_header ish_mainfw_gdt;
+uint16_t ish_mainfw_tr;
 
 #endif
