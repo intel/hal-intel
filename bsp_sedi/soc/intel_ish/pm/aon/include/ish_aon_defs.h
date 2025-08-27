@@ -7,7 +7,7 @@
 #ifndef _AON_DEFS_H_
 #define _AON_DEFS_H_
 
-#include "../ia_structs.h"
+#include "ia_structs.h"
 
 /**
  * SNOWBALL - registers about UMA/IMR DDR information and FW location
