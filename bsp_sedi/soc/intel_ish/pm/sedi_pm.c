@@ -10,26 +10,12 @@
 #include "sedi_driver_core.h"
 #include "sedi_driver_uart.h"
 #include <sedi_driver_rtc.h>
-#include <zephyr/sys/printk.h>
-#include <zephyr/init.h>
-#include <zephyr/irq.h>
-#include <zephyr/drivers/interrupt_controller/ioapic.h>
-#include <zephyr/arch/x86/ia32/segmentation.h>
 
 /* defined in link script: soc/x86/intel_ish/scripts/ish_linker.ld */
 extern uint32_t __text_region_start;
 extern uint32_t __rodata_region_end;
 extern uint32_t _image_ram_start;
 extern uint32_t _image_ram_end;
-
-/* Disable debug print by default */
-#define PM_DEBUG_PRINTS 1
-
-#ifdef PM_DEBUG_PRINTS
-#define PM_LOG(...) printk(__VA_ARGS__)
-#else
-#define PM_LOG(...)
-#endif
 
 #define DLL	0x0
 #define DLH	0x4
@@ -265,9 +251,9 @@ static inline void check_aon_task_status(void)
 	struct ish_aon_share *aon_share = pm_ctx.aon_share;
 
 	if (aon_share->last_error != AON_SUCCESS) {
-		PM_LOG("aontask has errors:\n");
-		PM_LOG("    last error:   %d\n", aon_share->last_error);
-		PM_LOG("    error counts: %d\n", aon_share->error_count);
+		SEDI_LOG_ERR("aontask has errors:\n");
+		SEDI_LOG_ERR("    last error:   %d\n", aon_share->last_error);
+		SEDI_LOG_ERR("    error counts: %d\n", aon_share->error_count);
 	}
 }
 
@@ -577,47 +563,35 @@ static void handle_d3(uint32_t irq_vec)
 	}
 }
 
-static void pcie_dev_isr(void)
+void sedi_pm_isr(void *arg)
 {
-	handle_d3(SEDI_VEC_PCIEDEV);
-}
-/**
- * main FW only need handle PMU wakeup interrupt for D0i1 state, aontask will
- * handle PMU wakeup interrupt for other low power states
- */
-static void pmu_wakeup_isr(void)
-{
-	/* at current nothing need to do */
-}
+	uint32_t irq_num = (uint32_t)arg;
 
-static void reset_prep_isr(void)
-{
-	/* mask reset prep avail interrupt */
-	write32(PMU_RST_PREP, PMU_RST_PREP_INT_MASK);
+	if (irq_num == SEDI_IRQ_PMU2IOAPIC) {
+		/* at current nothing need to do */
+	} else if (irq_num == SEDI_IRQ_PCIEDEV) {
+		handle_d3(SEDI_VEC_PCIEDEV);
+	} else if (irq_num == SEDI_IRQ_RESET_PREP) {
+		/* mask reset prep avail interrupt */
+		write32(PMU_RST_PREP, PMU_RST_PREP_INT_MASK);
 
-	/*
-	 * Indicate completion of servicing the interrupt to IOAPIC first
-	 * then indicate completion of servicing the interrupt to LAPIC
-	 */
-	write32(SEDI_IOAPIC_EOI, SEDI_VEC_RESET_PREP);
-	write32(LAPIC_EOI, 0x0);
+		/*
+		 * Indicate completion of servicing the interrupt to IOAPIC first
+		 * then indicate completion of servicing the interrupt to LAPIC
+		 */
+		write32(SEDI_IOAPIC_EOI, SEDI_VEC_RESET_PREP);
+		write32(LAPIC_EOI, 0x0);
 
-	ish_mia_reset();
-	__builtin_unreachable();
+		ish_mia_reset();
+		__builtin_unreachable();
+	} else {
+		/* Unexpected IRQ, maybe not well configured, assert */
+		SEDI_ASSERT(0);
+	}
 }
 
-void sedi_pm_init(void)
+int sedi_pm_init(void)
 {
-	/*TODO: remove the api */
-}
-
-static int ish_sedi_pm_init(void)
-{
-	/* register ISR */
-	IRQ_CONNECT(SEDI_IRQ_RESET_PREP, 4, reset_prep_isr, 0, IOAPIC_LEVEL);
-	IRQ_CONNECT(SEDI_IRQ_PMU2IOAPIC, 4, pmu_wakeup_isr, 0, IOAPIC_LEVEL);
-	IRQ_CONNECT(SEDI_IRQ_PCIEDEV, 2, pcie_dev_isr, 0, IOAPIC_LEVEL);
-
 	/* clear reset bit */
 	write32(ISH_RST_REG, 0);
 
@@ -641,20 +615,16 @@ static int ish_sedi_pm_init(void)
 
 	/* unmask reset prep avail interrupt */
 	write32(PMU_RST_PREP, 0);
-	sedi_core_irq_enable(SEDI_IRQ_RESET_PREP);
 
 	/* unmask D3 and BME interrupts */
 	write32(PMU_D3_STATUS, read32(PMU_D3_STATUS) & (PMU_D3_BIT_SET | PMU_BME_BIT_SET));
 
 	if ((!(read32(PMU_D3_STATUS) & PMU_D3_BIT_SET)) &&
-	    (read32(PMU_D3_STATUS) & PMU_BME_BIT_SET))
+			(read32(PMU_D3_STATUS) & PMU_BME_BIT_SET))
 		write32(PMU_D3_STATUS, read32(PMU_D3_STATUS));
-
-	sedi_core_irq_enable(SEDI_IRQ_PCIEDEV);
 
 	return 0;
 }
-SYS_INIT(ish_sedi_pm_init, PRE_KERNEL_2, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
 
 void ish_pm_reset(enum ish_pm_state pm_state)
 {
@@ -683,7 +653,7 @@ void sedi_pm_host_suspend(uint32_t suspend)
 static void print_stats(const char *name, const struct pm_stat *stat)
 {
 	if (stat->count)
-		PM_LOG("    %s:\n"
+		SEDI_LOG_INF("    %s:\n"
 		       "        counts: %llu\n"
 		       "        time:   %.6llu ms\n",
 		       name, stat->count, (stat->total_time_us)/1000);
@@ -694,27 +664,25 @@ static void print_stats(const char *name, const struct pm_stat *stat)
  */
 void command_idle_stats(void)
 {
-#ifdef PM_DEBUG_PRINTS
 	struct ish_aon_share *aon_share = pm_ctx.aon_share;
-#endif
 	uint64_t tall;
 
 	tall = sedi_rtc_get_us();
 
-	PM_LOG("Aontask exists: %s\n", pm_ctx.aon_valid ? "Yes" : "No");
-	PM_LOG("Total time on: %.6llu ms\n", tall/1000);
-	PM_LOG("Idle sleep:\n");
+	SEDI_LOG_INF("Aontask exists: %s\n", pm_ctx.aon_valid ? "Yes" : "No");
+	SEDI_LOG_INF("Total time on: %.6llu ms\n", tall/1000);
+	SEDI_LOG_INF("Idle sleep:\n");
 	print_stats("D0i0", &pm_stats.d0i0);
 
-	PM_LOG("Deep sleep:\n");
+	SEDI_LOG_INF("Deep sleep:\n");
 	print_stats("D0i1", &pm_stats.d0i1);
 	print_stats("D0i2", &pm_stats.d0i2);
 	print_stats("D0i3", &pm_stats.d0i3);
 	print_stats("IPAPG", &pm_stats.pg);
 
 	if (pm_ctx.aon_valid) {
-		PM_LOG("    Aontask status:\n");
-		PM_LOG("        last error:   %u\n", aon_share->last_error);
-		PM_LOG("        error counts: %u\n", aon_share->error_count);
+		SEDI_LOG_INF("    Aontask status:\n");
+		SEDI_LOG_INF("        last error:   %u\n", aon_share->last_error);
+		SEDI_LOG_INF("        error counts: %u\n", aon_share->error_count);
 	}
 }
