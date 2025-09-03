@@ -40,4 +40,5 @@ if(CONFIG_INTEL_HAL)
   endif()
 
   add_subdirectory(subsys/logging/backends)
+  add_subdirectory(bsp_sedi)
 endif()
