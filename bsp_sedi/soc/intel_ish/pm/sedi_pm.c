@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2024 Intel Corporation
+ * Copyright (c) 2024-2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "ish_aon_share.h"
-#include "ish_dma.h"
-#include "ish_power_mgt.h"
+#include "aon/include/ish_aon_share.h"
+#include "aon/include/ish_power_mgt.h"
+#include "aon/include/ish_dma.h"
 #include "sedi_driver_core.h"
 #include "sedi_driver_uart.h"
 #include <sedi_driver_rtc.h>

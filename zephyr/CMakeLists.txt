@@ -1,44 +1,44 @@
-# Copyright (c) 2023 Intel Corporation.
+# Copyright (c) 2025 Intel Corporation.
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
 if(CONFIG_INTEL_HAL)
 
-  set(BSP_SEDI_SRC ${CMAKE_CURRENT_SOURCE_DIR}/../bsp_sedi)
+  set(ZEPHYR_BASE_OOTREE ${CMAKE_CURRENT_SOURCE_DIR})
 
-  zephyr_interface_library_named(BSP_SEDI)
-  target_link_libraries(zephyr_interface INTERFACE BSP_SEDI)
-  target_include_directories(BSP_SEDI INTERFACE ${BSP_SEDI_SRC}/include/driver)
-  target_include_directories(BSP_SEDI INTERFACE ${BSP_SEDI_SRC}/include)
+  function(zephyr_library_ootree_sources_ifdef feature_toggle source)
+    zephyr_library_get_current_dir_lib_name(${ZEPHYR_BASE_OOTREE} lib_name)
+    if(${${feature_toggle}})
+      target_sources(${lib_name} PRIVATE ${source} ${ARGN})
+    endif()
+  endfunction()
 
-  zephyr_library_named(modules_intel_hal)
-  zephyr_library_link_libraries(BSP_SEDI)
+  function(zephyr_library_ootree_sources source)
+    zephyr_library_get_current_dir_lib_name(${ZEPHYR_BASE_OOTREE} lib_name)
+    target_sources(${lib_name} PRIVATE ${source} ${ARGN})
+  endfunction()
 
-  zephyr_library_sources(${BSP_SEDI_SRC}/drivers/rtc/sedi_rtc.c)
-  zephyr_library_sources_ifdef(CONFIG_I2C_SEDI ${BSP_SEDI_SRC}/drivers/i2c/sedi_i2c_dw_apb_200a.c)
-  zephyr_library_sources_ifdef(CONFIG_UART_SEDI ${BSP_SEDI_SRC}/drivers/usart/sedi_dw_uart.c)
-  zephyr_library_sources_ifdef(CONFIG_GPIO_SEDI ${BSP_SEDI_SRC}/drivers/gpio/sedi_gpio.c)
-  zephyr_library_sources_ifdef(CONFIG_SPI_SEDI ${BSP_SEDI_SRC}/drivers/spi/sedi_spi_dw_apb.c)
-  if(CONFIG_DMA_SEDI OR CONFIG_I2C_SEDI OR CONFIG_SPI_SEDI)
-    zephyr_library_sources(${BSP_SEDI_SRC}/drivers/dma/sedi_dma_ann_1p0.c)
-  endif()
-  zephyr_library_sources_ifdef(CONFIG_IPM_SEDI ${BSP_SEDI_SRC}/drivers/ipc/sedi_ipc.c)
-  zephyr_library_sources(${BSP_SEDI_SRC}/drivers/hpet/sedi_hpet.c)
+  function(zephyr_library_ootree_compile_options option)
+    zephyr_library_get_current_dir_lib_name(${ZEPHYR_BASE_OOTREE} lib_name)
+    target_compile_options(${lib_name} PRIVATE ${option} ${ARGN})
+  endfunction()
 
-  set(BSP_SEDI_SOC_DIR ${BSP_SEDI_SRC}/soc/${SOC_FAMILY})
-  if(DEFINED CONFIG_SOC_FAMILY_INTEL_ISH AND DEFINED CONFIG_PM)
-      target_include_directories(BSP_SEDI INTERFACE ${BSP_SEDI_SOC_DIR}/pm/aon/include)
-      zephyr_library_sources_ifdef(CONFIG_PM ${BSP_SEDI_SOC_DIR}/pm/sedi_pm.c)
-      add_subdirectory(bsp_sedi/pm/aon)
-  endif()
+  macro(zephyr_library_ootree)
+    zephyr_library_get_current_dir_lib_name(${ZEPHYR_BASE_OOTREE} lib_name)
+    zephyr_library_named(${lib_name})
+  endmacro()
 
-  target_include_directories(BSP_SEDI INTERFACE ${BSP_SEDI_SRC}/soc/common/include)
+  function(zephyr_library_ootree_include_directories )
+    zephyr_library_get_current_dir_lib_name(${ZEPHYR_BASE_OOTREE} lib_name)
+    target_include_directories(${lib_name} PRIVATE ${ARGN})
+  endfunction()
 
-  target_include_directories(BSP_SEDI INTERFACE ${BSP_SEDI_SOC_DIR}/include)
-  if(EXISTS ${BSP_SEDI_SOC_DIR}/sedi_soc.c)
-      zephyr_library_sources(${BSP_SEDI_SOC_DIR}/sedi_soc.c)
-  endif()
+  set(BSP_SEDI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../bsp_sedi)
+  set(BSP_SEDI_SOC_DIR ${BSP_SEDI_DIR}/soc/${SOC_FAMILY})
+  set(BSP_SEDI_AON_DIR ${BSP_SEDI_SOC_DIR}/pm/aon)
 
-  add_subdirectory(subsys/logging/backends)
   add_subdirectory(bsp_sedi)
+  add_subdirectory(drivers)
+  add_subdirectory(subsys)
+
 endif()
