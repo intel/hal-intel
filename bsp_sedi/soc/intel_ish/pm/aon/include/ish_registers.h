@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifndef _PM_REGS_H_
-#define _PM_REGS_H_
+#ifndef _ISH_REGISTERS_H_
+#define _ISH_REGISTERS_H_
 
 #include "sedi_soc_regs.h"
 

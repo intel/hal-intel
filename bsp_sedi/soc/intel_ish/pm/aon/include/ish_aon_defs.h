@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifndef _AON_DEFS_H_
-#define _AON_DEFS_H_
+#ifndef _ISH_AON_DEFS_H_
+#define _ISH_AON_DEFS_H_
 
-#include "../ia_structs.h"
+#include "ish_ia_structs.h"
 
 /**
  * SNOWBALL - registers about UMA/IMR DDR information and FW location
@@ -25,14 +25,11 @@ struct snowball_struct {
 /* aontask entry point function */
 void ish_aon_main(void);
 
-extern int ipapg(void);
-extern void pg_exit_restore_ctx(void);
-extern void pg_exit_save_ctx(void);
+extern int ish_ipapg(void);
+extern void ish_pg_exit_restore_ctx(void);
+extern void ish_pg_exit_save_ctx(void);
 
-struct gdt_header mainfw_gdt;
-uint16_t tr;
-
-#define FPU_REG_SET_SIZE 108
-uint8_t fpu_reg_set[FPU_REG_SET_SIZE];
+struct gdt_header ish_mainfw_gdt;
+uint16_t ish_mainfw_tr;
 
 #endif

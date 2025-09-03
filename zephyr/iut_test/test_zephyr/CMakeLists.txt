@@ -17,3 +17,7 @@ endif()
 
 target_sources(app PRIVATE x86/test_fatal.c)
 target_sources(app PRIVATE timer/test_sys_clock.c)
+
+if(CONFIG_PM)
+  target_sources(app PRIVATE pm/test_pm.c)
+endif()

@@ -27,7 +27,7 @@ jobs:
 
       - name: Checkout Zephyr
         run:
-          west init
+          west init -m https://github.com/kwd-doodling/zephyr-upstream.git --mr main_zephyr
 
       - name: Checkout Intel HAL
         uses: actions/checkout@v4

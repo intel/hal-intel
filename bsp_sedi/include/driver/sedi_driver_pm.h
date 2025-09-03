@@ -47,6 +47,28 @@ sedi_power_state_t sedi_pm_get_device_power(IN sedi_devid_t id);
 void sedi_pm_host_suspend(uint32_t suspend);
 
 /*!
+ * \fn void sedi_pm_reset(void)
+ * \brief Shutdown all hardware and resets itself
+ * \return void
+ */
+void sedi_pm_reset(void);
+
+/*!
+ * \fn void sedi_pm_isr(void *arg)
+ * \brief pm interrupt handler
+ * \param[in] arg: argument passed to the handler
+ * \return void
+ */
+void sedi_pm_isr(void *arg);
+
+/*!
+ * \fn int32_t sedi_pm_init(void)
+ * \brief Initialize the PM, at very beginning
+ * \return result of PM initialization
+ */
+int32_t sedi_pm_init(void);
+
+/*!
  * \}
  */
 

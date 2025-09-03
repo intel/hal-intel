@@ -4,9 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "aon_share.h"
-#include "aon_defs.h"
-#include "../ish_dma.h"
+#include "ish_aon_share.h"
+#include "ish_aon_defs.h"
+#include "ish_dma.h"
+#include "ish_power_mgt.h"
+
 /**
  * Due to very limit AON memory size (typically total 8KB), we don't want to
  * define and allocate whole 256 entries for aontask'IDT, that almost need 2KB
@@ -546,7 +548,7 @@ static int do_ipapg(void)
 		ioapic_rte[pin] = read32(SEDI_IOAPIC_WDW);
 	}
 
-	ret = ipapg();
+	ret = ish_ipapg();
 
 	rte_offset = SEDI_IOAPIC_IOREDTBL;
 	for (int pin = 0; pin < NUMBER_IRQ_PINS; pin++) {
@@ -657,7 +659,7 @@ static void handle_d0i2(void)
 {
 	uint32_t reg_val;
 
-	pg_exit_save_ctx();
+	ish_pg_exit_save_ctx();
 	aon_share.pg_exit = 0;
 
 #if (defined(CONFIG_SOC_INTEL_ISH_5_6_0) || defined(CONFIG_SOC_INTEL_ISH_5_8_0))
@@ -719,7 +721,7 @@ static void handle_d0i3(void)
 	int ret;
 	uint32_t reg_val;
 
-	pg_exit_save_ctx();
+	ish_pg_exit_save_ctx();
 	aon_share.pg_exit = 0;
 
 	/* store main FW 's context to IMR DDR from main SRAM */
@@ -913,9 +915,9 @@ void ish_aon_main(void)
 				);
 
 		if (aon_share.pg_exit) {
-			mainfw_gdt.entries[tr / sizeof(struct gdt_entry)]
+			ish_mainfw_gdt.entries[ish_mainfw_tr / sizeof(struct gdt_entry)]
 				.flags &= 0xfd;
-			pg_exit_restore_ctx();
+			ish_pg_exit_restore_ctx();
 		}
 
 		__asm__ volatile ("iret;");
