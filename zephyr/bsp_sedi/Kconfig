@@ -1,0 +1,10 @@
+# Kconfig - BSP SEDI Kconfig Options
+#
+# Copyright (c) 2025 Intel Corporation
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+module=BSP_SEDI
+module-str=bsp_sedi
+source "subsys/logging/Kconfig.template.log_config"
