@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SEDI BSP of Intel HAL: bsp_sedi/soc/intel_ish/pm/aon/aon_defs.h Source File</title>
+<title>SEDI BSP of Intel HAL: bsp_sedi/soc/intel_ish/pm/aon/include/ish_aon_defs.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,12 +61,12 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_a153c738e8defe49aafeb928d751aa66.html">bsp_sedi</a></li><li class="navelem"><a class="el" href="dir_c66251402539463ee4a6ec064ad9d123.html">soc</a></li><li class="navelem"><a class="el" href="dir_b1c8beacaf85ea0bd308220efb05e31b.html">intel_ish</a></li><li class="navelem"><a class="el" href="dir_11e4c20cd87b2d7448c46472162dcc93.html">pm</a></li><li class="navelem"><a class="el" href="dir_33cdb2919a440ccf2784fd35903ab40e.html">aon</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_a153c738e8defe49aafeb928d751aa66.html">bsp_sedi</a></li><li class="navelem"><a class="el" href="dir_c66251402539463ee4a6ec064ad9d123.html">soc</a></li><li class="navelem"><a class="el" href="dir_b1c8beacaf85ea0bd308220efb05e31b.html">intel_ish</a></li><li class="navelem"><a class="el" href="dir_11e4c20cd87b2d7448c46472162dcc93.html">pm</a></li><li class="navelem"><a class="el" href="dir_33cdb2919a440ccf2784fd35903ab40e.html">aon</a></li><li class="navelem"><a class="el" href="dir_717109628e1fdc9216a95f30bfa511c3.html">include</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">aon_defs.h</div>  </div>
+<div class="title">ish_aon_defs.h</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
@@ -75,10 +75,10 @@ $(function() {
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * SPDX-License-Identifier: BSD-3-Clause</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef _AON_DEFS_H_</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define _AON_DEFS_H_</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef _ISH_AON_DEFS_H_</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define _ISH_AON_DEFS_H_</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;../ia_structs.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;ish_ia_structs.h&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="structsnowball__struct.html">   16</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structsnowball__struct.html">snowball_struct</a> {</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    uint32_t reserved[28];</div>
@@ -92,19 +92,16 @@ $(function() {
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">/* aontask entry point function */</span></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keywordtype">void</span> ish_aon_main(<span class="keywordtype">void</span>);</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> ipapg(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> pg_exit_restore_ctx(<span class="keywordtype">void</span>);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> pg_exit_save_ctx(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> ish_ipapg(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> ish_pg_exit_restore_ctx(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">void</span> ish_pg_exit_save_ctx(<span class="keywordtype">void</span>);</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">struct </span><a class="code" href="structgdt__header.html">gdt_header</a> mainfw_gdt;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;uint16_t tr;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">struct </span><a class="code" href="structgdt__header.html">gdt_header</a> ish_mainfw_gdt;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;uint16_t ish_mainfw_tr;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#define FPU_REG_SET_SIZE 108</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;uint8_t fpu_reg_set[FPU_REG_SET_SIZE];</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="astructgdt__header_html"><div class="ttname"><a href="structgdt__header.html">gdt_header</a></div><div class="ttdef"><b>Definition:</b> ia_structs.h:36</div></div>
-<div class="ttc" id="astructsnowball__struct_html"><div class="ttname"><a href="structsnowball__struct.html">snowball_struct</a></div><div class="ttdef"><b>Definition:</b> aon_defs.h:16</div></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="astructgdt__header_html"><div class="ttname"><a href="structgdt__header.html">gdt_header</a></div><div class="ttdef"><b>Definition:</b> ish_ia_structs.h:36</div></div>
+<div class="ttc" id="astructsnowball__struct_html"><div class="ttname"><a href="structsnowball__struct.html">snowball_struct</a></div><div class="ttdef"><b>Definition:</b> ish_aon_defs.h:16</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
