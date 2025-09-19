@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-if LOG
+if LOG && !LOG_MODE_MINIMAL
 
 config LOG_BACKEND_I2C
 	bool "Enable I2C log backend"
@@ -37,4 +37,4 @@ config LOG_I2C_DEV_ADDR
 
 endif # LOG_BACKEND_I2C
 
-endif # LOG
+endif # LOG && !LOG_MODE_MINIMAL
