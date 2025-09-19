@@ -12,20 +12,20 @@ LOG_MODULE_REGISTER(bsp_sedi, CONFIG_BSP_SEDI_LOG_LEVEL);
 
 void sedi_log(int level, const char *fmt, ...)
 {
-#ifdef CONFIG_LOG_MODE_MINIMAL
-	va_list ap;
-
-	va_start(ap, fmt);
-	vprintk(fmt, ap);
-
-	va_end(ap);
-#else
 	va_list vargs;
 
 	va_start(vargs, fmt);
+
+#ifndef CONFIG_LOG
+	/* No support, do nothing */
+	ARG_UNUSED(level);
+#elif CONFIG_LOG_MODE_MINIMAL
+	vprintk(fmt, vargs);
+#else
 	log_generic(level, fmt, vargs);
-	va_end(vargs);
 #endif
+
+	va_end(vargs);
 }
 
 #ifdef CONFIG_DEBUG
