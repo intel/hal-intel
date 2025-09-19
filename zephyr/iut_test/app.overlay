@@ -3,3 +3,11 @@
 		zephyr.log-i2c=&i2c0;
 	};
 };
+
+&cpu0 {
+	cpu-power-states = <&d0i0 &d0i2 &d0i3>;
+};
+
+&dma0 {
+	status = "okay";
+};
