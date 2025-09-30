@@ -64,9 +64,9 @@ uint64_t sedi_rtc_get(void)
 	uint32_t upper;
 
 	do {
-		upper = SEDI_REG_GET(MISC, ISH_RTC_COUNTER1);
-		lower = SEDI_REG_GET(MISC, ISH_RTC_COUNTER0);
-	} while (upper != SEDI_REG_GET(MISC, ISH_RTC_COUNTER1));
+		upper = SEDI_REG_GET(MISC, RTC_COUNTER1);
+		lower = SEDI_REG_GET(MISC, RTC_COUNTER0);
+	} while (upper != SEDI_REG_GET(MISC, RTC_COUNTER1));
 
 	return ((uint64_t)upper << 32U) | lower;
 }

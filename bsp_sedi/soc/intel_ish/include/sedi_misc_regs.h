@@ -183,47 +183,47 @@ SEDI_REG_DEFINE(MISC, DFX_VISA_MILESTONE, 0x6c, RW, (uint32_t)0xffffffff, (uint3
  */
 SEDI_RBF_DEFINE(MISC, DFX_VISA_MILESTONE, DFX_VISA_MILESTONE_bit31to0, 0, 32, RW, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_COUNTER0 ***********
+/* ********* MISC RTC_COUNTER0 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_COUNTER0: ISH RTC Counter LSB Value
+ *   RTC_COUNTER0: RTC Counter LSB Value
  *     AddressOffset  : 0x70
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_COUNTER0, 0x70, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_COUNTER0, 0x70, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_COUNTER0
- *   ISH_RTC_COUNTER0:
+ * Bit Field of Register RTC_COUNTER0
+ *   RTC_COUNTER0:
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_COUNTER0, ISH_RTC_COUNTER0, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_COUNTER0, RTC_COUNTER0, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_COUNTER1 ***********
+/* ********* MISC RTC_COUNTER1 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_COUNTER1: ISH RTC Counter MSB Value
+ *   RTC_COUNTER1: RTC Counter MSB Value
  *     AddressOffset  : 0x74
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_COUNTER1, 0x74, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_COUNTER1, 0x74, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_COUNTER1
- *   ISH_RTC_COUNTER1:
+ * Bit Field of Register RTC_COUNTER1
+ *   RTC_COUNTER1:
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_COUNTER1, ISH_RTC_COUNTER1, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_COUNTER1, RTC_COUNTER1, 0, 32, RO, (uint32_t)0x0);
 
 /* ********* MISC ISH_MISC_ART_SNAPSHOT_LO_ADDR ***********
  *
@@ -793,1845 +793,1845 @@ SEDI_RBF_DEFINE(MISC, ISH_FDFX_SECURITY_POLICY, ISH_FDFX_SECURE_POLICY, 0, 4, RO
  */
 SEDI_RBF_DEFINE(MISC, ISH_FDFX_SECURITY_POLICY, RESERVED0, 4, 28, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_CTRL0 ***********
+/* ********* MISC AON_TIMESTAMP_CTRL0 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_CTRL0: AON Timestamp Control0
+ *   AON_TIMESTAMP_CTRL0: AON Timestamp Control0
  *     AddressOffset  : 0x220
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, 0x220, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_CTRL0, 0x220, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL0
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register AON_TIMESTAMP_CTRL0
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL0, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL0, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL0, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL0
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register AON_TIMESTAMP_CTRL0
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL0, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL0, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL0, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL0
+ * Bit Field of Register AON_TIMESTAMP_CTRL0
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL0, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL0
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register AON_TIMESTAMP_CTRL0
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL0, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL0
+ * Bit Field of Register AON_TIMESTAMP_CTRL0
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL0, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL0
+ * Bit Field of Register AON_TIMESTAMP_CTRL0
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL0, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL0, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL0, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL0, BUSY, 1, 1);
 
-/* ********* MISC ISH_AON_TIMESTAMP_LOW0 ***********
+/* ********* MISC AON_TIMESTAMP_LOW0 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_LOW0: AON Timestamp Capture LOWregister0
+ *   AON_TIMESTAMP_LOW0: AON Timestamp Capture LOWregister0
  *     AddressOffset  : 0x224
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_LOW0, 0x224, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_LOW0, 0x224, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_LOW0
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register AON_TIMESTAMP_LOW0
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_LOW0, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_LOW0, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_HIGH0 ***********
+/* ********* MISC AON_TIMESTAMP_HIGH0 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_HIGH0: AON Timestamp Control HIGH0
+ *   AON_TIMESTAMP_HIGH0: AON Timestamp Control HIGH0
  *     AddressOffset  : 0x228
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_HIGH0, 0x228, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_HIGH0, 0x228, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_HIGH0
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register AON_TIMESTAMP_HIGH0
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_HIGH0, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_HIGH0, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_STATUS0 ***********
+/* ********* MISC AON_TIMESTAMP_STATUS0 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_STATUS0: AON Timestamp Control STATUS0
+ *   AON_TIMESTAMP_STATUS0: AON Timestamp Control STATUS0
  *     AddressOffset  : 0x22c
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS0, 0x22c, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_STATUS0, 0x22c, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_STATUS0
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register AON_TIMESTAMP_STATUS0
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS0, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS0, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS0, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_STATUS0, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_STATUS0, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_STATUS0, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_STATUS0
+ * Bit Field of Register AON_TIMESTAMP_STATUS0
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS0, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_STATUS0, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_CTRL1 ***********
+/* ********* MISC AON_TIMESTAMP_CTRL1 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_CTRL1: AON Timestamp Control1
+ *   AON_TIMESTAMP_CTRL1: AON Timestamp Control1
  *     AddressOffset  : 0x230
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, 0x230, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_CTRL1, 0x230, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL1
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register AON_TIMESTAMP_CTRL1
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL1, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL1, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL1, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL1
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register AON_TIMESTAMP_CTRL1
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL1, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL1, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL1, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL1
+ * Bit Field of Register AON_TIMESTAMP_CTRL1
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL1, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL1
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register AON_TIMESTAMP_CTRL1
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL1, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL1
+ * Bit Field of Register AON_TIMESTAMP_CTRL1
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL1, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL1
+ * Bit Field of Register AON_TIMESTAMP_CTRL1
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL1, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL1, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL1, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL1, BUSY, 1, 1);
 
-/* ********* MISC ISH_AON_TIMESTAMP_LOW1 ***********
+/* ********* MISC AON_TIMESTAMP_LOW1 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_LOW1: AON Timestamp Capture LOWregister1
+ *   AON_TIMESTAMP_LOW1: AON Timestamp Capture LOWregister1
  *     AddressOffset  : 0x234
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_LOW1, 0x234, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_LOW1, 0x234, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_LOW1
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register AON_TIMESTAMP_LOW1
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_LOW1, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_LOW1, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_HIGH1 ***********
+/* ********* MISC AON_TIMESTAMP_HIGH1 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_HIGH1: AON Timestamp Control HIGH1
+ *   AON_TIMESTAMP_HIGH1: AON Timestamp Control HIGH1
  *     AddressOffset  : 0x238
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_HIGH1, 0x238, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_HIGH1, 0x238, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_HIGH1
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register AON_TIMESTAMP_HIGH1
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_HIGH1, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_HIGH1, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_STATUS1 ***********
+/* ********* MISC AON_TIMESTAMP_STATUS1 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_STATUS1: AON Timestamp Control STATUS1
+ *   AON_TIMESTAMP_STATUS1: AON Timestamp Control STATUS1
  *     AddressOffset  : 0x23c
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS1, 0x23c, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_STATUS1, 0x23c, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_STATUS1
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register AON_TIMESTAMP_STATUS1
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS1, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS1, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS1, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_STATUS1, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_STATUS1, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_STATUS1, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_STATUS1
+ * Bit Field of Register AON_TIMESTAMP_STATUS1
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS1, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_STATUS1, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_CTRL2 ***********
+/* ********* MISC AON_TIMESTAMP_CTRL2 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_CTRL2: AON Timestamp Control2
+ *   AON_TIMESTAMP_CTRL2: AON Timestamp Control2
  *     AddressOffset  : 0x240
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, 0x240, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_CTRL2, 0x240, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL2
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register AON_TIMESTAMP_CTRL2
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL2, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL2, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL2, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL2
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register AON_TIMESTAMP_CTRL2
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL2, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL2, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL2, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL2
+ * Bit Field of Register AON_TIMESTAMP_CTRL2
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL2, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL2
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register AON_TIMESTAMP_CTRL2
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL2, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL2
+ * Bit Field of Register AON_TIMESTAMP_CTRL2
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL2, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL2
+ * Bit Field of Register AON_TIMESTAMP_CTRL2
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL2, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL2, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL2, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL2, BUSY, 1, 1);
 
-/* ********* MISC ISH_AON_TIMESTAMP_LOW2 ***********
+/* ********* MISC AON_TIMESTAMP_LOW2 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_LOW2: AON Timestamp Capture LOWregister2
+ *   AON_TIMESTAMP_LOW2: AON Timestamp Capture LOWregister2
  *     AddressOffset  : 0x244
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_LOW2, 0x244, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_LOW2, 0x244, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_LOW2
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register AON_TIMESTAMP_LOW2
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_LOW2, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_LOW2, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_HIGH2 ***********
+/* ********* MISC AON_TIMESTAMP_HIGH2 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_HIGH2: AON Timestamp Control HIGH2
+ *   AON_TIMESTAMP_HIGH2: AON Timestamp Control HIGH2
  *     AddressOffset  : 0x248
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_HIGH2, 0x248, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_HIGH2, 0x248, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_HIGH2
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register AON_TIMESTAMP_HIGH2
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_HIGH2, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_HIGH2, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_STATUS2 ***********
+/* ********* MISC AON_TIMESTAMP_STATUS2 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_STATUS2: AON Timestamp Control STATUS2
+ *   AON_TIMESTAMP_STATUS2: AON Timestamp Control STATUS2
  *     AddressOffset  : 0x24c
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS2, 0x24c, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_STATUS2, 0x24c, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_STATUS2
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register AON_TIMESTAMP_STATUS2
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS2, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS2, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS2, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_STATUS2, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_STATUS2, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_STATUS2, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_STATUS2
+ * Bit Field of Register AON_TIMESTAMP_STATUS2
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS2, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_STATUS2, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_CTRL3 ***********
+/* ********* MISC AON_TIMESTAMP_CTRL3 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_CTRL3: AON Timestamp Control3
+ *   AON_TIMESTAMP_CTRL3: AON Timestamp Control3
  *     AddressOffset  : 0x250
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, 0x250, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_CTRL3, 0x250, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL3
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register AON_TIMESTAMP_CTRL3
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL3, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL3, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL3, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL3
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register AON_TIMESTAMP_CTRL3
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL3, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL3, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL3, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL3
+ * Bit Field of Register AON_TIMESTAMP_CTRL3
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL3, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL3
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register AON_TIMESTAMP_CTRL3
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL3, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL3
+ * Bit Field of Register AON_TIMESTAMP_CTRL3
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL3, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_CTRL3
+ * Bit Field of Register AON_TIMESTAMP_CTRL3
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_CTRL3, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_CTRL3, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL3, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_CTRL3, BUSY, 1, 1);
 
-/* ********* MISC ISH_AON_TIMESTAMP_LOW3 ***********
+/* ********* MISC AON_TIMESTAMP_LOW3 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_LOW3: AON Timestamp Capture LOWregister3
+ *   AON_TIMESTAMP_LOW3: AON Timestamp Capture LOWregister3
  *     AddressOffset  : 0x254
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_LOW3, 0x254, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_LOW3, 0x254, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_LOW3
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register AON_TIMESTAMP_LOW3
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_LOW3, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_LOW3, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_HIGH3 ***********
+/* ********* MISC AON_TIMESTAMP_HIGH3 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_HIGH3: AON Timestamp Control HIGH3
+ *   AON_TIMESTAMP_HIGH3: AON Timestamp Control HIGH3
  *     AddressOffset  : 0x258
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_HIGH3, 0x258, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_HIGH3, 0x258, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_HIGH3
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register AON_TIMESTAMP_HIGH3
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_HIGH3, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_HIGH3, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_AON_TIMESTAMP_STATUS3 ***********
+/* ********* MISC AON_TIMESTAMP_STATUS3 ***********
  *
  * Register of SEDI MISC
- *   ISH_AON_TIMESTAMP_STATUS3: AON Timestamp Control STATUS3
+ *   AON_TIMESTAMP_STATUS3: AON Timestamp Control STATUS3
  *     AddressOffset  : 0x25c
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS3, 0x25c, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, AON_TIMESTAMP_STATUS3, 0x25c, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_STATUS3
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register AON_TIMESTAMP_STATUS3
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS3, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS3, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS3, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_STATUS3, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_STATUS3, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, AON_TIMESTAMP_STATUS3, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_AON_TIMESTAMP_STATUS3
+ * Bit Field of Register AON_TIMESTAMP_STATUS3
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_AON_TIMESTAMP_STATUS3, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, AON_TIMESTAMP_STATUS3, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_CTRL0 ***********
+/* ********* MISC RTC_TIMESTAMP_CTRL0 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_CTRL0: RTC Timestamp Control0
+ *   RTC_TIMESTAMP_CTRL0: RTC Timestamp Control0
  *     AddressOffset  : 0x260
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, 0x260, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, 0x260, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL0
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register RTC_TIMESTAMP_CTRL0
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL0
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register RTC_TIMESTAMP_CTRL0
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL0
+ * Bit Field of Register RTC_TIMESTAMP_CTRL0
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL0
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register RTC_TIMESTAMP_CTRL0
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL0
+ * Bit Field of Register RTC_TIMESTAMP_CTRL0
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL0
+ * Bit Field of Register RTC_TIMESTAMP_CTRL0
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL0, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL0, BUSY, 1, 1);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_LOW0 ***********
+/* ********* MISC RTC_TIMESTAMP_LOW0 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_LOW0: RTC Timestamp Capture LOWregister0
+ *   RTC_TIMESTAMP_LOW0: RTC Timestamp Capture LOWregister0
  *     AddressOffset  : 0x264
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_LOW0, 0x264, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_LOW0, 0x264, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_LOW0
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register RTC_TIMESTAMP_LOW0
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_LOW0, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_LOW0, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_HIGH0 ***********
+/* ********* MISC RTC_TIMESTAMP_HIGH0 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_HIGH0: RTC Timestamp Control HIGH0
+ *   RTC_TIMESTAMP_HIGH0: RTC Timestamp Control HIGH0
  *     AddressOffset  : 0x268
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_HIGH0, 0x268, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_HIGH0, 0x268, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_HIGH0
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register RTC_TIMESTAMP_HIGH0
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_HIGH0, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_HIGH0, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_STATUS0 ***********
+/* ********* MISC RTC_TIMESTAMP_STATUS0 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_STATUS0: RTC Timestamp Control STATUS0
+ *   RTC_TIMESTAMP_STATUS0: RTC Timestamp Control STATUS0
  *     AddressOffset  : 0x26c
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS0, 0x26c, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_STATUS0, 0x26c, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_STATUS0
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register RTC_TIMESTAMP_STATUS0
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS0, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS0, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS0, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_STATUS0, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_STATUS0, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_STATUS0, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_STATUS0
+ * Bit Field of Register RTC_TIMESTAMP_STATUS0
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS0, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_STATUS0, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_CTRL1 ***********
+/* ********* MISC RTC_TIMESTAMP_CTRL1 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_CTRL1: RTC Timestamp Control1
+ *   RTC_TIMESTAMP_CTRL1: RTC Timestamp Control1
  *     AddressOffset  : 0x270
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, 0x270, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, 0x270, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL1
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register RTC_TIMESTAMP_CTRL1
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL1
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register RTC_TIMESTAMP_CTRL1
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL1
+ * Bit Field of Register RTC_TIMESTAMP_CTRL1
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL1
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register RTC_TIMESTAMP_CTRL1
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL1
+ * Bit Field of Register RTC_TIMESTAMP_CTRL1
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL1
+ * Bit Field of Register RTC_TIMESTAMP_CTRL1
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL1, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL1, BUSY, 1, 1);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_LOW1 ***********
+/* ********* MISC RTC_TIMESTAMP_LOW1 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_LOW1: RTC Timestamp Capture LOWregister1
+ *   RTC_TIMESTAMP_LOW1: RTC Timestamp Capture LOWregister1
  *     AddressOffset  : 0x274
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_LOW1, 0x274, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_LOW1, 0x274, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_LOW1
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register RTC_TIMESTAMP_LOW1
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_LOW1, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_LOW1, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_HIGH1 ***********
+/* ********* MISC RTC_TIMESTAMP_HIGH1 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_HIGH1: RTC Timestamp Control HIGH1
+ *   RTC_TIMESTAMP_HIGH1: RTC Timestamp Control HIGH1
  *     AddressOffset  : 0x278
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_HIGH1, 0x278, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_HIGH1, 0x278, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_HIGH1
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register RTC_TIMESTAMP_HIGH1
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_HIGH1, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_HIGH1, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_STATUS1 ***********
+/* ********* MISC RTC_TIMESTAMP_STATUS1 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_STATUS1: RTC Timestamp Control STATUS1
+ *   RTC_TIMESTAMP_STATUS1: RTC Timestamp Control STATUS1
  *     AddressOffset  : 0x27c
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS1, 0x27c, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_STATUS1, 0x27c, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_STATUS1
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register RTC_TIMESTAMP_STATUS1
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS1, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS1, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS1, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_STATUS1, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_STATUS1, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_STATUS1, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_STATUS1
+ * Bit Field of Register RTC_TIMESTAMP_STATUS1
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS1, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_STATUS1, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_CTRL2 ***********
+/* ********* MISC RTC_TIMESTAMP_CTRL2 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_CTRL2: RTC Timestamp Control2
+ *   RTC_TIMESTAMP_CTRL2: RTC Timestamp Control2
  *     AddressOffset  : 0x280
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, 0x280, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, 0x280, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL2
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register RTC_TIMESTAMP_CTRL2
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL2
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register RTC_TIMESTAMP_CTRL2
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL2
+ * Bit Field of Register RTC_TIMESTAMP_CTRL2
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL2
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register RTC_TIMESTAMP_CTRL2
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL2
+ * Bit Field of Register RTC_TIMESTAMP_CTRL2
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL2
+ * Bit Field of Register RTC_TIMESTAMP_CTRL2
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL2, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL2, BUSY, 1, 1);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_LOW2 ***********
+/* ********* MISC RTC_TIMESTAMP_LOW2 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_LOW2: RTC Timestamp Capture LOWregister2
+ *   RTC_TIMESTAMP_LOW2: RTC Timestamp Capture LOWregister2
  *     AddressOffset  : 0x284
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_LOW2, 0x284, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_LOW2, 0x284, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_LOW2
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register RTC_TIMESTAMP_LOW2
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_LOW2, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_LOW2, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_HIGH2 ***********
+/* ********* MISC RTC_TIMESTAMP_HIGH2 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_HIGH2: RTC Timestamp Control HIGH2
+ *   RTC_TIMESTAMP_HIGH2: RTC Timestamp Control HIGH2
  *     AddressOffset  : 0x288
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_HIGH2, 0x288, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_HIGH2, 0x288, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_HIGH2
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register RTC_TIMESTAMP_HIGH2
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_HIGH2, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_HIGH2, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_STATUS2 ***********
+/* ********* MISC RTC_TIMESTAMP_STATUS2 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_STATUS2: RTC Timestamp Control STATUS2
+ *   RTC_TIMESTAMP_STATUS2: RTC Timestamp Control STATUS2
  *     AddressOffset  : 0x28c
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS2, 0x28c, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_STATUS2, 0x28c, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_STATUS2
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register RTC_TIMESTAMP_STATUS2
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS2, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS2, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS2, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_STATUS2, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_STATUS2, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_STATUS2, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_STATUS2
+ * Bit Field of Register RTC_TIMESTAMP_STATUS2
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS2, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_STATUS2, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_CTRL3 ***********
+/* ********* MISC RTC_TIMESTAMP_CTRL3 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_CTRL3: RTC Timestamp Control3
+ *   RTC_TIMESTAMP_CTRL3: RTC Timestamp Control3
  *     AddressOffset  : 0x290
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, 0x290, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, 0x290, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL3
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register RTC_TIMESTAMP_CTRL3
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL3
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register RTC_TIMESTAMP_CTRL3
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL3
+ * Bit Field of Register RTC_TIMESTAMP_CTRL3
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL3
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register RTC_TIMESTAMP_CTRL3
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL3
+ * Bit Field of Register RTC_TIMESTAMP_CTRL3
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_CTRL3
+ * Bit Field of Register RTC_TIMESTAMP_CTRL3
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_CTRL3, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_CTRL3, BUSY, 1, 1);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_LOW3 ***********
+/* ********* MISC RTC_TIMESTAMP_LOW3 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_LOW3: RTC Timestamp Capture LOWregister3
+ *   RTC_TIMESTAMP_LOW3: RTC Timestamp Capture LOWregister3
  *     AddressOffset  : 0x294
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_LOW3, 0x294, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_LOW3, 0x294, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_LOW3
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register RTC_TIMESTAMP_LOW3
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_LOW3, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_LOW3, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_HIGH3 ***********
+/* ********* MISC RTC_TIMESTAMP_HIGH3 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_HIGH3: RTC Timestamp Control HIGH3
+ *   RTC_TIMESTAMP_HIGH3: RTC Timestamp Control HIGH3
  *     AddressOffset  : 0x298
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_HIGH3, 0x298, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_HIGH3, 0x298, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_HIGH3
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register RTC_TIMESTAMP_HIGH3
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_HIGH3, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_HIGH3, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_RTC_TIMESTAMP_STATUS3 ***********
+/* ********* MISC RTC_TIMESTAMP_STATUS3 ***********
  *
  * Register of SEDI MISC
- *   ISH_RTC_TIMESTAMP_STATUS3: RTC Timestamp Control STATUS3
+ *   RTC_TIMESTAMP_STATUS3: RTC Timestamp Control STATUS3
  *     AddressOffset  : 0x29c
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS3, 0x29c, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, RTC_TIMESTAMP_STATUS3, 0x29c, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_STATUS3
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register RTC_TIMESTAMP_STATUS3
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS3, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS3, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS3, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_STATUS3, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_STATUS3, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, RTC_TIMESTAMP_STATUS3, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_RTC_TIMESTAMP_STATUS3
+ * Bit Field of Register RTC_TIMESTAMP_STATUS3
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_RTC_TIMESTAMP_STATUS3, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, RTC_TIMESTAMP_STATUS3, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_CTRL0 ***********
+/* ********* MISC XTAL_TIMESTAMP_CTRL0 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_CTRL0: XTAL Timestamp Control0
+ *   XTAL_TIMESTAMP_CTRL0: XTAL Timestamp Control0
  *     AddressOffset  : 0x2a0
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, 0x2a0, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, 0x2a0, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL0
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL0
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL0
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL0
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL0
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL0
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL0
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL0
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW,
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW,
 		(uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL0
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL0
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL0
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL0
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL0, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL0, BUSY, 1, 1);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_LOW0 ***********
+/* ********* MISC XTAL_TIMESTAMP_LOW0 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_LOW0: XTAL Timestamp Capture LOWregister0
+ *   XTAL_TIMESTAMP_LOW0: XTAL Timestamp Capture LOWregister0
  *     AddressOffset  : 0x2a4
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_LOW0, 0x2a4, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_LOW0, 0x2a4, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_LOW0
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register XTAL_TIMESTAMP_LOW0
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_LOW0, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_LOW0, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_HIGH0 ***********
+/* ********* MISC XTAL_TIMESTAMP_HIGH0 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_HIGH0: XTAL Timestamp Control HIGH0
+ *   XTAL_TIMESTAMP_HIGH0: XTAL Timestamp Control HIGH0
  *     AddressOffset  : 0x2a8
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_HIGH0, 0x2a8, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_HIGH0, 0x2a8, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_HIGH0
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register XTAL_TIMESTAMP_HIGH0
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_HIGH0, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_HIGH0, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_STATUS0 ***********
+/* ********* MISC XTAL_TIMESTAMP_STATUS0 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_STATUS0: XTAL Timestamp Control STATUS0
+ *   XTAL_TIMESTAMP_STATUS0: XTAL Timestamp Control STATUS0
  *     AddressOffset  : 0x2ac
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS0, 0x2ac, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_STATUS0, 0x2ac, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_STATUS0
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register XTAL_TIMESTAMP_STATUS0
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS0, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS0, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS0, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_STATUS0, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_STATUS0, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_STATUS0, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_STATUS0
+ * Bit Field of Register XTAL_TIMESTAMP_STATUS0
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS0, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_STATUS0, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_CTRL1 ***********
+/* ********* MISC XTAL_TIMESTAMP_CTRL1 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_CTRL1: XTAL Timestamp Control1
+ *   XTAL_TIMESTAMP_CTRL1: XTAL Timestamp Control1
  *     AddressOffset  : 0x2b0
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, 0x2b0, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, 0x2b0, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL1
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL1
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL1
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL1
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL1
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL1
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL1
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL1
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW,
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW,
 		(uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL1
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL1
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL1
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL1
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL1, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL1, BUSY, 1, 1);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_LOW1 ***********
+/* ********* MISC XTAL_TIMESTAMP_LOW1 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_LOW1: XTAL Timestamp Capture LOWregister1
+ *   XTAL_TIMESTAMP_LOW1: XTAL Timestamp Capture LOWregister1
  *     AddressOffset  : 0x2b4
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_LOW1, 0x2b4, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_LOW1, 0x2b4, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_LOW1
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register XTAL_TIMESTAMP_LOW1
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_LOW1, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_LOW1, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_HIGH1 ***********
+/* ********* MISC XTAL_TIMESTAMP_HIGH1 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_HIGH1: XTAL Timestamp Control HIGH1
+ *   XTAL_TIMESTAMP_HIGH1: XTAL Timestamp Control HIGH1
  *     AddressOffset  : 0x2b8
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_HIGH1, 0x2b8, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_HIGH1, 0x2b8, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_HIGH1
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register XTAL_TIMESTAMP_HIGH1
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_HIGH1, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_HIGH1, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_STATUS1 ***********
+/* ********* MISC XTAL_TIMESTAMP_STATUS1 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_STATUS1: XTAL Timestamp Control STATUS1
+ *   XTAL_TIMESTAMP_STATUS1: XTAL Timestamp Control STATUS1
  *     AddressOffset  : 0x2bc
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS1, 0x2bc, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_STATUS1, 0x2bc, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_STATUS1
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register XTAL_TIMESTAMP_STATUS1
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS1, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS1, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS1, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_STATUS1, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_STATUS1, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_STATUS1, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_STATUS1
+ * Bit Field of Register XTAL_TIMESTAMP_STATUS1
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS1, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_STATUS1, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_CTRL2 ***********
+/* ********* MISC XTAL_TIMESTAMP_CTRL2 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_CTRL2: XTAL Timestamp Control2
+ *   XTAL_TIMESTAMP_CTRL2: XTAL Timestamp Control2
  *     AddressOffset  : 0x2c0
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, 0x2c0, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, 0x2c0, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL2
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL2
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL2
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL2
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL2
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL2
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL2
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL2
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW,
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW,
 		(uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL2
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL2
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL2
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL2
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL2, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL2, BUSY, 1, 1);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_LOW2 ***********
+/* ********* MISC XTAL_TIMESTAMP_LOW2 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_LOW2: XTAL Timestamp Capture LOWregister2
+ *   XTAL_TIMESTAMP_LOW2: XTAL Timestamp Capture LOWregister2
  *     AddressOffset  : 0x2c4
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_LOW2, 0x2c4, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_LOW2, 0x2c4, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_LOW2
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register XTAL_TIMESTAMP_LOW2
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_LOW2, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_LOW2, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_HIGH2 ***********
+/* ********* MISC XTAL_TIMESTAMP_HIGH2 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_HIGH2: XTAL Timestamp Control HIGH2
+ *   XTAL_TIMESTAMP_HIGH2: XTAL Timestamp Control HIGH2
  *     AddressOffset  : 0x2c8
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_HIGH2, 0x2c8, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_HIGH2, 0x2c8, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_HIGH2
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register XTAL_TIMESTAMP_HIGH2
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_HIGH2, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_HIGH2, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_STATUS2 ***********
+/* ********* MISC XTAL_TIMESTAMP_STATUS2 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_STATUS2: XTAL Timestamp Control STATUS2
+ *   XTAL_TIMESTAMP_STATUS2: XTAL Timestamp Control STATUS2
  *     AddressOffset  : 0x2cc
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS2, 0x2cc, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_STATUS2, 0x2cc, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_STATUS2
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register XTAL_TIMESTAMP_STATUS2
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS2, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS2, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS2, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_STATUS2, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_STATUS2, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_STATUS2, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_STATUS2
+ * Bit Field of Register XTAL_TIMESTAMP_STATUS2
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS2, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_STATUS2, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_CTRL3 ***********
+/* ********* MISC XTAL_TIMESTAMP_CTRL3 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_CTRL3: XTAL Timestamp Control2
+ *   XTAL_TIMESTAMP_CTRL3: XTAL Timestamp Control2
  *     AddressOffset  : 0x2d0
  *     AccessType     : RW
  *     WritableBitMask: 0x1f03
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, 0x2d0, RW, (uint32_t)0x1f03, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, 0x2d0, RW, (uint32_t)0x1f03, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL3
- *   ISH_TIMESTAMP_EN: Timestamp Enable
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL3
+ *   TIMESTAMP_EN: Timestamp Enable
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EN, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EN, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, TIMESTAMP_EN, 0, 1, RW, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, TIMESTAMP_EN, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, TIMESTAMP_EN, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL3
- *   ISH_TIMESTAMP_EDGE_DETECT_REG: Edge Detect
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL3
+ *   TIMESTAMP_EDGE_DETECT_REG: Edge Detect
  *     BitOffset : 1
  *     BitWidth  : 1
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, TIMESTAMP_EDGE_DETECT_REG, 1, 1, RW,
 		(uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EDGE_DETECT_REG, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, ISH_TIMESTAMP_EDGE_DETECT_REG, 1, 1);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, TIMESTAMP_EDGE_DETECT_REG, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, TIMESTAMP_EDGE_DETECT_REG, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL3
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL3
  *   RESERVED1: Reserved
  *     BitOffset : 2
  *     BitWidth  : 6
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, RESERVED1, 2, 6, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, RESERVED1, 2, 6, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL3
- *   ISH_TIMESTAMP_GPIO_SEL_REG: GPIO Select
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL3
+ *   TIMESTAMP_GPIO_SEL_REG: GPIO Select
  *     BitOffset : 8
  *     BitWidth  : 5
  *     AccessType: RW
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, ISH_TIMESTAMP_GPIO_SEL_REG, 8, 5, RW,
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, TIMESTAMP_GPIO_SEL_REG, 8, 5, RW,
 		(uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL3
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL3
  *   RESERVED0: Reserved
  *     BitOffset : 13
  *     BitWidth  : 18
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, RESERVED0, 13, 18, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, RESERVED0, 13, 18, RO, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_CTRL3
+ * Bit Field of Register XTAL_TIMESTAMP_CTRL3
  *   BUSY: Busy
  *     BitOffset : 31
  *     BitWidth  : 1
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, BUSY, 31, 1, RO, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, BUSY, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_CTRL3, BUSY, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, BUSY, 31, 1, RO, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, BUSY, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_CTRL3, BUSY, 1, 1);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_LOW3 ***********
+/* ********* MISC XTAL_TIMESTAMP_LOW3 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_LOW3: XTAL Timestamp Capture LOWregister3
+ *   XTAL_TIMESTAMP_LOW3: XTAL Timestamp Capture LOWregister3
  *     AddressOffset  : 0x2d4
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_LOW3, 0x2d4, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_LOW3, 0x2d4, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_LOW3
- *   ISH_TIMESTAMP_LOW: Timestamp Low
+ * Bit Field of Register XTAL_TIMESTAMP_LOW3
+ *   TIMESTAMP_LOW: Timestamp Low
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_LOW3, ISH_TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_LOW3, TIMESTAMP_LOW, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_HIGH3 ***********
+/* ********* MISC XTAL_TIMESTAMP_HIGH3 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_HIGH3: XTAL Timestamp Control HIGH3
+ *   XTAL_TIMESTAMP_HIGH3: XTAL Timestamp Control HIGH3
  *     AddressOffset  : 0x2d8
  *     AccessType     : RO
  *     WritableBitMask: 0x0
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_HIGH3, 0x2d8, RO, (uint32_t)0x0, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_HIGH3, 0x2d8, RO, (uint32_t)0x0, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_HIGH3
- *   ISH_TIMESTAMP_HIGH: Timestamp High
+ * Bit Field of Register XTAL_TIMESTAMP_HIGH3
+ *   TIMESTAMP_HIGH: Timestamp High
  *     BitOffset : 0
  *     BitWidth  : 32
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_HIGH3, ISH_TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_HIGH3, TIMESTAMP_HIGH, 0, 32, RO, (uint32_t)0x0);
 
-/* ********* MISC ISH_XTAL_TIMESTAMP_STATUS3 ***********
+/* ********* MISC XTAL_TIMESTAMP_STATUS3 ***********
  *
  * Register of SEDI MISC
- *   ISH_XTAL_TIMESTAMP_STATUS3: XTAL Timestamp Control STATUS3
+ *   XTAL_TIMESTAMP_STATUS3: XTAL Timestamp Control STATUS3
  *     AddressOffset  : 0x2dc
  *     AccessType     : RW
  *     WritableBitMask: 0x1
  *     ResetValue     : (uint32_t)0x0
  */
-SEDI_REG_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS3, 0x2dc, RW, (uint32_t)0x1, (uint32_t)0x0);
+SEDI_REG_DEFINE(MISC, XTAL_TIMESTAMP_STATUS3, 0x2dc, RW, (uint32_t)0x1, (uint32_t)0x0);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_STATUS3
- *   ISH_TIMESTAMP_STATUS: Status
+ * Bit Field of Register XTAL_TIMESTAMP_STATUS3
+ *   TIMESTAMP_STATUS: Status
  *     BitOffset : 0
  *     BitWidth  : 1
  *     AccessType: RW_1C
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS3, ISH_TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS3, ISH_TIMESTAMP_STATUS, 0, 0);
-SEDI_RBFV_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS3, ISH_TIMESTAMP_STATUS, 1, 1);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_STATUS3, TIMESTAMP_STATUS, 0, 1, RW_1C, (uint32_t)0x0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_STATUS3, TIMESTAMP_STATUS, 0, 0);
+SEDI_RBFV_DEFINE(MISC, XTAL_TIMESTAMP_STATUS3, TIMESTAMP_STATUS, 1, 1);
 
 /*
- * Bit Field of Register ISH_XTAL_TIMESTAMP_STATUS3
+ * Bit Field of Register XTAL_TIMESTAMP_STATUS3
  *   RESERVED0: Reserved
  *     BitOffset : 1
  *     BitWidth  : 31
  *     AccessType: RO
  *     ResetValue: (uint32_t)0x0
  */
-SEDI_RBF_DEFINE(MISC, ISH_XTAL_TIMESTAMP_STATUS3, RESERVED0, 1, 31, RO, (uint32_t)0x0);
+SEDI_RBF_DEFINE(MISC, XTAL_TIMESTAMP_STATUS3, RESERVED0, 1, 31, RO, (uint32_t)0x0);
 
 /* ********* MISC HH_ART_TIMER0_N_VAL ***********
  *
@@ -2931,148 +2931,148 @@ typedef struct {
 	__IO_R uint32_t ish_fdfx_security_policy;
 
 	/* AON Timestamp Control0 */
-	__IO_RW uint32_t ish_aon_timestamp_ctrl0;
+	__IO_RW uint32_t AON_TIMESTAMP_CTRL0;
 
 	/* AON Timestamp Capture LOWregister0 */
-	__IO_R uint32_t ish_aon_timestamp_low0;
+	__IO_R uint32_t AON_TIMESTAMP_LOW0;
 
 	/* AON Timestamp Control HIGH0 */
-	__IO_R uint32_t ish_aon_timestamp_high0;
+	__IO_R uint32_t AON_TIMESTAMP_HIGH0;
 
 	/* AON Timestamp Control STATUS0 */
-	__IO_RW uint32_t ish_aon_timestamp_status0;
+	__IO_RW uint32_t AON_TIMESTAMP_STATUS0;
 
 	/* AON Timestamp Control1 */
-	__IO_RW uint32_t ish_aon_timestamp_ctrl1;
+	__IO_RW uint32_t AON_TIMESTAMP_CTRL1;
 
 	/* AON Timestamp Capture LOWregister1 */
-	__IO_R uint32_t ish_aon_timestamp_low1;
+	__IO_R uint32_t AON_TIMESTAMP_LOW1;
 
 	/* AON Timestamp Control HIGH1 */
-	__IO_R uint32_t ish_aon_timestamp_high1;
+	__IO_R uint32_t AON_TIMESTAMP_HIGH1;
 
 	/* AON Timestamp Control STATUS1 */
-	__IO_RW uint32_t ish_aon_timestamp_status1;
+	__IO_RW uint32_t AON_TIMESTAMP_STATUS1;
 
 	/* AON Timestamp Control2 */
-	__IO_RW uint32_t ish_aon_timestamp_ctrl2;
+	__IO_RW uint32_t AON_TIMESTAMP_CTRL2;
 
 	/* AON Timestamp Capture LOWregister2 */
-	__IO_R uint32_t ish_aon_timestamp_low2;
+	__IO_R uint32_t AON_TIMESTAMP_LOW2;
 
 	/* AON Timestamp Control HIGH2 */
-	__IO_R uint32_t ish_aon_timestamp_high2;
+	__IO_R uint32_t AON_TIMESTAMP_HIGH2;
 
 	/* AON Timestamp Control STATUS2 */
-	__IO_RW uint32_t ish_aon_timestamp_status2;
+	__IO_RW uint32_t AON_TIMESTAMP_STATUS2;
 
 	/* AON Timestamp Control3 */
-	__IO_RW uint32_t ish_aon_timestamp_ctrl3;
+	__IO_RW uint32_t AON_TIMESTAMP_CTRL3;
 
 	/* AON Timestamp Capture LOWregister3 */
-	__IO_R uint32_t ish_aon_timestamp_low3;
+	__IO_R uint32_t AON_TIMESTAMP_LOW3;
 
 	/* AON Timestamp Control HIGH3 */
-	__IO_R uint32_t ish_aon_timestamp_high3;
+	__IO_R uint32_t AON_TIMESTAMP_HIGH3;
 
 	/* AON Timestamp Control STATUS3 */
-	__IO_RW uint32_t ish_aon_timestamp_status3;
+	__IO_RW uint32_t AON_TIMESTAMP_STATUS3;
 
 	/* RTC Timestamp Control0 */
-	__IO_RW uint32_t ish_rtc_timestamp_ctrl0;
+	__IO_RW uint32_t RTC_TIMESTAMP_CTRL0;
 
 	/* RTC Timestamp Capture LOWregister0 */
-	__IO_R uint32_t ish_rtc_timestamp_low0;
+	__IO_R uint32_t RTC_TIMESTAMP_LOW0;
 
 	/* RTC Timestamp Control HIGH0 */
-	__IO_R uint32_t ish_rtc_timestamp_high0;
+	__IO_R uint32_t RTC_TIMESTAMP_HIGH0;
 
 	/* RTC Timestamp Control STATUS0 */
-	__IO_RW uint32_t ish_rtc_timestamp_status0;
+	__IO_RW uint32_t RTC_TIMESTAMP_STATUS0;
 
 	/* RTC Timestamp Control1 */
-	__IO_RW uint32_t ish_rtc_timestamp_ctrl1;
+	__IO_RW uint32_t RTC_TIMESTAMP_CTRL1;
 
 	/* RTC Timestamp Capture LOWregister1 */
-	__IO_R uint32_t ish_rtc_timestamp_low1;
+	__IO_R uint32_t RTC_TIMESTAMP_LOW1;
 
 	/* RTC Timestamp Control HIGH1 */
-	__IO_R uint32_t ish_rtc_timestamp_high1;
+	__IO_R uint32_t RTC_TIMESTAMP_HIGH1;
 
 	/* RTC Timestamp Control STATUS1 */
-	__IO_RW uint32_t ish_rtc_timestamp_status1;
+	__IO_RW uint32_t RTC_TIMESTAMP_STATUS1;
 
 	/* RTC Timestamp Control2 */
-	__IO_RW uint32_t ish_rtc_timestamp_ctrl2;
+	__IO_RW uint32_t RTC_TIMESTAMP_CTRL2;
 
 	/* RTC Timestamp Capture LOWregister2 */
-	__IO_R uint32_t ish_rtc_timestamp_low2;
+	__IO_R uint32_t RTC_TIMESTAMP_LOW2;
 
 	/* RTC Timestamp Control HIGH2 */
-	__IO_R uint32_t ish_rtc_timestamp_high2;
+	__IO_R uint32_t RTC_TIMESTAMP_HIGH2;
 
 	/* RTC Timestamp Control STATUS2 */
-	__IO_RW uint32_t ish_rtc_timestamp_status2;
+	__IO_RW uint32_t RTC_TIMESTAMP_STATUS2;
 
 	/* RTC Timestamp Control3 */
-	__IO_RW uint32_t ish_rtc_timestamp_ctrl3;
+	__IO_RW uint32_t RTC_TIMESTAMP_CTRL3;
 
 	/* RTC Timestamp Capture LOWregister3 */
-	__IO_R uint32_t ish_rtc_timestamp_low3;
+	__IO_R uint32_t RTC_TIMESTAMP_LOW3;
 
 	/* RTC Timestamp Control HIGH3 */
-	__IO_R uint32_t ish_rtc_timestamp_high3;
+	__IO_R uint32_t RTC_TIMESTAMP_HIGH3;
 
 	/* RTC Timestamp Control STATUS3 */
-	__IO_RW uint32_t ish_rtc_timestamp_status3;
+	__IO_RW uint32_t RTC_TIMESTAMP_STATUS3;
 
 	/* XTAL Timestamp Control0 */
-	__IO_RW uint32_t ish_xtal_timestamp_ctrl0;
+	__IO_RW uint32_t XTAL_TIMESTAMP_CTRL0;
 
 	/* XTAL Timestamp Capture LOWregister0 */
-	__IO_R uint32_t ish_xtal_timestamp_low0;
+	__IO_R uint32_t XTAL_TIMESTAMP_LOW0;
 
 	/* XTAL Timestamp Control HIGH0 */
-	__IO_R uint32_t ish_xtal_timestamp_high0;
+	__IO_R uint32_t XTAL_TIMESTAMP_HIGH0;
 
 	/* XTAL Timestamp Control STATUS0 */
-	__IO_RW uint32_t ish_xtal_timestamp_status0;
+	__IO_RW uint32_t XTAL_TIMESTAMP_STATUS0;
 
 	/* XTAL Timestamp Control1 */
-	__IO_RW uint32_t ish_xtal_timestamp_ctrl1;
+	__IO_RW uint32_t XTAL_TIMESTAMP_CTRL1;
 
 	/* XTAL Timestamp Capture LOWregister1 */
-	__IO_R uint32_t ish_xtal_timestamp_low1;
+	__IO_R uint32_t XTAL_TIMESTAMP_LOW1;
 
 	/* XTAL Timestamp Control HIGH1 */
-	__IO_R uint32_t ish_xtal_timestamp_high1;
+	__IO_R uint32_t XTAL_TIMESTAMP_HIGH1;
 
 	/* XTAL Timestamp Control STATUS1 */
-	__IO_RW uint32_t ish_xtal_timestamp_status1;
+	__IO_RW uint32_t XTAL_TIMESTAMP_STATUS1;
 
 	/* XTAL Timestamp Control2 */
-	__IO_RW uint32_t ish_xtal_timestamp_ctrl2;
+	__IO_RW uint32_t XTAL_TIMESTAMP_CTRL2;
 
 	/* XTAL Timestamp Capture LOWregister2 */
-	__IO_R uint32_t ish_xtal_timestamp_low2;
+	__IO_R uint32_t XTAL_TIMESTAMP_LOW2;
 
 	/* XTAL Timestamp Control HIGH2 */
-	__IO_R uint32_t ish_xtal_timestamp_high2;
+	__IO_R uint32_t XTAL_TIMESTAMP_HIGH2;
 
 	/* XTAL Timestamp Control STATUS2 */
-	__IO_RW uint32_t ish_xtal_timestamp_status2;
+	__IO_RW uint32_t XTAL_TIMESTAMP_STATUS2;
 
 	/* XTAL Timestamp Control2 */
-	__IO_RW uint32_t ish_xtal_timestamp_ctrl3;
+	__IO_RW uint32_t XTAL_TIMESTAMP_CTRL3;
 
 	/* XTAL Timestamp Capture LOWregister3 */
-	__IO_R uint32_t ish_xtal_timestamp_low3;
+	__IO_R uint32_t XTAL_TIMESTAMP_LOW3;
 
 	/* XTAL Timestamp Control HIGH3 */
-	__IO_R uint32_t ish_xtal_timestamp_high3;
+	__IO_R uint32_t XTAL_TIMESTAMP_HIGH3;
 
 	/* XTAL Timestamp Control STATUS3 */
-	__IO_RW uint32_t ish_xtal_timestamp_status3;
+	__IO_RW uint32_t XTAL_TIMESTAMP_STATUS3;
 
 	/* Reserved */
 	__IO_RW uint32_t reserved4[8];
