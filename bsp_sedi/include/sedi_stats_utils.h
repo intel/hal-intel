@@ -7,16 +7,16 @@
 /* {sum, count, max, min, unit string} */
 #define DEFINE_DSTATS(_name, _unit_str)                                                            \
 	uint64_t __dstats_sum_##_name;                                                             \
-	uint32_t __dstats_cnt_##_name;                                                             \
-	uint32_t __dstats_max_##_name = (uint32_t)0;                                               \
-	uint32_t __dstats_min_##_name = (uint32_t)0;                                               \
+	uint64_t __dstats_cnt_##_name;                                                             \
+	uint64_t __dstats_max_##_name = 0ULL;                                                      \
+	uint64_t __dstats_min_##_name = 0ULL;                                                      \
 	const char *const __dstats_unit_str_##_name = _unit_str
 
 #define DECLARE_DSTATS(_name)                                                                      \
 	extern uint64_t __dstats_sum_##_name;                                                      \
-	extern uint32_t __dstats_cnt_##_name;                                                      \
-	extern uint32_t __dstats_max_##_name;                                                      \
-	extern uint32_t __dstats_min_##_name;                                                      \
+	extern uint64_t __dstats_cnt_##_name;                                                      \
+	extern uint64_t __dstats_max_##_name;                                                      \
+	extern uint64_t __dstats_min_##_name;                                                      \
 	extern const char *const __dstats_unit_str_##_name
 
 #define DSTATS_SUM(_name)      __dstats_sum_##_name
@@ -27,10 +27,10 @@
 
 #define dstats_reset(_name)                                                                        \
 	do {                                                                                       \
-		__dstats_sum_##_name = 0;                                                          \
-		__dstats_cnt_##_name = 0;                                                          \
-		__dstats_max_##_name = 0;                                                          \
-		__dstats_min_##_name = 0;                                                          \
+		__dstats_sum_##_name = 0ULL;                                                       \
+		__dstats_cnt_##_name = 0ULL;                                                       \
+		__dstats_max_##_name = 0ULL;                                                       \
+		__dstats_min_##_name = 0ULL;                                                       \
 	} while (0)
 
 #define dstats_update(_name, _value)                                                               \
@@ -43,16 +43,15 @@
 		if (!__dstats_min_##_name || _value < __dstats_min_##_name) {                      \
 			__dstats_min_##_name = (_value);                                           \
 		}                                                                                  \
-		if (__dstats_cnt_##_name >= (uint32_t)-1) {                                        \
-			/* About to wrap around, clear sum and cnt and insert one average */       \
-			__dstats_sum_##_name =                                                     \
-				(uint32_t)(__dstats_sum_##_name / __dstats_cnt_##_name);           \
+		if (__dstats_sum_##_name > 0xF000000000000000ULL) {                                \
+			/* Close to wrap around, clear sum and cnt and insert one average */       \
+			__dstats_sum_##_name = dstats_get_avrg(_name);                             \
 			__dstats_cnt_##_name = 1;                                                  \
 		}                                                                                  \
 	} while (0)
 
 #define dstats_get_avrg(_name)                                                                     \
-	((__dstats_cnt_##_name == 0) ? 0 : (uint32_t)(__dstats_sum_##_name / __dstats_cnt_##_name))
+	((__dstats_cnt_##_name == 0) ? 0 : (__dstats_sum_##_name / __dstats_cnt_##_name))
 
 /* dump out as (sum, mean, max, min) */
 #define dstats_dump(_name, _log_func)                                                              \
@@ -61,9 +60,9 @@
 			break;                                                                     \
 		}                                                                                  \
 		_log_func("DSTATS " #_name "(cnt, (aveg, max, min)): "                             \
-			  "(%u, (%u, %u, %u)%s)\n",                                                \
+			  "(%llu, (%llu, %llu, %llu)%s)\n",                                        \
 			  __dstats_cnt_##_name,                                                    \
-			  (uint32_t)(__dstats_sum_##_name / __dstats_cnt_##_name),                 \
+			  (__dstats_sum_##_name / __dstats_cnt_##_name),                           \
 			  __dstats_max_##_name, __dstats_min_##_name, __dstats_unit_str_##_name);  \
 	} while (0)
 
