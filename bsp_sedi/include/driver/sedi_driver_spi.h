@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -361,7 +361,7 @@ int32_t sedi_spi_get_capabilities(IN sedi_spi_t spi_device,
  * \return  \ref return_status
  */
 int32_t sedi_spi_init(IN sedi_spi_t spi_device, IN sedi_spi_event_cb_t cb,
-		      INOUT void *param, IN uint32_t base);
+		      INOUT void *param, IN uintptr_t base);
 
 /*!
  * \brief Uninitialize the device

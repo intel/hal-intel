@@ -535,7 +535,7 @@ int32_t sedi_spi_get_capabilities(IN sedi_spi_t spi_device,
 }
 
 int32_t sedi_spi_init(IN sedi_spi_t spi_device, IN sedi_spi_event_cb_t cb_event,
-		      INOUT void *param, IN uint32_t base)
+		      INOUT void *param, IN uintptr_t base)
 {
 	DBG_CHECK(spi_device < SEDI_SPI_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
