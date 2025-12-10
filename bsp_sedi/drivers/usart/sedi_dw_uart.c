@@ -1842,7 +1842,7 @@ static int sedi_uart_dma_config(IN sedi_dma_t dma, int32_t channel, IN sedi_dma_
 
 	PARAM_UNUSED(ret);
 
-	ret = sedi_dma_init(dma, channel, cb, param);
+	ret = sedi_dma_chan_init(dma, channel, cb, param);
 	DBG_CHECK(SEDI_DRIVER_OK == ret, SEDI_DRIVER_ERROR);
 
 	ret = sedi_dma_set_power(dma, channel, SEDI_POWER_FULL);
@@ -2027,7 +2027,7 @@ int sedi_uart_dma_write_terminate(IN sedi_uart_t uart)
 
 	ret = sedi_dma_set_power(xfer->dma_dev, xfer->channel, SEDI_POWER_OFF);
 	DBG_CHECK(SEDI_DRIVER_OK == ret, SEDI_DRIVER_ERROR);
-	ret = sedi_dma_uninit(xfer->dma_dev, xfer->channel);
+	ret = sedi_dma_chan_uninit(xfer->dma_dev, xfer->channel);
 	if (xfer->callback && (ret == SEDI_DRIVER_OK)) {
 		xfer->callback(xfer->cb_param, SEDI_USART_ERROR_CANCELED, 0, 0);
 		dma_write_ctxt[uart].dma_xfer = NULL;
@@ -2070,7 +2070,7 @@ int sedi_uart_dma_read_terminate(IN sedi_uart_t uart)
 
 	ret = sedi_dma_set_power(xfer->dma_dev, xfer->channel, SEDI_POWER_OFF);
 	DBG_CHECK(SEDI_DRIVER_OK == ret, SEDI_DRIVER_ERROR);
-	ret = sedi_dma_uninit(xfer->dma_dev, xfer->channel);
+	ret = sedi_dma_chan_uninit(xfer->dma_dev, xfer->channel);
 	if (xfer->callback && (ret == SEDI_DRIVER_OK)) {
 		xfer->callback(xfer->cb_param, SEDI_USART_ERROR_CANCELED, 0, 0);
 		dma_read_ctxt[uart].dma_xfer = NULL;

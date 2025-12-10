@@ -716,7 +716,7 @@ static int config_and_enable_dma_channel(sedi_i2c_t i2c_dev, int dma, int handsh
 		dma_dir = DMA_PERIPHERAL_TO_PERIPHERAL;
 	}
 
-	ret = sedi_dma_init(dma, chan, callback_dma_transfer, (void *)i2c_dev);
+	ret = sedi_dma_chan_init(dma, chan, callback_dma_transfer, (void *)i2c_dev);
 	DBG_CHECK(0 == ret, SEDI_DRIVER_ERROR);
 
 	ret = sedi_dma_set_power(dma, chan, SEDI_POWER_FULL);

@@ -60,7 +60,7 @@ static int _imr_dma_copy(uint32_t sram_addr, uint32_t len, bool is_in)
 		sedi_pm_set_device_power(SEDI_DEVID_DMA0, SEDI_POWER_FULL);
 	}
 
-	sedi_dma_init(IMR_DMA_DEVID, IMR_DMA_CHANNEL, NULL, NULL);
+	sedi_dma_chan_init(IMR_DMA_DEVID, IMR_DMA_CHANNEL, NULL, NULL);
 	sedi_dma_control(IMR_DMA_DEVID, IMR_DMA_CHANNEL, SEDI_CONFIG_DMA_DIRECTION,
 			 DMA_MEMORY_TO_MEMORY);
 	sedi_dma_control(IMR_DMA_DEVID, IMR_DMA_CHANNEL, SEDI_CONFIG_DMA_SR_MEM_TYPE, src_mem_type);

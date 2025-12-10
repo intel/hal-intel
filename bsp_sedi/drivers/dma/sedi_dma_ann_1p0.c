@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Intel Corporation
+ * Copyright (c) 2023-2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -186,7 +186,7 @@ static void unmask_channel_interrupt(IN sedi_dma_t dma_device,
 	regs->int_reg.mask_err_low = DMA_WRITE_ENABLE(channel_id);
 }
 
-int32_t sedi_dma_init(IN sedi_dma_t dma_device, IN int channel_id,
+int32_t sedi_dma_chan_init(IN sedi_dma_t dma_device, IN int channel_id,
 		      IN sedi_dma_event_cb_t cb, INOUT void *param)
 {
 	DBG_CHECK(dma_device < SEDI_DMA_NUM, SEDI_DRIVER_ERROR_PARAMETER);
@@ -208,7 +208,7 @@ int32_t sedi_dma_init(IN sedi_dma_t dma_device, IN int channel_id,
 	return SEDI_DRIVER_OK;
 }
 
-int32_t sedi_dma_uninit(IN sedi_dma_t dma_device, IN int channel_id)
+int32_t sedi_dma_chan_uninit(IN sedi_dma_t dma_device, IN int channel_id)
 {
 	DBG_CHECK(dma_device < SEDI_DMA_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(channel_id < DMA_CHANNEL_NUM, SEDI_DRIVER_ERROR_PARAMETER);

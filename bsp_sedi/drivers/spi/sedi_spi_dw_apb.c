@@ -767,7 +767,7 @@ static int config_and_enable_dma_channel(sedi_spi_t spi_dev, int dma,
 		break;
 	}
 
-	ret = sedi_dma_init(dma, chan, callback_dma_transfer, (void *)spi_dev);
+	ret = sedi_dma_chan_init(dma, chan, callback_dma_transfer, (void *)spi_dev);
 	DBG_CHECK(0 == ret, SEDI_DRIVER_ERROR);
 
 	ret = sedi_dma_set_power(dma, chan, SEDI_POWER_FULL);
@@ -812,7 +812,7 @@ static void callback_dma_transfer(const sedi_dma_t dma, const int chan,
 
 	/* release the dma resource */
 	sedi_dma_set_power(dma, chan, SEDI_POWER_LOW);
-	sedi_dma_uninit(dma, chan);
+	sedi_dma_chan_uninit(dma, chan);
 
 	if (event != SEDI_DMA_EVENT_TRANSFER_DONE) {
 		if (context->cb_event) {

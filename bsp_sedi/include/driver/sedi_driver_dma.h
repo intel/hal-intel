@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -307,22 +307,23 @@ int sedi_dma_get_capabilities(IN sedi_dma_t dma_device,
 			      INOUT sedi_dma_capabilities_t *cap);
 
 /*!
- * \brief Initialize the device
+ * \brief Initialize a channel of the DMA device
  * \param[in] dma_device: dma device id
  * \param[in] channel_id: dma channel id
  * \param[in] cb: the callback function which can receive device's events.
  * \param[inout] param: the user defined callback param, like controller point.
  * \return  \ref return_status
  */
-int32_t sedi_dma_init(IN sedi_dma_t dma_device, IN int channel_id,
+int32_t sedi_dma_chan_init(IN sedi_dma_t dma_device, IN int channel_id,
 		      IN sedi_dma_event_cb_t cb, INOUT void *param);
 
 /*!
- * \brief Uninitialize the device
+ * \brief Uninitialize a channel of the DMA device
  * \param[in] dma_device: dma device id
+ * \param[in] channel_id: dma channel id
  * \return  \ref return_status
  */
-int32_t sedi_dma_uninit(IN sedi_dma_t dma_device, IN int channel_id);
+int32_t sedi_dma_chan_uninit(IN sedi_dma_t dma_device, IN int channel_id);
 
 /*!
  * \brief Set the device's power

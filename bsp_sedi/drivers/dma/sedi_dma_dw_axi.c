@@ -211,7 +211,7 @@ static void clear_channel_interrupt(volatile sedi_dma_regs_t *chx_regs)
 	chx_regs->intclearreg = chx_regs->intstatus;
 }
 
-int32_t sedi_dma_init(IN sedi_dma_t dma_device, IN int channel_id, IN sedi_dma_event_cb_t cb,
+int32_t sedi_dma_chan_init(IN sedi_dma_t dma_device, IN int channel_id, IN sedi_dma_event_cb_t cb,
 		      INOUT void *param)
 {
 	DBG_CHECK(dma_device < SEDI_DMA_NUM, SEDI_DRIVER_ERROR_PARAMETER);
@@ -250,7 +250,7 @@ int32_t sedi_dma_init(IN sedi_dma_t dma_device, IN int channel_id, IN sedi_dma_e
 	return SEDI_DRIVER_OK;
 }
 
-int32_t sedi_dma_uninit(IN sedi_dma_t dma_device, IN int channel_id)
+int32_t sedi_dma_chan_uninit(IN sedi_dma_t dma_device, IN int channel_id)
 {
 	DBG_CHECK(dma_device < SEDI_DMA_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(channel_id < DMA_CHANNEL_NUM, SEDI_DRIVER_ERROR_PARAMETER);
