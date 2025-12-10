@@ -1181,6 +1181,6 @@ int32_t sedi_uart_set_power(IN sedi_uart_t uart, IN sedi_power_state_t state);
  * @retval SEDI_DRIVER_OK if operation was successful.
  * @retval non zero error code otherwise.
  */
-int32_t sedi_uart_init(IN sedi_uart_t uart, void *base);
+int32_t sedi_uart_init(IN sedi_uart_t uart, IN uintptr_t base);
 
 #endif /* _SEDI_DRIVER_UART_H_ */

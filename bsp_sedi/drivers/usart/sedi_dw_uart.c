@@ -2227,7 +2227,7 @@ int32_t sedi_uart_set_power(IN sedi_uart_t uart, IN sedi_power_state_t state)
 	return ret;
 }
 
-int32_t sedi_uart_init(IN sedi_uart_t uart, void *base)
+int32_t sedi_uart_init(IN sedi_uart_t uart, IN uintptr_t base)
 {
 	DBG_CHECK(uart < SEDI_UART_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
