@@ -212,7 +212,8 @@ int32_t sedi_gpio_get_capabilities(IN sedi_gpio_t gpio_device, OUT sedi_gpio_cap
 	return SEDI_DRIVER_OK;
 }
 
-int32_t sedi_gpio_init(IN sedi_gpio_t gpio_device, IN sedi_gpio_event_cb_t cb, INOUT void *param)
+int32_t sedi_gpio_init(IN sedi_gpio_t gpio_device, IN uintptr_t base,
+		IN sedi_gpio_event_cb_t cb, INOUT void *param)
 {
 	DBG_CHECK(gpio_device < SEDI_GPIO_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
@@ -222,6 +223,8 @@ int32_t sedi_gpio_init(IN sedi_gpio_t gpio_device, IN sedi_gpio_event_cb_t cb, I
 
 	if (gpio_context[gpio_device].flag == GPIO_FLAG_INIT)
 		return SEDI_DRIVER_ERROR_BUSY;
+
+	resources_map[gpio_device].reg = (sedi_gpio_regs_t *)base;
 
 	/* Set all registers to default state */
 	gpio_reset_register(gpio_device);
