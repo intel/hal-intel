@@ -151,10 +151,11 @@ int32_t sedi_ipc_read_csr(IN sedi_ipc_t ipc_device, OUT uint32_t *csr);
  * param[in] ipc_device: ipc device id
  * param[in] cb: the callback function which can receive device's events.
  * param[in] user_params: user params, will be the last input of callback
+ * param[in] base: the base address of the device
  * return  return_status
  */
 int32_t sedi_ipc_init(IN sedi_ipc_t ipc_device, IN sedi_ipc_event_cb_t cb,
-		      INOUT void *user_params);
+		      INOUT void *user_params, IN uintptr_t base);
 
 /*
  * Uninitialize the device

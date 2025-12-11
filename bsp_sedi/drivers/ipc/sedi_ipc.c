@@ -83,7 +83,7 @@ static sideband_param_t cse_sb = { .dev = SEDI_SIDEBAND_CSE,
 				   .drbl_mirror_peer_addr = IPC_REG_SB_CSE2LOCAL_DRBL_MIRROR };
 #endif
 
-static const ipc_resource_t ipc_resource[SEDI_IPC_NUM] = {
+static ipc_resource_t ipc_resource[SEDI_IPC_NUM] = {
 #ifdef SEDI_SB_SUPPORT
 	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_HOST),
 	  .read_vnn = VNN_ID_IPC_HOST_R,
@@ -139,11 +139,17 @@ int32_t sedi_ipc_get_capabilities(IN sedi_ipc_t ipc_device, INOUT sedi_ipc_capab
 	return SEDI_DRIVER_OK;
 }
 
-int32_t sedi_ipc_init(IN sedi_ipc_t ipc_device, IN sedi_ipc_event_cb_t cb, INOUT void *param)
+int32_t sedi_ipc_init(IN sedi_ipc_t ipc_device, IN sedi_ipc_event_cb_t cb, INOUT void *param,
+		IN uintptr_t base)
 {
 	DBG_CHECK(ipc_device < SEDI_IPC_NUM, SEDI_DRIVER_ERROR_PARAMETER);
-	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
+	volatile sedi_ipc_regs_t *regs;
 	vnn_id_t write_vnn = ipc_resource[ipc_device].write_vnn;
+
+	if (base != SEDI_REG_BASE_DEFAULT) {
+		ipc_resource[ipc_device].reg_base_addr = (sedi_ipc_regs_t *)base;
+	}
+	regs = ipc_resource[ipc_device].reg_base_addr;
 
 	ipc_contexts[ipc_device].initialized = false;
 	ipc_contexts[ipc_device].csr_saved = 0;
