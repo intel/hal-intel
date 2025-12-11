@@ -342,6 +342,14 @@ typedef enum {
 #endif
 
 /*!
+ * \def SEDI_REG_BASE_DEFAULT
+ * \brief Indicate to use default register base address of one SEDI driver, don't use
+ *    this value to overwrite it
+ * \ingroup sedi_driver_common
+ */
+#define SEDI_REG_BASE_DEFAULT ((uintptr_t)-1)
+
+/*!
  * \function read/write address
  * \ingroup sedi_driver_common
  */

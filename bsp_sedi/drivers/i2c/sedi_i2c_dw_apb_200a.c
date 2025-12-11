@@ -67,7 +67,7 @@ typedef enum {
 } i2c_dma_diretion_t;
 
 struct i2c_context {
-	uint32_t base;
+	uintptr_t base;
 
 	sedi_i2c_capabilities_t capability;
 	sedi_i2c_status_t status;
@@ -153,7 +153,7 @@ static void init_i2c_prescale(sedi_i2c_bus_info_t *bus_info)
 	}
 }
 
-static void dw_i2c_enable(uint32_t base)
+static void dw_i2c_enable(uintptr_t base)
 {
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
@@ -169,7 +169,7 @@ static void dw_i2c_enable(uint32_t base)
 				&i2c->enable_status));
 }
 
-static int dw_i2c_disable(uint32_t base)
+static int dw_i2c_disable(uintptr_t base)
 {
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
@@ -196,7 +196,7 @@ static int dw_i2c_disable(uint32_t base)
 	return 0;
 }
 
-static int dw_i2c_config_addr(uint32_t base, uint16_t slave_addr)
+static int dw_i2c_config_addr(uintptr_t base, uint16_t slave_addr)
 {
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
@@ -208,7 +208,7 @@ static int dw_i2c_config_addr(uint32_t base, uint16_t slave_addr)
 	return 0;
 }
 
-static int dw_i2c_config_speed(uint32_t base, int speed,
+static int dw_i2c_config_speed(uintptr_t base, int speed,
 		sedi_i2c_bus_clk_t *cfg)
 {
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
@@ -245,7 +245,7 @@ static int dw_i2c_config_speed(uint32_t base, int speed,
 	return 0;
 }
 
-static int dw_i2c_config_txfifo(uint32_t base, uint32_t watermark)
+static int dw_i2c_config_txfifo(uintptr_t base, uint32_t watermark)
 {
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
@@ -254,7 +254,7 @@ static int dw_i2c_config_txfifo(uint32_t base, uint32_t watermark)
 	return 0;
 }
 
-static int dw_i2c_config_rxfifo(uint32_t base, uint32_t watermark)
+static int dw_i2c_config_rxfifo(uintptr_t base, uint32_t watermark)
 {
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
@@ -263,7 +263,7 @@ static int dw_i2c_config_rxfifo(uint32_t base, uint32_t watermark)
 	return 0;
 }
 
-static int dw_i2c_poll_write(uint32_t base, const uint8_t *buffer, uint32_t length, bool pending)
+static int dw_i2c_poll_write(uintptr_t base, const uint8_t *buffer, uint32_t length, bool pending)
 {
 	int ret;
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
@@ -295,7 +295,7 @@ static int dw_i2c_poll_write(uint32_t base, const uint8_t *buffer, uint32_t leng
 	return ret;
 }
 
-static int dw_i2c_poll_read(uint32_t base, uint8_t *buffer, uint32_t length, bool pending)
+static int dw_i2c_poll_read(uintptr_t base, uint8_t *buffer, uint32_t length, bool pending)
 {
 	int ret;
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
@@ -329,14 +329,14 @@ static int dw_i2c_poll_read(uint32_t base, uint8_t *buffer, uint32_t length, boo
 	return ret;
 }
 
-static inline void dw_i2c_irq_config(uint32_t base, uint32_t config)
+static inline void dw_i2c_irq_config(uintptr_t base, uint32_t config)
 {
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)base;
 
 	i2c->intr_mask = config;
 }
 
-static uint32_t dw_i2c_clear_interrupt(uint32_t base)
+static uint32_t dw_i2c_clear_interrupt(uintptr_t base)
 {
 	sedi_i2c_regs_t *i2c = (void *)base;
 	uint32_t value;
@@ -356,7 +356,7 @@ static uint32_t dw_i2c_clear_interrupt(uint32_t base)
 }
 
 #ifdef SEDI_I2C_USE_DMA
-static void dw_i2c_dma_enable(uint32_t base, int fifo_depth, int tx_only)
+static void dw_i2c_dma_enable(uintptr_t base, int fifo_depth, int tx_only)
 {
 	sedi_i2c_regs_t *i2c = (void *)base;
 	uint32_t dma_cr = SEDI_RBFVM(I2C, DMA_CR, TDMAE, ENABLED);
@@ -406,7 +406,7 @@ static void dw_i2c_abort(struct i2c_context *context)
 	PARAM_UNUSED(value);
 }
 
-static uint32_t dw_i2c_abort_analysis(uint32_t base)
+static uint32_t dw_i2c_abort_analysis(uintptr_t base)
 {
 	sedi_i2c_regs_t *i2c = (void *)base;
 	uint32_t abort_src, event = SEDI_I2C_EVENT_TRANSFER_INCOMPLETE;
@@ -587,7 +587,7 @@ int sedi_i2c_get_capabilities(IN sedi_i2c_t i2c_device, sedi_i2c_capabilities_t 
 }
 
 int32_t sedi_i2c_init(IN sedi_i2c_t i2c_device,
-		IN sedi_i2c_event_cb_t cb_event, IN uint32_t base)
+		IN sedi_i2c_event_cb_t cb_event, IN uintptr_t base)
 {
 	DBG_CHECK(i2c_device < SEDI_I2C_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
@@ -612,7 +612,7 @@ int32_t sedi_i2c_init(IN sedi_i2c_t i2c_device,
 	context->phy_data_cmd = sedi_core_virt_to_phys(context->base)
 		+ offsetof(sedi_i2c_regs_t, data_cmd);
 	if (!phy_tx_cmd) {
-		phy_tx_cmd = sedi_core_virt_to_phys((uint32_t)&tx_cmd);
+		phy_tx_cmd = sedi_core_virt_to_phys((uintptr_t)&tx_cmd);
 	}
 
 	return SEDI_DRIVER_OK;

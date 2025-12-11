@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023 - 2025 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -329,7 +329,7 @@ int sedi_i2c_get_capabilities(IN sedi_i2c_t i2c_device,
  * \return  \ref return_status
  */
 int32_t sedi_i2c_init(IN sedi_i2c_t i2c_device, IN sedi_i2c_event_cb_t cb,
-		IN uint32_t base);
+		IN uintptr_t base);
 
 /*!
  * \brief Uninitialize the device
