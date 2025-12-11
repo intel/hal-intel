@@ -88,7 +88,7 @@ typedef struct {
 
 static dma_context_t dma_context[SEDI_DMA_NUM] = { 0 };
 
-static const dma_resources_t resources[SEDI_DMA_NUM] = {
+static dma_resources_t resources[SEDI_DMA_NUM] = {
 	{ .regs = (dma_ann_1p0_regs_t *)SEDI_IREG_BASE(DMA, 0) },
 };
 
@@ -184,6 +184,15 @@ static void unmask_channel_interrupt(IN sedi_dma_t dma_device,
 
 	regs->int_reg.mask_tfr_low = DMA_WRITE_ENABLE(channel_id);
 	regs->int_reg.mask_err_low = DMA_WRITE_ENABLE(channel_id);
+}
+
+int32_t sedi_dma_init(IN sedi_dma_t dma_device, IN uintptr_t base)
+{
+	DBG_CHECK(dma_device < SEDI_DMA_NUM, SEDI_DRIVER_ERROR_PARAMETER);
+
+	resources[dma_device].regs = (dma_ann_1p0_regs_t *)base;
+
+	return SEDI_DRIVER_OK;
 }
 
 int32_t sedi_dma_chan_init(IN sedi_dma_t dma_device, IN int channel_id,

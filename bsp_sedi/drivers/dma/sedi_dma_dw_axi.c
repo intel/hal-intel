@@ -99,7 +99,9 @@ typedef struct {
 } dma_resources_t;
 
 static dma_context_t dma_context[SEDI_DMA_NUM] = {0};
-static dma_resources_t resources[SEDI_DMA_NUM];
+static dma_resources_t resources[SEDI_DMA_NUM] = {
+	{ .comm_reg_ptr = (sedi_dmac_regs_t *)SEDI_IREG_BASE(DMA, 0) },
+};
 
 sedi_driver_version_t sedi_dma_get_version(void)
 {
@@ -211,25 +213,41 @@ static void clear_channel_interrupt(volatile sedi_dma_regs_t *chx_regs)
 	chx_regs->intclearreg = chx_regs->intstatus;
 }
 
+static void sedi_dma_chan_regs_init(IN sedi_dma_t dma_device)
+{
+	uintptr_t chan_adrs = (uintptr_t)resources[dma_device].comm_reg_ptr
+			+ SEDI_DMA_CHAN_REGS_OFF;
+
+	for (uint32_t chan_id = 0; chan_id < DMA_CHANNEL_NUM; ++chan_id) {
+		resources[dma_device].chan_reg_ptrs[chan_id] = (sedi_dma_regs_t *)chan_adrs;
+		chan_adrs += SEDI_DMA_CHAN_REGS_WIDTH;
+	}
+
+	uintptr_t misc_adrs = (uintptr_t)resources[dma_device].comm_reg_ptr
+			+ SEDI_DMA_MISC_REGS_OFF;
+
+	resources[dma_device].chan_misc_regs = (uint32_t *)misc_adrs;
+}
+
+int32_t sedi_dma_init(IN sedi_dma_t dma_device, IN uintptr_t base)
+{
+	DBG_CHECK(dma_device < SEDI_DMA_NUM, SEDI_DRIVER_ERROR_PARAMETER);
+
+	resources[dma_device].comm_reg_ptr = (volatile sedi_dmac_regs_t *)base;
+	sedi_dma_chan_regs_init(dma_device);
+
+	return SEDI_DRIVER_OK;
+}
+
 int32_t sedi_dma_chan_init(IN sedi_dma_t dma_device, IN int channel_id, IN sedi_dma_event_cb_t cb,
 		      INOUT void *param)
 {
 	DBG_CHECK(dma_device < SEDI_DMA_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(channel_id < DMA_CHANNEL_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
-	if ((uint32_t)(resources[dma_device].chan_reg_ptrs[channel_id]) <=
-	    (uint32_t)(resources[dma_device].comm_reg_ptr)) {
-		uint32_t reg_adrs = SEDI_IREG_BASE(DMA, 0) + SEDI_DMA_CHAN_OFF;
-
-		for (uint32_t chan_id = 0; chan_id < DMA_CHANNEL_NUM; ++chan_id) {
-			resources[dma_device].chan_reg_ptrs[chan_id] =
-				(volatile sedi_dma_regs_t *)reg_adrs;
-			reg_adrs += SEDI_DMA_CHAN_OFF;
-		}
-		resources[dma_device].chan_misc_regs =
-			(volatile uint32_t *)(SEDI_IREG_BASE(DMA, 0) + SEDI_DMA_MISC_OFF);
-		resources[dma_device].comm_reg_ptr =
-			(volatile sedi_dmac_regs_t *)SEDI_IREG_BASE(DMA, 0);
+	if ((uintptr_t)(resources[dma_device].chan_reg_ptrs[channel_id])
+			<= (uintptr_t)(resources[dma_device].comm_reg_ptr)) {
+		sedi_dma_chan_regs_init(dma_device);
 	}
 
 	/* init default config context */

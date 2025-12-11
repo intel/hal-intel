@@ -307,6 +307,14 @@ int sedi_dma_get_capabilities(IN sedi_dma_t dma_device,
 			      INOUT sedi_dma_capabilities_t *cap);
 
 /*!
+ * \brief Initialize a DMA device
+ * \param[in] dma_device: dma device id
+ * \param[in] base: base address of the DMA device
+ * \return  \ref return_status
+ */
+int32_t sedi_dma_init(IN sedi_dma_t dma_device, IN uintptr_t base);
+
+/*!
  * \brief Initialize a channel of the DMA device
  * \param[in] dma_device: dma device id
  * \param[in] channel_id: dma channel id
