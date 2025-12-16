@@ -19,6 +19,8 @@ SEDI_IREG_BASE_DEFINE(UART, 2, 0x08104000);
 /****** dma *****/
 
 SEDI_IREG_BASE_DEFINE(DMA, 0, 0x10100000);
+#define SEDI_DMA_CHAN_OFF	0x100
+#define SEDI_DMA_MISC_OFF	0x1000
 
 /****** i2c *****/
 
