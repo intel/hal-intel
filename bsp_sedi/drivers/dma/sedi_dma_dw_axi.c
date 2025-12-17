@@ -387,13 +387,13 @@ static int32_t dma_channel_apply_config(IN sedi_dma_t dma_device, IN int channel
 			| SEDI_RBFM_VALUE(DMA, CTL, SRC_TR_WIDTH, config->sr_width);
 		chx_cfg = SEDI_RBFM_VALUE(DMA, CFG2, TT_FC, config->direction);
 
-		if ((config->direction == DMA_PERIPHERAL_TO_MEMORY) |
+		if ((config->direction == DMA_PERIPHERAL_TO_MEMORY) ||
 		    (config->direction == DMA_PERIPHERAL_TO_PERIPHERAL)) {
 			chx_ctl |= SEDI_RBFVM(DMA, CTL, SINC, FIXED);
 			chx_cfg |= SEDI_RBFM_VALUE(DMA, CFG2, SRC_PER, config->handshake_device_id)
 				  | SEDI_RBFM_VALUE(DMA, CFG2, SRC_HWHS_POL, config->handshake_polarity);
 		}
-		if ((config->direction == DMA_MEMORY_TO_PERIPHERAL) |
+		if ((config->direction == DMA_MEMORY_TO_PERIPHERAL) ||
 		    (config->direction == DMA_PERIPHERAL_TO_PERIPHERAL)) {
 			chx_ctl |= SEDI_RBFVM(DMA, CTL, DINC, FIXED);
 			chx_cfg |= SEDI_RBFM_VALUE(DMA, CFG2, DST_PER, config->handshake_device_id)
@@ -509,7 +509,6 @@ static inline int32_t cal_block_ts(channel_config_t *config, uint32_t length)
 	} else {
 		return (length >> config->sr_width) - 1;
 	}
-	return 0;
 }
 
 static int32_t sedi_dma_start_transfer_aux(sedi_dma_t dma_device, int channel_id, uint64_t sr_addr,
@@ -580,7 +579,7 @@ int32_t sedi_dma_abort_transfer(IN sedi_dma_t dma_device, IN int channel_id)
 	}
 
 	const uint64_t ch_susp_sts_test_bit = SEDI_RBFVM(DMAC, CHENREG, CH1_SUSP, ENABLE_CH1_SUSP) << channel_id;
-	*chenreg_ptr = ch_susp_sts_test_bit + (SEDI_RBFVM(DMAC, CHENREG, CH1_SUSP_WE, ENABLE_WR_CH1_SUSP) << channel_id);
+	*chenreg_ptr = ch_susp_sts_test_bit | (SEDI_RBFVM(DMAC, CHENREG, CH1_SUSP_WE, ENABLE_WR_CH1_SUSP) << channel_id);
 	/* Wait until the channel is suspended or timeout occurs */
 	if (SEDI_DMA_POLL_UNTIL(!(*chenreg_ptr & ch_susp_sts_test_bit)) != SEDI_DRIVER_OK) {
 		ret = SEDI_DRIVER_ERROR;
