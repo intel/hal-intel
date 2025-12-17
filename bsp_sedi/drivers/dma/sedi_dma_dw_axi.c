@@ -14,7 +14,7 @@
 #include "sedi_soc_regs.h"
 #include "sedi_soc_funcs.h"
 
-#define PERI_SUPPORT 1
+#define PERI_SUPPORT        1
 #define LINKED_LIST_SUPPORT 0
 #ifndef DMA_PHY_CHAN_NUM
 #define DMA_PHY_CHAN_NUM DMA_CHANNEL_NUM
@@ -24,8 +24,7 @@
 
 #define SEDI_DMA_POLL_UNTIL(_cond) SEDI_POLL_UNTIL((_cond), 1000)
 /*driver version*/
-static const sedi_driver_version_t driver_version = { SEDI_DMA_API_VERSION,
-						      SEDI_DMA_DRIVER_VERSION };
+static const sedi_driver_version_t driver_version = {SEDI_DMA_API_VERSION, SEDI_DMA_DRIVER_VERSION};
 
 typedef enum {
 	DMA_RS0 = 0,
@@ -48,30 +47,29 @@ typedef enum {
  * DMA Transfer Type, inner usage
  */
 typedef enum {
-	DMA_TYPE_SINGLE, /**< Single block mode. */
-	DMA_TYPE_MULTI_CONT, /**< Contiguous multiblock mode. */
-	DMA_TYPE_MULTI_LL, /**< Link list multiblock mode. */
-	DMA_TYPE_MULTI_LL_CIRCULAR, /**< Link list multiblock mode with
-					  cyclic operation. */
+	DMA_TYPE_SINGLE,            /* Single block mode. */
+	DMA_TYPE_MULTI_CONT,        /* Contiguous multiblock mode. */
+	DMA_TYPE_MULTI_LL,          /* Link list multiblock mode. */
+	DMA_TYPE_MULTI_LL_CIRCULAR, /* Link list multiblock mode with cyclic operation. */
 	DMA_TYPE_MAX
 } dma_transfer_type_t;
 
 /* driver capabilities */
-static sedi_dma_capabilities_t driver_capabilities[SEDI_DMA_NUM] = { 0 };
+static sedi_dma_capabilities_t driver_capabilities[SEDI_DMA_NUM] = {0};
 
 /* channel config*/
 typedef struct {
-	uint8_t config_applied : 1;
-	uint8_t tf_mode : 3;
-	uint8_t sr_mem_type : 2;
-	uint8_t dt_mem_type : 2;
-	uint8_t burst_length : 4;
-	uint8_t sr_width : 3;
-	uint8_t dt_width : 3;
-	uint8_t direction : 3;
-	uint8_t handshake_polarity : 1;
-	uint8_t peripheral_direction : 1;
-	uint8_t reserved : 1;
+	uint8_t config_applied: 1;
+	uint8_t tf_mode: 3;
+	uint8_t sr_mem_type: 2;
+	uint8_t dt_mem_type: 2;
+	uint8_t burst_length: 4;
+	uint8_t sr_width: 3;
+	uint8_t dt_width: 3;
+	uint8_t direction: 3;
+	uint8_t handshake_polarity: 1;
+	uint8_t peripheral_direction: 1;
+	uint8_t reserved: 1;
 	uint8_t handshake_device_id;
 #ifdef LINKED_LIST_SUPPORT
 	dma_linked_list_item_t *linked_list_header;
@@ -82,9 +80,9 @@ typedef struct {
 typedef struct {
 	channel_config_t channel_config[DMA_CHANNEL_NUM];
 	sedi_dma_event_cb_t cb_event[DMA_CHANNEL_NUM]; /*event callback*/
-	void *cb_param[DMA_CHANNEL_NUM]; /*event callback*/
-	sedi_dma_status_t status[DMA_CHANNEL_NUM]; /*status flags*/
-	uint16_t done_byte[DMA_CHANNEL_NUM]; /*the transferred byte*/
+	void *cb_param[DMA_CHANNEL_NUM];               /*event callback*/
+	sedi_dma_status_t status[DMA_CHANNEL_NUM];     /*status flags*/
+	uint16_t done_byte[DMA_CHANNEL_NUM];           /*the transferred byte*/
 #ifdef LINKED_LIST_SUPPORT
 	dma_linked_list_item_t *next_llp[DMA_CHANNEL_NUM];
 #endif
@@ -100,7 +98,7 @@ typedef struct {
 	__IO_RW uint32_t *chan_misc_regs;
 } dma_resources_t;
 
-static dma_context_t dma_context[SEDI_DMA_NUM] = { 0 };
+static dma_context_t dma_context[SEDI_DMA_NUM] = {0};
 static dma_resources_t resources[SEDI_DMA_NUM];
 
 sedi_driver_version_t sedi_dma_get_version(void)
@@ -162,18 +160,32 @@ static void dma_set_default_channel_config(OUT channel_config_t *config)
 	config->config_applied = 0;
 }
 
-#define CH_TFR_DONE_INTR SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_DMA_TFR_DONE_IntSignal, ENABLE_DMA_TFR_DONE_IntSignal)
-#define CH_TFR_ERR_INTR (SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_SRC_DEC_ERR_IntSignal, ENABLE_SRC_DEC_ERR_IntSignal) \
-			| SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_DST_DEC_ERR_IntSignal, ENABLE_DST_DEC_ERR_IntSignal) \
-			| SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_SRC_SLV_ERR_IntSignal, ENABLE_SRC_SLV_ERR_IntSignal) \
-			| SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_DST_SLV_ERR_IntSignal, ENABLE_DST_SLV_ERR_IntSignal) \
-			| SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_LLI_RD_DEC_ERR_IntSignal, ENABLE_LLI_RD_DEC_ERR_IntSignal) \
-			| SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_LLI_WR_DEC_ERR_IntSignal, ENABLE_LLI_WR_DEC_ERR_IntSignal) \
-			| SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_LLI_RD_SLV_ERR_IntSignal, ENABLE_LLI_RD_SLV_ERR_IntSignal) \
-			| SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_LLI_WR_SLV_ERR_IntSignal, ENABLE_LLI_WR_SLV_ERR_IntSignal) \
-			| SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_SHADOWREG_OR_LLI_INVALID_ERR_IntSignal, ENABLE_SHADOWREG_OR_LLI_INVALID_ERR_IntSignal) \
-			| SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_SLVIF_MULTIBLKTYPE_ERR_IntSignal, ENABLE_SLVIF_MULTIBLKTYPE_ERR_IntSignal) \
-			| SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_SLVIF_DEC_ERR_IntSignal, ENABLE_SLVIF_DEC_ERR_IntSignal))
+#define CH_TFR_DONE_INTR                                                                           \
+	SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_DMA_TFR_DONE_IntSignal,                        \
+		   ENABLE_DMA_TFR_DONE_IntSignal)
+#define CH_TFR_ERR_INTR                                                                            \
+	(SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_SRC_DEC_ERR_IntSignal,                        \
+		    ENABLE_SRC_DEC_ERR_IntSignal) |                                                \
+	 SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_DST_DEC_ERR_IntSignal,                        \
+		    ENABLE_DST_DEC_ERR_IntSignal) |                                                \
+	 SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_SRC_SLV_ERR_IntSignal,                        \
+		    ENABLE_SRC_SLV_ERR_IntSignal) |                                                \
+	 SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_DST_SLV_ERR_IntSignal,                        \
+		    ENABLE_DST_SLV_ERR_IntSignal) |                                                \
+	 SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_LLI_RD_DEC_ERR_IntSignal,                     \
+		    ENABLE_LLI_RD_DEC_ERR_IntSignal) |                                             \
+	 SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_LLI_WR_DEC_ERR_IntSignal,                     \
+		    ENABLE_LLI_WR_DEC_ERR_IntSignal) |                                             \
+	 SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_LLI_RD_SLV_ERR_IntSignal,                     \
+		    ENABLE_LLI_RD_SLV_ERR_IntSignal) |                                             \
+	 SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_LLI_WR_SLV_ERR_IntSignal,                     \
+		    ENABLE_LLI_WR_SLV_ERR_IntSignal) |                                             \
+	 SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_SHADOWREG_OR_LLI_INVALID_ERR_IntSignal,       \
+		    ENABLE_SHADOWREG_OR_LLI_INVALID_ERR_IntSignal) |                               \
+	 SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_SLVIF_MULTIBLKTYPE_ERR_IntSignal,             \
+		    ENABLE_SLVIF_MULTIBLKTYPE_ERR_IntSignal) |                                     \
+	 SEDI_RBFVM(DMA, INTSIGNAL_ENABLEREG, Enable_SLVIF_DEC_ERR_IntSignal,                      \
+		    ENABLE_SLVIF_DEC_ERR_IntSignal))
 
 /*  mask  channel interrupt */
 static inline void mask_channel_interrupt(volatile sedi_dma_regs_t *chx_regs)
@@ -205,26 +217,31 @@ int32_t sedi_dma_init(IN sedi_dma_t dma_device, IN int channel_id, IN sedi_dma_e
 	DBG_CHECK(dma_device < SEDI_DMA_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(channel_id < DMA_CHANNEL_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
-	if ((uint32_t)(resources[dma_device].chan_reg_ptrs[channel_id])
-		<= (uint32_t)(resources[dma_device].comm_reg_ptr)) {
+	if ((uint32_t)(resources[dma_device].chan_reg_ptrs[channel_id]) <=
+	    (uint32_t)(resources[dma_device].comm_reg_ptr)) {
 		uint32_t reg_adrs = SEDI_IREG_BASE(DMA, 0) + SEDI_DMA_CHAN_OFF;
 
 		for (uint32_t chan_id = 0; chan_id < DMA_CHANNEL_NUM; ++chan_id) {
-			resources[dma_device].chan_reg_ptrs[chan_id] = (volatile sedi_dma_regs_t *)reg_adrs;
+			resources[dma_device].chan_reg_ptrs[chan_id] =
+				(volatile sedi_dma_regs_t *)reg_adrs;
 			reg_adrs += SEDI_DMA_CHAN_OFF;
 		}
-		resources[dma_device].chan_misc_regs = (volatile uint32_t *)(SEDI_IREG_BASE(DMA, 0) + SEDI_DMA_MISC_OFF);
-		resources[dma_device].comm_reg_ptr = (volatile sedi_dmac_regs_t *)SEDI_IREG_BASE(DMA, 0);
+		resources[dma_device].chan_misc_regs =
+			(volatile uint32_t *)(SEDI_IREG_BASE(DMA, 0) + SEDI_DMA_MISC_OFF);
+		resources[dma_device].comm_reg_ptr =
+			(volatile sedi_dmac_regs_t *)SEDI_IREG_BASE(DMA, 0);
 	}
 
 	/* init default config context */
 	channel_config_t *config = &(dma_context[dma_device].channel_config[channel_id]);
+
 	dma_set_default_channel_config(config);
 	/*add callback*/
 	dma_context[dma_device].cb_event[channel_id] = cb;
 	dma_context[dma_device].cb_param[channel_id] = param;
 
 	volatile sedi_dma_regs_t *chan_regs = resources[dma_device].chan_reg_ptrs[channel_id];
+
 	mask_channel_interrupt(chan_regs);
 	clear_channel_interrupt(chan_regs);
 	dma_context[dma_device].status[channel_id].busy = 0;
@@ -381,25 +398,28 @@ static int32_t dma_channel_apply_config(IN sedi_dma_t dma_device, IN int channel
 		DBG_CHECK(config->peripheral_direction < DMA_HS_PER_RTX_MAX,
 			  SEDI_DRIVER_ERROR_PARAMETER);
 		/*set dest and src burst size */
-		chx_ctl = SEDI_RBFM_VALUE(DMA, CTL, DST_MSIZE, config->burst_length)
-			| SEDI_RBFM_VALUE(DMA, CTL, SRC_MSIZE, config->burst_length)
-			| SEDI_RBFM_VALUE(DMA, CTL, DST_TR_WIDTH, config->dt_width)
-			| SEDI_RBFM_VALUE(DMA, CTL, SRC_TR_WIDTH, config->sr_width);
+		chx_ctl = SEDI_RBFM_VALUE(DMA, CTL, DST_MSIZE, config->burst_length) |
+			  SEDI_RBFM_VALUE(DMA, CTL, SRC_MSIZE, config->burst_length) |
+			  SEDI_RBFM_VALUE(DMA, CTL, DST_TR_WIDTH, config->dt_width) |
+			  SEDI_RBFM_VALUE(DMA, CTL, SRC_TR_WIDTH, config->sr_width);
 		chx_cfg = SEDI_RBFM_VALUE(DMA, CFG2, TT_FC, config->direction);
 
 		if ((config->direction == DMA_PERIPHERAL_TO_MEMORY) ||
 		    (config->direction == DMA_PERIPHERAL_TO_PERIPHERAL)) {
 			chx_ctl |= SEDI_RBFVM(DMA, CTL, SINC, FIXED);
-			chx_cfg |= SEDI_RBFM_VALUE(DMA, CFG2, SRC_PER, config->handshake_device_id)
-				  | SEDI_RBFM_VALUE(DMA, CFG2, SRC_HWHS_POL, config->handshake_polarity);
+			chx_cfg |=
+				SEDI_RBFM_VALUE(DMA, CFG2, SRC_PER, config->handshake_device_id) |
+				SEDI_RBFM_VALUE(DMA, CFG2, SRC_HWHS_POL,
+						config->handshake_polarity);
 		}
 		if ((config->direction == DMA_MEMORY_TO_PERIPHERAL) ||
 		    (config->direction == DMA_PERIPHERAL_TO_PERIPHERAL)) {
 			chx_ctl |= SEDI_RBFVM(DMA, CTL, DINC, FIXED);
-			chx_cfg |= SEDI_RBFM_VALUE(DMA, CFG2, DST_PER, config->handshake_device_id)
-				   | SEDI_RBFM_VALUE(DMA, CFG2, DST_HWHS_POL, config->handshake_polarity);
+			chx_cfg |=
+				SEDI_RBFM_VALUE(DMA, CFG2, DST_PER, config->handshake_device_id) |
+				SEDI_RBFM_VALUE(DMA, CFG2, DST_HWHS_POL,
+						config->handshake_polarity);
 		}
-
 	}
 #ifdef LINKED_LIST_SUPPORT
 	else if (config->tf_mode == DMA_TYPE_MULTI_LL) {
@@ -423,8 +443,7 @@ static int32_t dma_channel_apply_config(IN sedi_dma_t dma_device, IN int channel
 			misc_ctl |= SEDI_RBFM_VALUE(DMA_MISC, CTL_CH, RD_RS, DMA_RS3);
 		}
 		if (config->sr_mem_type != DMA_SRAM_MEM) {
-			misc_ctl |= SR_IS_IN_DRAM
-					| SEDI_RBFVM(DMA_MISC, CTL_CH, RD_NON_SNOOP, 1);
+			misc_ctl |= SR_IS_IN_DRAM | SEDI_RBFVM(DMA_MISC, CTL_CH, RD_NON_SNOOP, 1);
 		}
 	}
 	/* destination is memory*/
@@ -434,8 +453,7 @@ static int32_t dma_channel_apply_config(IN sedi_dma_t dma_device, IN int channel
 			misc_ctl |= SEDI_RBFM_VALUE(DMA_MISC, CTL_CH, WR_RS, DMA_RS3);
 		}
 		if (config->dt_mem_type != DMA_SRAM_MEM) {
-			misc_ctl |= DT_IS_IN_DRAM
-					| SEDI_RBFVM(DMA_MISC, CTL_CH, WR_NON_SNOOP, 1);
+			misc_ctl |= DT_IS_IN_DRAM | SEDI_RBFVM(DMA_MISC, CTL_CH, WR_NON_SNOOP, 1);
 		}
 	}
 	if ((config->sr_mem_type != DMA_SRAM_MEM) || (config->dt_mem_type != DMA_SRAM_MEM)) {
@@ -448,7 +466,7 @@ static int32_t dma_channel_apply_config(IN sedi_dma_t dma_device, IN int channel
 	return SEDI_DRIVER_OK;
 }
 
-#define DMA_MAX_BLOCK_SIZE (4096)	/* ref ISH5p8 HAS */
+#define DMA_MAX_BLOCK_SIZE (4096) /* ref ISH5p8 HAS */
 int32_t sedi_dma_start_transfer(IN sedi_dma_t dma_device, IN int channel_id, IN uint64_t sr_addr,
 				IN uint64_t dest_addr, IN uint32_t length)
 {
@@ -548,11 +566,12 @@ static int32_t sedi_dma_start_transfer_aux(sedi_dma_t dma_device, int channel_id
 		/* enable interrupt */
 		unmask_channel_interrupt(chan_regs);
 	}
-	dmac_ptr->cfgreg = SEDI_RBFVM(DMAC, CFGREG, DMAC_EN, ENABLED) | SEDI_RBFVM(DMAC, CFGREG, INT_EN, ENABLED);
+	dmac_ptr->cfgreg = SEDI_RBFVM(DMAC, CFGREG, DMAC_EN, ENABLED) |
+			   SEDI_RBFVM(DMAC, CFGREG, INT_EN, ENABLED);
 
 	/* enable channel*/
-	uint64_t chan_en_mask = SEDI_RBFVM(DMAC, CHENREG, CH1_EN, ENABLE_CH1)
-				| SEDI_RBFVM(DMAC, CHENREG, CH1_EN_WE, ENABLE_WR_CH1_EN);
+	uint64_t chan_en_mask = SEDI_RBFVM(DMAC, CHENREG, CH1_EN, ENABLE_CH1) |
+				SEDI_RBFVM(DMAC, CHENREG, CH1_EN_WE, ENABLE_WR_CH1_EN);
 	chan_en_mask <<= channel_id;
 	dmac_ptr->chenreg |= chan_en_mask;
 	if (polling) {
@@ -578,8 +597,10 @@ int32_t sedi_dma_abort_transfer(IN sedi_dma_t dma_device, IN int channel_id)
 		return SEDI_DRIVER_OK;
 	}
 
-	const uint64_t ch_susp_sts_test_bit = SEDI_RBFVM(DMAC, CHENREG, CH1_SUSP, ENABLE_CH1_SUSP) << channel_id;
-	*chenreg_ptr = ch_susp_sts_test_bit | (SEDI_RBFVM(DMAC, CHENREG, CH1_SUSP_WE, ENABLE_WR_CH1_SUSP) << channel_id);
+	const uint64_t ch_susp_sts_test_bit = SEDI_RBFVM(DMAC, CHENREG, CH1_SUSP, ENABLE_CH1_SUSP)
+					      << channel_id;
+	*chenreg_ptr = ch_susp_sts_test_bit |
+		       (SEDI_RBFVM(DMAC, CHENREG, CH1_SUSP_WE, ENABLE_WR_CH1_SUSP) << channel_id);
 	/* Wait until the channel is suspended or timeout occurs */
 	if (SEDI_DMA_POLL_UNTIL(!(*chenreg_ptr & ch_susp_sts_test_bit)) != SEDI_DRIVER_OK) {
 		ret = SEDI_DRIVER_ERROR;
@@ -633,8 +654,10 @@ void dma_isr(IN sedi_dma_t dev)
 
 	for (int chn = 0; chn < DMA_PHY_CHAN_NUM; chn++) {
 		interrupt_status = resources[dev].chan_reg_ptrs[chn]->intstatus;
-		if (dmac_ptr->intstatusreg & (SEDI_RBFVM(DMAC, INTSTATUSREG, CH1_IntStat, ACTIVE) << chn)) {
-			if ((interrupt_status & CH_TFR_DONE_INTR) || (interrupt_status & CH_TFR_ERR_INTR)) {
+		if (dmac_ptr->intstatusreg &
+		    (SEDI_RBFVM(DMAC, INTSTATUSREG, CH1_IntStat, ACTIVE) << chn)) {
+			if ((interrupt_status & CH_TFR_DONE_INTR) ||
+			    (interrupt_status & CH_TFR_ERR_INTR)) {
 				dma_transfer_post(dev, chn, interrupt_status);
 			}
 		}
