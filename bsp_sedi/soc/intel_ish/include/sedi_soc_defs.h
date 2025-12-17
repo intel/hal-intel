@@ -192,8 +192,6 @@ typedef enum {
 	SEDI_DEVID_TOP
 } sedi_devid_t;
 
-#define DMA_MISC_FUNC   1
-
 /*!
  * peripheral device id for dma handshake
  */
