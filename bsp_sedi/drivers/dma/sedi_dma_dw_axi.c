@@ -97,9 +97,7 @@ typedef struct {
 typedef struct {
 	__IO_RW sedi_dmac_regs_t *comm_reg_ptr;
 	__IO_RW sedi_dma_regs_t *chan_reg_ptrs[DMA_CHANNEL_NUM];
-#if DMA_MISC_FUNC
 	__IO_RW uint32_t *chan_misc_regs;
-#endif
 } dma_resources_t;
 
 static dma_context_t dma_context[SEDI_DMA_NUM] = { 0 };
@@ -124,7 +122,6 @@ int sedi_dma_get_capabilities(IN sedi_dma_t dma_device, INOUT sedi_dma_capabilit
 	return SEDI_DRIVER_OK;
 }
 
-#if DMA_MISC_FUNC
 static inline void dma_vnn_req(sedi_dma_t dma_device, int channel_id)
 {
 	unsigned int key = sedi_core_irq_lock();
@@ -148,7 +145,6 @@ static inline void dma_vnn_dereq(sedi_dma_t dma_device, int channel_id)
 	}
 	sedi_core_irq_unlock(key);
 }
-#endif
 
 static void dma_set_default_channel_config(OUT channel_config_t *config)
 {
@@ -217,9 +213,7 @@ int32_t sedi_dma_init(IN sedi_dma_t dma_device, IN int channel_id, IN sedi_dma_e
 			resources[dma_device].chan_reg_ptrs[chan_id] = (volatile sedi_dma_regs_t *)reg_adrs;
 			reg_adrs += SEDI_DMA_CHAN_OFF;
 		}
-#if DMA_MISC_FUNC
 		resources[dma_device].chan_misc_regs = (volatile uint32_t *)(SEDI_IREG_BASE(DMA, 0) + SEDI_DMA_MISC_OFF);
-#endif
 		resources[dma_device].comm_reg_ptr = (volatile sedi_dmac_regs_t *)SEDI_IREG_BASE(DMA, 0);
 	}
 
@@ -419,8 +413,7 @@ static int32_t dma_channel_apply_config(IN sedi_dma_t dma_device, IN int channel
 	chan_regs->ctl = chx_ctl;
 	chan_regs->cfg2 = chx_cfg;
 
-#if DMA_MISC_FUNC
-	uint64_t misc_ctl = 0;
+	uint32_t misc_ctl = 0;
 
 	/* memory type related registers config*/
 	/* source is memory*/
@@ -450,7 +443,6 @@ static int32_t dma_channel_apply_config(IN sedi_dma_t dma_device, IN int channel
 	}
 
 	resources[dma_device].chan_misc_regs[channel_id] = misc_ctl;
-#endif
 
 	config->config_applied = 1;
 	return SEDI_DRIVER_OK;
@@ -615,9 +607,8 @@ static void dma_transfer_post(sedi_dma_t dev, int chn, uint64_t interrupt_status
 	/* clear interrupt*/
 	clear_channel_interrupt(chan_regs);
 
-#if DMA_MISC_FUNC
 	dma_vnn_dereq(dev, chn);
-#endif
+
 	dma_set_default_channel_config(config);
 	dma_context[dev].status[chn].busy = 0;
 
