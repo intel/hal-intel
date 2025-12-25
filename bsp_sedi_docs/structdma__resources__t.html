@@ -73,12 +73,14 @@ Collaboration diagram for dma_resources_t:</div>
 <div class="dyncontent">
 <div class="center"><img src="structdma__resources__t__coll__graph.png" border="0" usemap="#adma__resources__t_coll__map" alt="Collaboration graph"/></div>
 <map name="adma__resources__t_coll__map" id="adma__resources__t_coll__map">
-<area shape="rect" title=" " alt="" coords="234,184,367,211"/>
-<area shape="rect" href="structdma__ann__1p0__regs__t.html" title=" " alt="" coords="221,95,381,121"/>
-<area shape="rect" href="structdma__chan__reg__t.html" title=" " alt="" coords="5,5,135,32"/>
-<area shape="rect" href="structdma__int__reg__t.html" title=" " alt="" coords="159,5,274,32"/>
-<area shape="rect" href="structdma__chann__misc__reg__t.html" title=" " alt="" coords="299,5,473,32"/>
-<area shape="rect" href="structdma__misc__regs__t.html" title=" " alt="" coords="498,5,634,32"/>
+<area shape="rect" title=" " alt="" coords="165,184,298,211"/>
+<area shape="rect" href="structsedi__dma__regs__t.html" title=" " alt="" coords="5,95,137,121"/>
+<area shape="rect" href="structsedi__dmac__regs__t.html" title=" " alt="" coords="162,95,301,121"/>
+<area shape="rect" href="structdma__ann__1p0__regs__t.html" title=" " alt="" coords="325,95,485,121"/>
+<area shape="rect" href="structdma__chan__reg__t.html" title=" " alt="" coords="109,5,239,32"/>
+<area shape="rect" href="structdma__int__reg__t.html" title=" " alt="" coords="263,5,378,32"/>
+<area shape="rect" href="structdma__chann__misc__reg__t.html" title=" " alt="" coords="403,5,577,32"/>
+<area shape="rect" href="structdma__misc__regs__t.html" title=" " alt="" coords="602,5,738,32"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -87,9 +89,19 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:aa975b5375b7484d080e39780f82e7ccc"><td class="memItemLeft" align="right" valign="top"><a id="aa975b5375b7484d080e39780f82e7ccc"></a>
 <a class="el" href="structdma__ann__1p0__regs__t.html">dma_ann_1p0_regs_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>regs</b></td></tr>
 <tr class="separator:aa975b5375b7484d080e39780f82e7ccc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7170d4d7428ce9fc1063e7000363ae6"><td class="memItemLeft" align="right" valign="top"><a id="ad7170d4d7428ce9fc1063e7000363ae6"></a>
+<a class="el" href="group__sedi__driver__common.html#gaae98f6affaec42fea00b163c0641d2f3">__IO_RW</a> <a class="el" href="structsedi__dmac__regs__t.html">sedi_dmac_regs_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>comm_reg_ptr</b></td></tr>
+<tr class="separator:ad7170d4d7428ce9fc1063e7000363ae6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a546d99c8f50b66574880a38e7d833a0b"><td class="memItemLeft" align="right" valign="top"><a id="a546d99c8f50b66574880a38e7d833a0b"></a>
+<a class="el" href="group__sedi__driver__common.html#gaae98f6affaec42fea00b163c0641d2f3">__IO_RW</a> <a class="el" href="structsedi__dma__regs__t.html">sedi_dma_regs_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>chan_reg_ptrs</b> [DMA_CHANNEL_NUM]</td></tr>
+<tr class="separator:a546d99c8f50b66574880a38e7d833a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a789d501704efa98adb5a9cef25c07e18"><td class="memItemLeft" align="right" valign="top"><a id="a789d501704efa98adb5a9cef25c07e18"></a>
+<a class="el" href="group__sedi__driver__common.html#gaae98f6affaec42fea00b163c0641d2f3">__IO_RW</a> uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><b>chan_misc_regs</b></td></tr>
+<tr class="separator:a789d501704efa98adb5a9cef25c07e18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<hr/>The documentation for this struct was generated from the following files:<ul>
 <li>bsp_sedi/drivers/dma/sedi_dma_ann_1p0.c</li>
+<li>bsp_sedi/drivers/dma/sedi_dma_dw_axi.c</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

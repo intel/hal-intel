@@ -90,77 +90,79 @@ $(function() {
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">/****** dma *****/</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;SEDI_IREG_BASE_DEFINE(DMA, 0, 0x10100000);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">/****** i2c *****/</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#define SEDI_DMA_CHAN_OFF   0x100</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#define SEDI_DMA_MISC_OFF   0x1000</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;SEDI_IREG_BASE_DEFINE(I2C, 0, 0x0000);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;SEDI_IREG_BASE_DEFINE(I2C, 1, 0x2000);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;SEDI_IREG_BASE_DEFINE(I2C, 2, 0x4000);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">/****** GPIO *****/</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">/****** i2c *****/</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;SEDI_IREG_BASE_DEFINE(I2C, 0, 0x0000);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;SEDI_IREG_BASE_DEFINE(I2C, 1, 0x2000);</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;SEDI_IREG_BASE_DEFINE(I2C, 2, 0x4000);</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;SEDI_IREG_BASE_DEFINE(GPIO, 0, 0x00100000);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">/****** GPIO *****/</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">/****** WDT *****/</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;SEDI_IREG_BASE_DEFINE(GPIO, 0, 0x00100000);</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;SEDI_REG_BASE_DEFINE(WDT, 0x4900000);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment">/****** WDT *****/</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment">/****** PMU *****/</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;SEDI_REG_BASE_DEFINE(PMU, 0x04200000);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">/****** CCU *****/</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;SEDI_REG_BASE_DEFINE(WDT, 0x4900000);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">/****** PMU *****/</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;SEDI_REG_BASE_DEFINE(PMU, 0x04200000);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;SEDI_REG_BASE_DEFINE(CCU, 0x04300000);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">/****** CCU *****/</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">/****** HPET *****/</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;SEDI_REG_BASE_DEFINE(HPET, 0x04700000);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">/****** IPC *****/</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;SEDI_IREG_BASE_DEFINE(IPC, HOST, 0x4100000);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;SEDI_IREG_BASE_DEFINE(IPC, CSME, 0x4110000);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;SEDI_IREG_BASE_DEFINE(IPC, PMC, 0x4111000);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">/****** MISC *****/</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;SEDI_REG_BASE_DEFINE(MISC, 0x04400000);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">/****** APIC *****/</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_BASE 0xFEC00000</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_BASE 0xFEE00000</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#define SEDI_CPU_EFLAGS_IF BIT(9)</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;SEDI_REG_BASE_DEFINE(CCU, 0x04300000);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment">/****** HPET *****/</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;SEDI_REG_BASE_DEFINE(HPET, 0x04700000);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">/****** IPC *****/</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;SEDI_IREG_BASE_DEFINE(IPC, HOST, 0x4100000);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;SEDI_IREG_BASE_DEFINE(IPC, CSME, 0x4110000);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;SEDI_IREG_BASE_DEFINE(IPC, PMC, 0x4111000);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment">/****** MISC *****/</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;SEDI_REG_BASE_DEFINE(MISC, 0x04400000);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">/****** APIC *****/</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_BASE 0xFEC00000</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_BASE 0xFEE00000</span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_SPUR (SEDI_LAPIC_BASE + 0x00F0)</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_IRR (SEDI_LAPIC_BASE + 0x0200)</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_SPUR_RESET 0xFF</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_ENABLE 0x100</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_IRR_INST_OFF 0x10</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_IRR_COUNT 8</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_IDX (SEDI_IOAPIC_BASE + 0x0000)</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_WDW (SEDI_IOAPIC_BASE + 0x0010)</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_EOI (SEDI_IOAPIC_BASE + 0x0040)</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_IOREDTBL 0x10</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_MASK 0x00010000</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_DELMOD_FIXED 0x00000000</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_DESTMOD_PHYS 0x00000000</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_INTPOL_HIGH 0x00000000</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_INTPOL_LOW 0x00002000</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_TRIGGER_EDGE 0x00000000</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_TRIGGER_LEVEL 0x00008000</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_RIRR 0x00004000</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment">/****** SPI *****/</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#define SEDI_CPU_EFLAGS_IF BIT(9)</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_SPUR (SEDI_LAPIC_BASE + 0x00F0)</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_IRR (SEDI_LAPIC_BASE + 0x0200)</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_SPUR_RESET 0xFF</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_ENABLE 0x100</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_IRR_INST_OFF 0x10</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#define SEDI_LAPIC_IRR_COUNT 8</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_IDX (SEDI_IOAPIC_BASE + 0x0000)</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_WDW (SEDI_IOAPIC_BASE + 0x0010)</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_EOI (SEDI_IOAPIC_BASE + 0x0040)</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_IOREDTBL 0x10</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_MASK 0x00010000</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_DELMOD_FIXED 0x00000000</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_DESTMOD_PHYS 0x00000000</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_INTPOL_HIGH 0x00000000</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_INTPOL_LOW 0x00002000</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_TRIGGER_EDGE 0x00000000</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_TRIGGER_LEVEL 0x00008000</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">#define SEDI_IOAPIC_REDTBL_RIRR 0x00004000</span></div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;SEDI_IREG_BASE_DEFINE(SPI, 0, 0x8000000);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;SEDI_IREG_BASE_DEFINE(SPI, 1, 0x8002000);</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor">#define SEDI_SPI_0_REG_DMA 0x8000000</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#define SEDI_SPI_1_REG_DMA 0x8002000</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _SEDI_SOC_REGS_H_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment">/****** SPI *****/</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;SEDI_IREG_BASE_DEFINE(SPI, 0, 0x8000000);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;SEDI_IREG_BASE_DEFINE(SPI, 1, 0x8002000);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="preprocessor">#define SEDI_SPI_0_REG_DMA 0x8000000</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor">#define SEDI_SPI_1_REG_DMA 0x8002000</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* _SEDI_SOC_REGS_H_ */</span><span class="preprocessor"></span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

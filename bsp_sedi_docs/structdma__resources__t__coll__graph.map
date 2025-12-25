@@ -1,8 +1,10 @@
 <map id="dma_resources_t" name="dma_resources_t">
-<area shape="rect" id="node1" title=" " alt="" coords="234,184,367,211"/>
-<area shape="rect" id="node2" href="$structdma__ann__1p0__regs__t.html" title=" " alt="" coords="221,95,381,121"/>
-<area shape="rect" id="node3" href="$structdma__chan__reg__t.html" title=" " alt="" coords="5,5,135,32"/>
-<area shape="rect" id="node4" href="$structdma__int__reg__t.html" title=" " alt="" coords="159,5,274,32"/>
-<area shape="rect" id="node5" href="$structdma__chann__misc__reg__t.html" title=" " alt="" coords="299,5,473,32"/>
-<area shape="rect" id="node6" href="$structdma__misc__regs__t.html" title=" " alt="" coords="498,5,634,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="165,184,298,211"/>
+<area shape="rect" id="node2" href="$structsedi__dma__regs__t.html" title=" " alt="" coords="5,95,137,121"/>
+<area shape="rect" id="node3" href="$structsedi__dmac__regs__t.html" title=" " alt="" coords="162,95,301,121"/>
+<area shape="rect" id="node4" href="$structdma__ann__1p0__regs__t.html" title=" " alt="" coords="325,95,485,121"/>
+<area shape="rect" id="node5" href="$structdma__chan__reg__t.html" title=" " alt="" coords="109,5,239,32"/>
+<area shape="rect" id="node6" href="$structdma__int__reg__t.html" title=" " alt="" coords="263,5,378,32"/>
+<area shape="rect" id="node7" href="$structdma__chann__misc__reg__t.html" title=" " alt="" coords="403,5,577,32"/>
+<area shape="rect" id="node8" href="$structdma__misc__regs__t.html" title=" " alt="" coords="602,5,738,32"/>
 </map>
