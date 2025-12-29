@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2025 Intel Corporation
+ * Copyright (c) 2020-2026 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -99,9 +99,7 @@ typedef struct {
 } dma_resources_t;
 
 static dma_context_t dma_context[SEDI_DMA_NUM] = {0};
-static dma_resources_t resources[SEDI_DMA_NUM] = {
-	{ .comm_reg_ptr = (sedi_dmac_regs_t *)SEDI_IREG_BASE(DMA, 0) },
-};
+static dma_resources_t resources[SEDI_DMA_NUM] = {0};
 
 sedi_driver_version_t sedi_dma_get_version(void)
 {

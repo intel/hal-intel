@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - 2025 Intel Corporation
+ * Copyright (c) 2023 - 2026 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -105,14 +105,7 @@ static const sedi_driver_version_t driver_version = {SEDI_SPI_API_VERSION,
 
 static sedi_spi_capabilities_t driver_capabilities[SEDI_SPI_NUM] = {0};
 
-#define SPI_CONTEXT_INIT(x)                                                                        \
-	{                                                                                          \
-		.base = (sedi_spi_regs_t *)SEDI_IREG_BASE(SPI, x),                                 \
-		.dma_handshake = DMA_HWID_SPI##x##_TX, .dummy_data = 0x00,                         \
-		.rx_handshake = DMA_HWID_SPI##x##_RX                                               \
-	}
-
-static struct spi_context spi_contexts[SEDI_SPI_NUM] = { SPI_CONTEXT_INIT(0), SPI_CONTEXT_INIT(1) };
+static struct spi_context spi_contexts[SEDI_SPI_NUM];
 
 static const uint8_t bit_reverse_table[] = {
 	0x00, 0x80, 0x40, 0xC0, 0x20, 0xA0, 0x60, 0xE0, 0x10, 0x90, 0x50, 0xD0,
@@ -544,6 +537,10 @@ int32_t sedi_spi_init(IN sedi_spi_t spi_device, IN sedi_spi_event_cb_t cb_event,
 	if (!sedi_dev_is_self_owned(SEDI_DEVID_SPI0 + spi_device)) {
 		return SEDI_DRIVER_ERROR_NO_DEV;
 	}
+
+	context->dummy_data = 0x00;
+	context->dma_handshake = DMA_HWID_SPI0_TX + spi_device * SEDI_HWID_PER_DEVICE;
+	context->rx_handshake = DMA_HWID_SPI0_RX + spi_device * SEDI_HWID_PER_DEVICE;
 
 	context->cb_event = cb_event;
 	context->cb_param = param;

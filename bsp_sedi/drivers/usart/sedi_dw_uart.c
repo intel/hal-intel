@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - 2025 Intel Corporation
+ * Copyright (c) 2023 - 2026 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -122,9 +122,7 @@ typedef struct {
 
 static sedi_uart_context_t uart_context[SEDI_UART_NUM];
 
-static sedi_uart_regs_t *sedi_uart[SEDI_UART_NUM] = {(sedi_uart_regs_t *)SEDI_IREG_BASE(UART, 0),
-						     (sedi_uart_regs_t *)SEDI_IREG_BASE(UART, 1),
-						     (sedi_uart_regs_t *)SEDI_IREG_BASE(UART, 2)};
+static sedi_uart_regs_t *sedi_uart[SEDI_UART_NUM];
 
 #define SEDI_UART sedi_uart
 

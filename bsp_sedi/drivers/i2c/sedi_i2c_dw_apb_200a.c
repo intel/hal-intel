@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - 2025 Intel Corporation
+ * Copyright (c) 2023 - 2026 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -119,14 +119,7 @@ static uint32_t regval_speed[I2C_SPEED_MAX] = {
 #define I2C_HS_SCL_HIGH 300
 #define I2C_HS_SCL_LOW 500
 
-#define I2C_CONTEXT_INIT(x)                                                                        \
-	{                                                                                          \
-		.base = SEDI_IREG_BASE(I2C, x), .speed = I2C_SPEED_FAST,                           \
-		.tx_dma_handshake = DMA_HWID_I2C##x##_TX, .rx_dma_handshake = DMA_HWID_I2C##x##_RX,\
-		.tx_memory_type = DMA_SRAM_MEM, .rx_memory_type = DMA_SRAM_MEM                     \
-	}
-struct i2c_context contexts[SEDI_I2C_NUM] = { I2C_CONTEXT_INIT(0), I2C_CONTEXT_INIT(1),
-					      I2C_CONTEXT_INIT(2) };
+static struct i2c_context contexts[SEDI_I2C_NUM];
 
 #define SEDI_I2C_POLL_UNTIL(_cond) SEDI_POLL_UNTIL_MUTE((_cond), 100)
 
@@ -608,9 +601,13 @@ int32_t sedi_i2c_init(IN sedi_i2c_t i2c_device,
 	/* i2c default configuration */
 	context->speed = I2C_SPEED_STANDARD;
 	context->clk_info = &(context->bus_info.std_clk);
-
+	context->tx_dma_handshake = DMA_HWID_I2C0_TX + i2c_device * SEDI_HWID_PER_DEVICE;
+	context->rx_dma_handshake = DMA_HWID_I2C0_RX + i2c_device * SEDI_HWID_PER_DEVICE;
+	context->tx_memory_type = DMA_SRAM_MEM;
+	context->rx_memory_type = DMA_SRAM_MEM;
 	context->phy_data_cmd = sedi_core_virt_to_phys(context->base)
 		+ offsetof(sedi_i2c_regs_t, data_cmd);
+
 	if (!phy_tx_cmd) {
 		phy_tx_cmd = sedi_core_virt_to_phys((uintptr_t)&tx_cmd);
 	}

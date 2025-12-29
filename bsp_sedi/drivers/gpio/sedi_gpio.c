@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023 - 2026 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -59,9 +59,7 @@ static sedi_gpio_capabilities_t driver_capabilities[SEDI_GPIO_NUM] = {
 };
 
 /* gpio instance to source mapping*/
-static gpio_resources_t resources_map[SEDI_GPIO_NUM] = {
-	{ .reg = (sedi_gpio_regs_t *)SEDI_IREG_BASE(GPIO, 0) },
-};
+static gpio_resources_t resources_map[SEDI_GPIO_NUM];
 
 /* gpio context array */
 static gpio_context_t gpio_context[SEDI_GPIO_NUM] = { 0 };

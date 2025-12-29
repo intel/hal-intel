@@ -214,6 +214,9 @@ typedef enum {
 	DMA_HWID_SPI1_TX = 15,
 } dma_hs_per_dev_id_t;
 
+/* The step number of hardware IDs per device */
+#define SEDI_HWID_PER_DEVICE 2
+
 /*!
  * \brief check if a device is owned by SoC itself
  * \param[in] dev: device id to check
