@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Intel Corporation
+ * Copyright (c) 2023-2026 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -52,7 +52,7 @@ typedef struct {
 	sedi_ipc_regs_t *reg_base_addr;
 	vnn_id_t read_vnn;
 	vnn_id_t write_vnn;
-	sideband_param_t *sb;
+	const sideband_param_t *sb;
 } ipc_resource_t;
 
 /*ipc runtime context information */
@@ -69,46 +69,25 @@ typedef struct {
 static sedi_ipc_capabilities_t driver_capabilities[SEDI_IPC_NUM] = { 0 };
 
 #ifdef SEDI_SB_SUPPORT
-static sideband_param_t pmc_sb = { .dev = SEDI_SIDEBAND_PMC,
+static const sideband_param_t pmc_sb = { .dev = SEDI_SIDEBAND_PMC,
 				   .port = SB_PMC,
 				   .csr_peer_addr = IPC_REG_SB_LOCAL2PMC_CSR,
 				   .drbl_peer_addr = IPC_REG_SB_LOCAL2PMC_DRBL,
 				   .msg_peer_addr = IPC_REG_SB_LOCAL2PMC_MSG,
 				   .drbl_mirror_peer_addr = IPC_REG_SB_PMC2LOCAL_DRBL_MIRROR };
-static sideband_param_t cse_sb = { .dev = SEDI_SIDEBAND_CSE,
+static const sideband_param_t cse_sb = { .dev = SEDI_SIDEBAND_CSE,
 				   .port = SB_CSME,
 				   .csr_peer_addr = IPC_REG_SB_LOCAL2CSE_CSR,
 				   .drbl_peer_addr = IPC_REG_SB_LOCAL2CSE_DRBL,
 				   .msg_peer_addr = IPC_REG_SB_LOCAL2CSE_MSG,
 				   .drbl_mirror_peer_addr = IPC_REG_SB_CSE2LOCAL_DRBL_MIRROR };
+static const sideband_param_t *const sb_params[SEDI_IPC_NUM] = {
+	[SEDI_IPC_PMC] = &pmc_sb,
+	[SEDI_IPC_CSME] = &cse_sb,
+};
 #endif
 
-static ipc_resource_t ipc_resource[SEDI_IPC_NUM] = {
-#ifdef SEDI_SB_SUPPORT
-	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_HOST),
-	  .read_vnn = VNN_ID_IPC_HOST_R,
-	  .write_vnn = VNN_ID_IPC_HOST_W,
-	  .sb = NULL },
-	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_CSME),
-	  .read_vnn = VNN_ID_IPC_CSE_R,
-	  .write_vnn = VNN_ID_IPC_CSE_W,
-	  .sb = &cse_sb },
-	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_PMC),
-	  .read_vnn = VNN_ID_IPC_PMC_R,
-	  .write_vnn = VNN_ID_IPC_PMC_W,
-	  .sb = &pmc_sb },
-#else
-	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_HOST),
-	  .read_vnn = VNN_ID_IPC_HOST_R,
-	  .write_vnn = VNN_ID_IPC_HOST_W },
-	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_CSME),
-	  .read_vnn = VNN_ID_IPC_CSE_R,
-	  .write_vnn = VNN_ID_IPC_CSE_W },
-	{ .reg_base_addr = (sedi_ipc_regs_t *)SEDI_REG_BASE(IPC_PMC),
-	  .read_vnn = VNN_ID_IPC_PMC_R,
-	  .write_vnn = VNN_ID_IPC_PMC_W },
-#endif
-};
+static ipc_resource_t ipc_resource[SEDI_IPC_NUM];
 
 /*driver contexts */
 static ipc_context_t ipc_contexts[SEDI_IPC_NUM] = { 0 };
@@ -144,12 +123,19 @@ int32_t sedi_ipc_init(IN sedi_ipc_t ipc_device, IN sedi_ipc_event_cb_t cb, INOUT
 {
 	DBG_CHECK(ipc_device < SEDI_IPC_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	volatile sedi_ipc_regs_t *regs;
-	vnn_id_t write_vnn = ipc_resource[ipc_device].write_vnn;
+	vnn_id_t write_vnn;
+
+	ipc_resource[ipc_device].read_vnn = VNN_ID_IPC_R(ipc_device);
+	ipc_resource[ipc_device].write_vnn = VNN_ID_IPC_W(ipc_device);
+#ifdef SEDI_SB_SUPPORT
+	ipc_resource[ipc_device].sb = sb_params[ipc_device];
+#endif
 
 	if (base != SEDI_REG_BASE_DEFAULT) {
 		ipc_resource[ipc_device].reg_base_addr = (sedi_ipc_regs_t *)base;
 	}
 	regs = ipc_resource[ipc_device].reg_base_addr;
+	write_vnn = ipc_resource[ipc_device].write_vnn;
 
 	ipc_contexts[ipc_device].initialized = false;
 	ipc_contexts[ipc_device].csr_saved = 0;
@@ -159,7 +145,7 @@ int32_t sedi_ipc_init(IN sedi_ipc_t ipc_device, IN sedi_ipc_event_cb_t cb, INOUT
 	ipc_contexts[ipc_device].out_msg_count = 0;
 
 #ifdef SEDI_SB_SUPPORT
-	sideband_param_t *sb = ipc_resource[ipc_device].sb;
+	const sideband_param_t *sb = ipc_resource[ipc_device].sb;
 
 	if (sb) {
 		sedi_sideband_init(sb->dev);
@@ -202,7 +188,7 @@ int32_t sedi_ipc_uninit(IN sedi_ipc_t ipc_device)
 	ipc_contexts[ipc_device].cb_event = NULL;
 	ipc_contexts[ipc_device].initialized = false;
 #ifdef SEDI_SB_SUPPORT
-	sideband_param_t *sb = ipc_resource[ipc_device].sb;
+	const sideband_param_t *sb = ipc_resource[ipc_device].sb;
 
 	if (sb) {
 		sedi_sideband_uninit(sb->dev);
@@ -240,7 +226,7 @@ int32_t sedi_ipc_write_msg(IN sedi_ipc_t ipc_device, IN uint8_t *msg, IN int32_t
 	}
 
 	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
-	sideband_param_t *sb = ipc_resource[ipc_device].sb;
+	const sideband_param_t *sb = ipc_resource[ipc_device].sb;
 
 	DBG_CHECK((size <= IPC_DATA_LEN_MAX) && (size >= 0), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(msg != NULL, SEDI_DRIVER_ERROR_PARAMETER);
@@ -279,7 +265,7 @@ int32_t sedi_ipc_write_dbl(IN sedi_ipc_t ipc_device, IN uint32_t doorbell)
 	}
 
 	vnn_id_t write_vnn = ipc_resource[ipc_device].write_vnn;
-	sideband_param_t *sb = ipc_resource[ipc_device].sb;
+	const sideband_param_t *sb = ipc_resource[ipc_device].sb;
 	volatile sedi_ipc_regs_t *regs = ipc_resource[ipc_device].reg_base_addr;
 
 	if (sb) {
@@ -310,7 +296,7 @@ int32_t sedi_ipc_write_csr(IN sedi_ipc_t ipc_device, IN uint32_t csr)
 		return ret;
 	}
 
-	sideband_param_t *sb = ipc_resource[ipc_device].sb;
+	const sideband_param_t *sb = ipc_resource[ipc_device].sb;
 
 	if (sb) {
 #ifdef SEDI_SB_SUPPORT
@@ -393,7 +379,7 @@ int32_t sedi_ipc_send_ack_drbl(IN sedi_ipc_t ipc_device, IN uint32_t ack)
 		return ret;
 	}
 
-	sideband_param_t *sb = ipc_resource[ipc_device].sb;
+	const sideband_param_t *sb = ipc_resource[ipc_device].sb;
 
 	if (SEDI_PREG_RBFV_IS_SET(IPC, ISH2AGENT_DOORBELL_AGENT, BUSY, 1, (uint32_t *)&ack)) {
 		return SEDI_DRIVER_ERROR_PARAMETER;
@@ -492,7 +478,7 @@ int32_t sedi_ipc_read_ack_msg(IN sedi_ipc_t ipc_device, OUT uint8_t *msg, IN int
 		}
 	} else {
 #ifdef SEDI_SB_SUPPORT
-		sideband_param_t *sb = ipc_resource[ipc_device].sb;
+		const sideband_param_t *sb = ipc_resource[ipc_device].sb;
 
 		for (i = 0; i < size; i = i + 4) {
 			sedi_sideband_send(sb->dev, sb->port, SEDI_SIDEBAND_ACTION_READ,

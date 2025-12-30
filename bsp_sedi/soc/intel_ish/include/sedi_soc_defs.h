@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2024 Intel Corporation
+ * Copyright (c) 2023-2026 Intel Corporation
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -158,19 +158,14 @@ typedef enum {
 typedef enum {
 	VNN_ID_FIRST = 0,
 	VNN_ID_AON_TASK = VNN_ID_FIRST,
-	VNN_ID_IPC_HOST_W,
-	VNN_ID_IPC_HOST_R,
-	VNN_ID_IPC_CSME_W,
-	VNN_ID_IPC_CSME_R,
-	VNN_ID_IPC_PMC_W = 5,
-	VNN_ID_IPC_PMC_R,
 	VNN_ID_DMA0,
 	VNN_ID_SIDEBAND,
-	VNN_ID_TOP,
+	VNN_ID_IPC_START,
+	VNN_ID_TOP = VNN_ID_IPC_START + SEDI_IPC_NUM * 2,
 } vnn_id_t;
 
-#define VNN_ID_IPC_CSE_R VNN_ID_IPC_CSME_R
-#define VNN_ID_IPC_CSE_W VNN_ID_IPC_CSME_W
+#define VNN_ID_IPC_R(_instance) (VNN_ID_IPC_START + (_instance) * 2)
+#define VNN_ID_IPC_W(_instance) (VNN_ID_IPC_START + (_instance) * 2 + 1)
 
 /*!
  * \enum sedi_devid_t
