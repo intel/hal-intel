@@ -878,7 +878,6 @@ int32_t sedi_i2c_master_write_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, 
 	DBG_CHECK(i2c_device < SEDI_I2C_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(0 != (addr & SEDI_RBFM(I2C, TAR, IC_TAR)), SEDI_DRIVER_ERROR_PARAMETER);
 	DBG_CHECK(NULL != data, SEDI_DRIVER_ERROR_PARAMETER);
-	DBG_CHECK(0 != num, SEDI_DRIVER_ERROR_PARAMETER);
 
 	struct i2c_context *context = &contexts[i2c_device];
 
@@ -909,7 +908,12 @@ int32_t sedi_i2c_master_write_async(IN sedi_i2c_t i2c_device, IN uint32_t addr, 
 	context->status.event = SEDI_I2C_EVENT_TRANSFER_NONE;
 
 	context->buf = (uint8_t *)data;
-	context->buf_size = num;
+	if ((num == 0) && (data != NULL)) {
+		/* Workaround for I2C scanner as HW does not support 0 byte transfers. */
+		context->buf_size = 1;
+	} else {
+		context->buf_size = num;
+	}
 	context->rx_cmd_index = 0;
 	context->buf_index = 0;
 	context->pending = pending;
