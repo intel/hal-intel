@@ -232,10 +232,10 @@ int32_t sedi_hpet_init(uint32_t clk_divisor, uint32_t min_delay)
 
 	/* Set interrupt router and trigger mode */
 	SEDI_REG_SET(HPET, T0C_LOW,
-		     SEDI_RBFM_VALUE(HPET, T0C_LOW, IR, SEDI_IRQ_HPET_TIMER_0) |
+		     SEDI_RBFM_VALUE(HPET, T0C_LOW, IR, 0) |
 			     SEDI_RBFVM(HPET, T0C_LOW, IT, 1));
 	SEDI_REG_SET(HPET, T1C_LOW,
-		     SEDI_RBFM_VALUE(HPET, T1C_LOW, IR, SEDI_IRQ_HPET_TIMER_1) |
+		     SEDI_RBFM_VALUE(HPET, T1C_LOW, IR, 0) |
 			     SEDI_RBFVM(HPET, T1C_LOW, IT, 1));
 	SEDI_REG_SET(HPET, T2C_LOW,
 		     SEDI_RBFM_VALUE(HPET, T2C_LOW, IR, TIMER2_INT_ROUTE) |

@@ -134,13 +134,6 @@ typedef enum {
 #define SPI_FIFO_DEPTH (64)
 
 #if defined(CONFIG_SOC_INTEL_ISH_5_4_1) || defined(CONFIG_SOC_INTEL_ISH_5_6_0)
-#define SEDI_IRQ_HPET_TIMER_0 (14)
-#else
-#define SEDI_IRQ_HPET_TIMER_0 (17)
-#endif
-#define SEDI_IRQ_HPET_TIMER_1 (0) /* fake IRQ number, same as timer 0's */
-
-#if defined(CONFIG_SOC_INTEL_ISH_5_4_1) || defined(CONFIG_SOC_INTEL_ISH_5_6_0)
 #define SEDI_IRQ_RESET_PREP (6)
 #define SEDI_IRQ_PCIEDEV (9)
 #define SEDI_IRQ_PMU2IOAPIC (10)
