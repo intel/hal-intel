@@ -265,8 +265,8 @@ static void pm_disable_irqs(uint64_t current_ioapic_state)
 	int i;
 
 	for (i = 0; i < IOAPIC_NUM_RTES; i++) {
-		if ((((uint64_t)1) << i & current_ioapic_state) && (i != ISH_SOC_IRQ(pmu2ioapic, irq))
-			&& (i != ISH_SOC_IRQ(reset_prep, irq)))
+		if ((((uint64_t)1) << i & current_ioapic_state)
+				&& (i != ISH_SOC_IRQ(reset_prep, irq)))
 			sedi_core_irq_disable(i);
 	}
 }
@@ -276,8 +276,8 @@ static void pm_enable_irqs(uint64_t current_ioapic_state)
 	int i;
 
 	for (i = 0; i < IOAPIC_NUM_RTES; i++) {
-		if ((((uint64_t)1) << i & current_ioapic_state) && (i != ISH_SOC_IRQ(pmu2ioapic, irq))
-			&& (i != ISH_SOC_IRQ(reset_prep, irq)))
+		if ((((uint64_t)1) << i & current_ioapic_state)
+				&& (i != ISH_SOC_IRQ(reset_prep, irq)))
 			sedi_core_irq_enable(i);
 	}
 }
