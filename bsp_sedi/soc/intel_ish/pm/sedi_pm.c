@@ -11,6 +11,9 @@
 #include "sedi_driver_uart.h"
 #include <sedi_driver_rtc.h>
 
+#include <zephyr/devicetree.h>
+#define ISH_SOC_IRQ(_node_name, _cell) DT_IRQ_BY_NAME(DT_PATH(soc), _node_name, _cell)
+
 /* defined in link script: soc/x86/intel_ish/scripts/ish_linker.ld */
 extern uint32_t __text_region_start;
 extern uint32_t __rodata_region_end;
@@ -262,8 +265,8 @@ static void pm_disable_irqs(uint64_t current_ioapic_state)
 	int i;
 
 	for (i = 0; i < IOAPIC_NUM_RTES; i++) {
-		if ((((uint64_t)1) << i & current_ioapic_state) && (i != SEDI_IRQ_PMU2IOAPIC)
-			&& (i != SEDI_IRQ_RESET_PREP))
+		if ((((uint64_t)1) << i & current_ioapic_state) && (i != ISH_SOC_IRQ(pmu2ioapic, irq))
+			&& (i != ISH_SOC_IRQ(reset_prep, irq)))
 			sedi_core_irq_disable(i);
 	}
 }
@@ -273,8 +276,8 @@ static void pm_enable_irqs(uint64_t current_ioapic_state)
 	int i;
 
 	for (i = 0; i < IOAPIC_NUM_RTES; i++) {
-		if ((((uint64_t)1) << i & current_ioapic_state) && (i != SEDI_IRQ_PMU2IOAPIC)
-			&& (i != SEDI_IRQ_RESET_PREP))
+		if ((((uint64_t)1) << i & current_ioapic_state) && (i != ISH_SOC_IRQ(pmu2ioapic, irq))
+			&& (i != ISH_SOC_IRQ(reset_prep, irq)))
 			sedi_core_irq_enable(i);
 	}
 }
@@ -317,8 +320,8 @@ static void handle_reset_in_aontask(enum ish_pm_state pm_state)
 
 	ioapic_state = sedi_core_get_irq_map();
 	pm_disable_irqs(ioapic_state);
-	sedi_core_irq_enable(SEDI_IRQ_PMU2IOAPIC);
-	sedi_core_irq_enable(SEDI_IRQ_RESET_PREP);
+	sedi_core_irq_enable(ISH_SOC_IRQ(pmu2ioapic, irq));
+	sedi_core_irq_enable(ISH_SOC_IRQ(reset_prep, irq));
 
 	/* enable Trunk Clock Gating (TCG) of ISH */
 	write32(CCU_TCG_EN, 1);
@@ -358,8 +361,8 @@ static void enter_d0i1(void)
 	ioapic_state = sedi_core_get_irq_map();
 	pm_disable_irqs(ioapic_state);
 #endif
-	sedi_core_irq_enable(SEDI_IRQ_PMU2IOAPIC);
-	sedi_core_irq_enable(SEDI_IRQ_RESET_PREP);
+	sedi_core_irq_enable(ISH_SOC_IRQ(pmu2ioapic, irq));
+	sedi_core_irq_enable(ISH_SOC_IRQ(reset_prep, irq));
 
 	t0 = sedi_rtc_get_us();
 	pm_ctx.aon_share->pm_state = ISH_PM_STATE_D0I1;
@@ -393,7 +396,7 @@ static void enter_d0i1(void)
 	/* restore interrupts */
 	pm_enable_irqs(ioapic_state);
 #endif
-	sedi_core_irq_disable(SEDI_IRQ_PMU2IOAPIC);
+	sedi_core_irq_disable(ISH_SOC_IRQ(pmu2ioapic, irq));
 }
 
 static void enter_d0i2(void)
@@ -404,8 +407,8 @@ static void enter_d0i2(void)
 
 	ioapic_state = sedi_core_get_irq_map();
 	pm_disable_irqs(ioapic_state);
-	sedi_core_irq_enable(SEDI_IRQ_PMU2IOAPIC);
-	sedi_core_irq_enable(SEDI_IRQ_RESET_PREP);
+	sedi_core_irq_enable(ISH_SOC_IRQ(pmu2ioapic, irq));
+	sedi_core_irq_enable(ISH_SOC_IRQ(reset_prep, irq));
 
 	t0 = sedi_rtc_get_us();
 	pm_ctx.aon_share->pm_state = ISH_PM_STATE_D0I2;
@@ -442,7 +445,7 @@ static void enter_d0i2(void)
 
 	/* restore interrupts */
 	pm_enable_irqs(ioapic_state);
-	sedi_core_irq_disable(SEDI_IRQ_PMU2IOAPIC);
+	sedi_core_irq_disable(ISH_SOC_IRQ(pmu2ioapic, irq));
 }
 
 static void enter_d0i3(void)
@@ -453,8 +456,8 @@ static void enter_d0i3(void)
 
 	ioapic_state = sedi_core_get_irq_map();
 	pm_disable_irqs(ioapic_state);
-	sedi_core_irq_enable(SEDI_IRQ_PMU2IOAPIC);
-	sedi_core_irq_enable(SEDI_IRQ_RESET_PREP);
+	sedi_core_irq_enable(ISH_SOC_IRQ(pmu2ioapic, irq));
+	sedi_core_irq_enable(ISH_SOC_IRQ(reset_prep, irq));
 
 	t0 = sedi_rtc_get_us();
 	pm_ctx.aon_share->pm_state = ISH_PM_STATE_D0I3;
@@ -491,7 +494,7 @@ static void enter_d0i3(void)
 
 	/* restore interrupts */
 	pm_enable_irqs(ioapic_state);
-	sedi_core_irq_disable(SEDI_IRQ_PMU2IOAPIC);
+	sedi_core_irq_disable(ISH_SOC_IRQ(pmu2ioapic, irq));
 }
 
 static void pre_setting_d0ix(void)
@@ -533,6 +536,8 @@ void sedi_pm_enter_power_state(int state)
 		enter_d0i0();
 		break;
 	}
+
+	return 0;
 }
 
 static void reset_bcg(void)
@@ -567,11 +572,11 @@ void sedi_pm_isr(void *arg)
 {
 	uint32_t irq_num = (uint32_t)arg;
 
-	if (irq_num == SEDI_IRQ_PMU2IOAPIC) {
+	if (irq_num == ISH_SOC_IRQ(pmu2ioapic, irq)) {
 		/* at current nothing need to do */
-	} else if (irq_num == SEDI_IRQ_PCIEDEV) {
+	} else if (irq_num == ISH_SOC_IRQ(pcidev, irq)) {
 		handle_d3(SEDI_VEC_PCIEDEV);
-	} else if (irq_num == SEDI_IRQ_RESET_PREP) {
+	} else if (irq_num == ISH_SOC_IRQ(reset_prep, irq)) {
 		/* mask reset prep avail interrupt */
 		write32(PMU_RST_PREP, PMU_RST_PREP_INT_MASK);
 
