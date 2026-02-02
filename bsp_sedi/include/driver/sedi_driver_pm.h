@@ -25,6 +25,14 @@ extern "C" {
  */
 
 /*!
+ * \fn void sedi_pm_enter_power_state(IN sedi_ish_pwr_state_t state)
+ * \brief Enter ISH low power state
+ * \param[in] state: the low power state ISH would enter
+ * \return 0 or error codes
+ */
+int32_t sedi_pm_enter_power_state(IN int32_t state);
+
+/*!
  * \brief Set a device into some power state
  * \param[in] id: device id
  * \param[in] state: the power state to be set to the device

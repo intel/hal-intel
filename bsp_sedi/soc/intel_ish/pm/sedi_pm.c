@@ -508,7 +508,7 @@ static void post_setting_d0ix(void)
 	uart_port_restore();
 }
 
-void sedi_pm_enter_power_state(int state)
+int32_t sedi_pm_enter_power_state(IN int32_t state)
 {
 	switch (state) {
 	case ISH_PM_STATE_D0I1:
