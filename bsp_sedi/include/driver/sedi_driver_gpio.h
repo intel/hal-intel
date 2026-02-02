@@ -163,13 +163,21 @@ int32_t sedi_gpio_get_capabilities(IN sedi_gpio_t gpio_device,
  * \brief Initialize the device
  * \param[in] gpio_device: gpio device id
  * \param[in] base: register base address
- * \param[in] cb:  the callback function which can receive device's events.
- * \param[in] param:  User parameter for callback function.
  * \return  \ref return_status
  */
-int32_t sedi_gpio_init(IN sedi_gpio_t gpio_device, IN uintptr_t base,
-		IN sedi_gpio_event_cb_t cb, INOUT void *param);
+int32_t sedi_gpio_init(IN sedi_gpio_t gpio_device, IN uintptr_t base);
 
+/*!
+ * \brief Register callback function for gpio pins
+ * \param[in] gpio_device: gpio device id
+ * \param[in] port: Port id, one port represents 32 pins.
+ * \param[in] pin_mask: 32-bits pin mask, indicate the pins trigger this callback.
+ * \param[in] cb: callback function
+ * \param[in] param: User callback parameter pointer.
+ * \return  \ref return_status
+ */
+int32_t sedi_gpio_register_callback(IN sedi_gpio_t gpio_device, uint8_t port, uint32_t pin_mask,
+				IN sedi_gpio_event_cb_t cb, INOUT void *param);
 /*!
  * \brief Uninitialize the device
  * \param[in] gpio_device: gpio device id

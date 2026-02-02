@@ -22,6 +22,8 @@
 #define GPIO_16_BITS_OFFSET (16U)
 #define GPIO_32_BITS_OFFSET (32U)
 
+#define GPIO_CALLBACK_COUNTS (3)
+
 /* Access the correct register */
 #define GPIO_SET_BIT(base, reg, index, bit) ((base->reg[index]) |= SET_MASK(bit))
 #define GPIO_CLEAR_BIT(base, reg, index, bit) ((base->reg[index]) &= CLEAR_MASK(bit))
@@ -30,8 +32,10 @@
 
 /* GPIO runtime context information */
 typedef struct {
-	sedi_gpio_event_cb_t cb_event;
-	void *callback_param;
+	sedi_gpio_event_cb_t cb_event[GPIO_CALLBACK_COUNTS];
+	void *callback_param[GPIO_CALLBACK_COUNTS];
+	uint32_t cb_pin_mask[GPIO_CALLBACK_COUNTS];
+	uint8_t cb_port[GPIO_CALLBACK_COUNTS];
 	uint8_t flag;
 	uint32_t outpin_state[SEDI_GPIO_SOC_PORT_NUM];
 } gpio_context_t;
@@ -166,7 +170,7 @@ void gpio_isr(IN sedi_gpio_t gpio_device)
 {
 	sedi_gpio_regs_t *gpio = resources_map[gpio_device].reg;
 	gpio_context_t *context = &(gpio_context[gpio_device]);
-	uint8_t i;
+	uint8_t i, j;
 	uint32_t gisr, gwsr;
 	uint32_t gimr, gwmr;
 
@@ -184,8 +188,12 @@ void gpio_isr(IN sedi_gpio_t gpio_device)
 		/* Clear wake bit */
 		gpio->gwsr[i] = gwsr;
 
-		if ((context->cb_event) && (gisr != 0)) {
-			(context->cb_event)(gisr, i, context->callback_param);
+		for (j = 0; j < GPIO_CALLBACK_COUNTS; j++) {
+			if ((context->cb_event[j] != NULL) && (context->cb_port[j] == i)) {
+				if ((context->cb_pin_mask[j] & gisr) != 0) {
+					(context->cb_event[j])(gisr, i, context->callback_param[j]);
+				}
+			}
 		}
 	}
 }
@@ -210,8 +218,7 @@ int32_t sedi_gpio_get_capabilities(IN sedi_gpio_t gpio_device, OUT sedi_gpio_cap
 	return SEDI_DRIVER_OK;
 }
 
-int32_t sedi_gpio_init(IN sedi_gpio_t gpio_device, IN uintptr_t base,
-		IN sedi_gpio_event_cb_t cb, INOUT void *param)
+int32_t sedi_gpio_init(IN sedi_gpio_t gpio_device, IN uintptr_t base)
 {
 	DBG_CHECK(gpio_device < SEDI_GPIO_NUM, SEDI_DRIVER_ERROR_PARAMETER);
 
@@ -227,14 +234,31 @@ int32_t sedi_gpio_init(IN sedi_gpio_t gpio_device, IN uintptr_t base,
 	/* Set all registers to default state */
 	gpio_reset_register(gpio_device);
 
-	/* Register callback for GPIO */
-	gpio_context[gpio_device].cb_event = cb;
-	gpio_context[gpio_device].callback_param = param;
-
 	/* Set flag to init */
 	gpio_context[gpio_device].flag = GPIO_FLAG_INIT;
 
 	return SEDI_DRIVER_OK;
+}
+
+int32_t sedi_gpio_register_callback(IN sedi_gpio_t gpio_device, uint8_t port, uint32_t pin_mask,
+				IN sedi_gpio_event_cb_t cb, INOUT void *param)
+{
+	DBG_CHECK(gpio_device < SEDI_GPIO_NUM, SEDI_DRIVER_ERROR_PARAMETER);
+	DBG_CHECK(gpio_context[gpio_device].flag == GPIO_FLAG_INIT, SEDI_DRIVER_ERROR);
+	uint8_t i;
+
+	for (i = 0; i < GPIO_CALLBACK_COUNTS; i++)
+	{
+		if (gpio_context[gpio_device].cb_event[i] == NULL) {
+			gpio_context[gpio_device].cb_event[i] = cb;
+			gpio_context[gpio_device].callback_param[i] = param;
+			gpio_context[gpio_device].cb_pin_mask[i] = pin_mask;
+			gpio_context[gpio_device].cb_port[i] = port;
+			return SEDI_DRIVER_OK;
+		}
+	}
+
+	return SEDI_DRIVER_ERROR;
 }
 
 int32_t sedi_gpio_uninit(IN sedi_gpio_t gpio_device)
@@ -245,11 +269,16 @@ int32_t sedi_gpio_uninit(IN sedi_gpio_t gpio_device)
 	uint8_t i;
 
 	/* Clear the internal context */
-	context->cb_event = NULL;
-	context->callback_param = NULL;
 	context->flag = 0;
 	for (i = 0; i < SEDI_GPIO_SOC_PORT_NUM; i++) {
 		context->outpin_state[i] = 0;
+	}
+
+	for (i = 0; i < GPIO_CALLBACK_COUNTS; i++) {
+		context->cb_event[i] = NULL;
+		context->callback_param[i] = NULL;
+		context->cb_pin_mask[i] = 0;
+		context->cb_port[i] = 0;
 	}
 
 	/* Set all registers to default state */
@@ -280,6 +309,8 @@ void sedi_gpio_config_pin(IN sedi_gpio_t gpio_device, IN uint32_t pin,
 		/* Clear the interrupt mode first */
 		GPIO_CLEAR_BIT(base, gfer, port, offset);
 		GPIO_CLEAR_BIT(base, grer, port, offset);
+		base->gisr[port] = BIT(offset);
+		base->gwsr[port] = BIT(offset);
 
 		if (pin_config.interrupt_mode & SEDI_GPIO_INT_MODE_FALLING_EDGE) {
 			GPIO_SET_BIT(base, gfer, port, offset);
