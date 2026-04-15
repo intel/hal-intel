@@ -67,6 +67,19 @@ extern "C" {
 #define SEDI_I2C_SET_RX_MEMORY_TYPE (0x06)
 
 /*!
+ * \def SEDI_I2C_SET_BUS_DATA_STD/_FST/_FSP/_HIGH
+ * \brief Update cached bus timing data for a speed mode.
+ *
+ * The new timing values are stored in the driver context and take effect
+ * the next time the corresponding bus speed is selected through
+ * SEDI_I2C_BUS_SPEED.
+ */
+#define SEDI_I2C_SET_BUS_DATA_STD (0x0B)
+#define SEDI_I2C_SET_BUS_DATA_FST (SEDI_I2C_SET_BUS_DATA_STD + 1)
+#define SEDI_I2C_SET_BUS_DATA_FSP (SEDI_I2C_SET_BUS_DATA_STD + 2)
+#define SEDI_I2C_SET_BUS_DATA_HIGH (SEDI_I2C_SET_BUS_DATA_STD + 3)
+
+/*!
  * \}
  */
 

@@ -1126,6 +1126,25 @@ int32_t sedi_i2c_control(IN sedi_i2c_t i2c_device, IN uint32_t control, IN uint3
 	case SEDI_I2C_SET_RX_MEMORY_TYPE:
 		context->rx_memory_type = arg;
 		break;
+	case SEDI_I2C_SET_BUS_DATA_STD:
+	case SEDI_I2C_SET_BUS_DATA_FST:
+	case SEDI_I2C_SET_BUS_DATA_FSP:
+	case SEDI_I2C_SET_BUS_DATA_HIGH:
+		{
+			const sedi_i2c_bus_clk_t *bus_clk = (const sedi_i2c_bus_clk_t *)arg;
+			sedi_i2c_bus_clk_t *bus_clk_ptr = &context->bus_info.std_clk;
+			uint32_t idx = control - SEDI_I2C_SET_BUS_DATA_STD;
+
+			DBG_CHECK(NULL != bus_clk, SEDI_DRIVER_ERROR_PARAMETER);
+			DBG_CHECK(idx <  sizeof(context->bus_info) / sizeof(sedi_i2c_bus_clk_t),
+					SEDI_DRIVER_ERROR_PARAMETER);
+
+			bus_clk_ptr = bus_clk_ptr + idx;
+			bus_clk_ptr->sda_hold = LBW_CLK_MHZ * bus_clk->sda_hold / NS_PER_US;
+			bus_clk_ptr->hcnt = LBW_CLK_MHZ * bus_clk->hcnt / NS_PER_US;
+			bus_clk_ptr->lcnt = LBW_CLK_MHZ * bus_clk->lcnt / NS_PER_US;
+		}
+		break;
 	default:
 		ret = SEDI_DRIVER_ERROR;
 		break;
