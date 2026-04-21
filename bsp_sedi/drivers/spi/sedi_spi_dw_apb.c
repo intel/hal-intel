@@ -274,8 +274,8 @@ static inline void lld_spi_config_cpol_cpha(sedi_spi_regs_t *spi, int cpol, int 
 	cpha = cpha ? SEDI_RBFV(SPI, CTRLR0, SCPH, SCPH_START) :
 			SEDI_RBFV(SPI, CTRLR0, SCPH, SCPH_MIDDLE);
 
-	SEDI_PREG_RBF_SET(SPI, CTRLR0, SCPH, cpol, &spi->ctrlr0);
-	SEDI_PREG_RBF_SET(SPI, CTRLR0, SCPOL, cpha, &spi->ctrlr0);
+	SEDI_PREG_RBF_SET(SPI, CTRLR0, SCPH, cpha, &spi->ctrlr0);
+	SEDI_PREG_RBF_SET(SPI, CTRLR0, SCPOL, cpol, &spi->ctrlr0);
 }
 
 static inline void lld_spi_config_loopback(sedi_spi_regs_t *spi, int loopback)
