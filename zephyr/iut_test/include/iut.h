@@ -68,4 +68,7 @@ extern const struct iut_case *iut_running;
 #define TEST_ASSERT_EQUAL(_expr1, _expr2) \
 		TEST_ASSERT_TRUE((_expr1) == (_expr2))
 
+#define TEST_ASSERT_NOT_EQUAL(_expr1, _expr2) \
+		TEST_ASSERT_TRUE((_expr1) != (_expr2))
+
 #endif

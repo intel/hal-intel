@@ -21,3 +21,7 @@ target_sources(app PRIVATE timer/test_sys_clock.c)
 if(CONFIG_PM)
   target_sources(app PRIVATE pm/test_pm.c)
 endif()
+
+if(CONFIG_BT_HCI_RAW)
+  target_sources(app PRIVATE bluetooth/test_hci.c)
+endif()
