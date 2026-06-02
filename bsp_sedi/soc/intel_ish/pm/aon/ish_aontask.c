@@ -613,8 +613,6 @@ static void sram_enter_sleep_mode(void)
 #else
 	for (int i = 0; i < SRAM_POWER_OFF_BANKS; i++) {
 		BANK_DS_ENABLE(i);
-		while (BANK_PWR_STATUS(i))
-			;
 	}
 #endif
 }
@@ -644,11 +642,9 @@ static void sram_exit_sleep_mode(void)
 	}
 #else
 	for (int i = 0; i < SRAM_POWER_OFF_BANKS; i++) {
-		if (!BANK_PWR_STATUS(i)) {
-			BANK_DS_DISABLE(i);
-			delay(RETENTION_EXIT_CYCLES_DELAY);
-			while (!BANK_PWR_STATUS(i))
-				;
+		BANK_DS_DISABLE(i);
+		delay(RETENTION_EXIT_CYCLES_DELAY);
+		while (!BANK_PWR_STATUS(i)) {
 		}
 	}
 #endif
