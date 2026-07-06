@@ -18,8 +18,8 @@
 
 #define DT_DRV_COMPAT intel_sedi_dma
 
-__pinned_noinit static char __aligned(64) tx_data[4096];
-__pinned_noinit static char __aligned(64) rx_data[4096];
+static char __aligned(64) tx_data[4096];
+static char __aligned(64) rx_data[4096];
 static K_SEM_DEFINE(dma_sem, 0, 1);
 static int dma_status;
 
