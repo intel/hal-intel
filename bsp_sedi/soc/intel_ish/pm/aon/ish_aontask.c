@@ -18,7 +18,6 @@
 #define AON_IDT_ENTRY_VEC_FIRST		SEDI_VEC_RESET_PREP
 #define AON_IDT_ENTRY_VEC_LAST		SEDI_VEC_PMU2IOAPIC
 
-#define PMU_RST_AP_REBOOT 0x40
 static void handle_reset(enum ish_pm_state pm_state);
 
 /* ISR for PMU wakeup interrupt */
@@ -653,8 +652,6 @@ static void sram_exit_sleep_mode(void)
 
 static void handle_d0i2(void)
 {
-	uint32_t reg_val;
-
 	ish_pg_exit_save_ctx();
 	aon_share.pg_exit = 0;
 
@@ -701,9 +698,7 @@ static void handle_d0i2(void)
 		continue;
 #endif
 
-	reg_val = read32(PMU_RST_PREP);
-	if ((reg_val & PMU_RST_PREP_AVAIL) ||
-		((reg_val & PMU_RST_PREP_RESET_TYPE) == PMU_RST_AP_REBOOT)) {
+	if (read32(PMU_RST_PREP) & PMU_RST_PREP_AVAIL) {
 		handle_reset(ISH_PM_STATE_RESET_PREP);
 	}
 
@@ -715,7 +710,6 @@ static void handle_d0i2(void)
 static void handle_d0i3(void)
 {
 	int ret;
-	uint32_t reg_val;
 
 	ish_pg_exit_save_ctx();
 	aon_share.pg_exit = 0;
@@ -749,9 +743,7 @@ static void handle_d0i3(void)
 
 	clear_vnnred_aoncg();
 
-	reg_val = read32(PMU_RST_PREP);
-	if ((reg_val & PMU_RST_PREP_AVAIL) ||
-		((reg_val & PMU_RST_PREP_RESET_TYPE) == PMU_RST_AP_REBOOT)) {
+	if (read32(PMU_RST_PREP) & PMU_RST_PREP_AVAIL) {
 		handle_reset(ISH_PM_STATE_RESET_PREP);
 	}
 
