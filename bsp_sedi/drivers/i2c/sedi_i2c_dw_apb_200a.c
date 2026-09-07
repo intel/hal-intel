@@ -1169,7 +1169,7 @@ int sedi_i2c_get_status(IN sedi_i2c_t i2c_device, sedi_i2c_status_t *status)
 	return SEDI_DRIVER_OK;
 }
 
-static void i2c_isr_recv(sedi_i2c_t i2c_device)
+static bool i2c_isr_recv(sedi_i2c_t i2c_device)
 {
 	struct i2c_context *context = &contexts[i2c_device];
 	sedi_i2c_regs_t *i2c = (sedi_i2c_regs_t *)(context->base);
@@ -1178,16 +1178,12 @@ static void i2c_isr_recv(sedi_i2c_t i2c_device)
 	/* Receive all data from FIFO */
 	uint32_t size = SEDI_PREG_RBFV_GET(I2C, RXFLR, RXFLR, &i2c->rxflr);
 
-	if (context->rx_cmd_index < size) {
-		uint32_t dummy;
-
-		while (size) {
-			dummy = i2c->data_cmd;
-			size--;
-		}
-		(void)dummy;
-
-		return;
+	if ((context->buf_index > context->rx_cmd_index) ||
+	    (context->buf_index > context->buf_size) ||
+	    (size > context->rx_cmd_index - context->buf_index) ||
+	    (size > context->buf_size - context->buf_index)) {
+		i2c_isr_complete(i2c_device, true);
+		return false;
 	}
 
 	while (size > 0) {
@@ -1203,6 +1199,8 @@ static void i2c_isr_recv(sedi_i2c_t i2c_device)
 			(data_remain != 0)) {
 		SEDI_PREG_RBF_SET(I2C, RX_TL, RX_TL, data_remain - 1, &i2c->rx_tl);
 	}
+
+	return true;
 }
 
 static void i2c_isr_complete(sedi_i2c_t i2c_device, bool is_error)
@@ -1264,7 +1262,9 @@ void sedi_i2c_isr_handler(IN sedi_i2c_t i2c_device)
 
 	/* check if there is a entity in rx fifo */
 	if (SEDI_PREG_RBFV_IS_SET(I2C, INTR_STAT, R_RX_FULL, ACTIVE, &stat)) {
-		i2c_isr_recv(i2c_device);
+		if (!i2c_isr_recv(i2c_device)) {
+			return;
+		}
 		/* For receive with no STOP, while all data received, ended */
 		if ((context->buf_index == context->buf_size) && (context->pending)) {
 			i2c_isr_complete(i2c_device, false);
